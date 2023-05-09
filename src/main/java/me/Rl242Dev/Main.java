@@ -1,6 +1,6 @@
 package me.Rl242Dev;
 
-import net.dv8tion.jda.api.JDA;
+import me.Rl242Dev.classes.CommandHandler.Mine;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.events.GenericEvent;
@@ -16,23 +16,26 @@ Comments :
 @E : Explanation
 
 
+ */
 
+/*
+
+@A = Rl242Dev
+@U = Main
+@E = Main code of the bot
 
 
  */
 
 public class Main {
+
+    public static final JDABuilder bot = JDABuilder.createDefault("")
+            .setActivity(Activity.playing("Apprendre"));
+
+
     public static void main(String[] args) {
-        JDA bot = JDABuilder.createDefault("")
-                .setActivity(Activity.playing("Apprendre"))
-                .build();
+        bot.build();
+
+        bot.addEventListeners(new Mine());
     }
-
-    /*
-    @Override
-    public void onEvent(@NotNull GenericEvent genericEvent) {
-
-    }
-
-     */
 }

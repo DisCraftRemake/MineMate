@@ -6,4 +6,9 @@ public enum Enchants {
     EFFICIENCY3,
     EFFICIENCY4,
     EFFICIENCY5,
+    SHARPNESS1,
+    SHARPNESS2,
+    SHARPNESS3,
+    SHARPNESS4,
+    SHARPNESS5,
 }

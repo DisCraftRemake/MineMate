@@ -22,6 +22,11 @@ public class RessourceUtils {
             case EFFICIENCY3 -> 1.5;
             case EFFICIENCY4 -> 2.0;
             case EFFICIENCY5 -> 2.5;
+            case SHARPNESS1 -> 0.5;
+            case SHARPNESS2 -> 1.0;
+            case SHARPNESS3 -> 1.5;
+            case SHARPNESS4 -> 2.0;
+            case SHARPNESS5 -> 2.5;
         };
         return speed;
     }

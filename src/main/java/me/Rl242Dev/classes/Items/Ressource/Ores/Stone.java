@@ -1,2 +1,4 @@
-package me.Rl242Dev.classes.Items.Ressource.Ores;public class Stone {
+package me.Rl242Dev.classes.Items.Ressource.Ores;
+
+public class Stone {
 }

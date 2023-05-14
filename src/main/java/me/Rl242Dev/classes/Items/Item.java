@@ -18,7 +18,6 @@ public class Item {
 
     private String name;
     private Type material;
-    private Enchants enchant;
     private int generalSpeed;
     private final int id;
     private final int EmojiID;
@@ -41,20 +40,12 @@ public class Item {
         return material;
     }
 
-    public Enchants getEnchants() {
-        return enchant;
-    }
-
     public void setDisplayName(String name) {
         this.name = name;
     }
 
     public void setMaterial(Type material) {
         this.material = material;
-    }
-
-    public void setEnchants(Enchants enchants) {
-        this.enchant = enchants;
     }
 
     public int getGeneralSpeed() {
@@ -67,13 +58,11 @@ public class Item {
 
     /* Constructor */
 
-    public Item(String name, Type material, Enchants enchant, int EmojiID, int id){
+    public Item(String name, Type type, int EmojiID, int id){
         this.name = name;
-        this.material = material;
-        this.enchant = enchant;
-        this.generalSpeed = RessourceUtils.getBreakingSpeedFromType(material) + (int) (RessourceUtils.getBreakingSpeedFromEnchants(enchant));
-        this.EmojiID = EmojiID;
-        this.id = id;
+        this.material = type;
+        this.EmojiID = EmojiID; // Ressource Utils
+        this.id = id; // UserID + (Concatenate) hash(this.material)
     }
 
     /*

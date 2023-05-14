@@ -1,4 +1,4 @@
-package me.Rl242Dev.classes.CommandHandler;
+package me.Rl242Dev.classes.CommandHandler.MC;
 
 public class Enchant {
 

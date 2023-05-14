@@ -1,11 +1,10 @@
 package me.Rl242Dev;
 
-import me.Rl242Dev.classes.CommandHandler.Mine;
+import me.Rl242Dev.classes.CommandHandler.MC.Mine;
+import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Activity;
-import net.dv8tion.jda.api.events.GenericEvent;
-import net.dv8tion.jda.api.hooks.EventListener;
-import org.jetbrains.annotations.NotNull;
+import net.dv8tion.jda.api.requests.GatewayIntent;
 
 /*
 
@@ -29,13 +28,11 @@ Comments :
 
 public class Main {
 
-    public static final JDABuilder bot = JDABuilder.createDefault("")
-            .setActivity(Activity.playing("Apprendre"));
-
-
     public static void main(String[] args) {
-        bot.build();
+        JDA bot = JDABuilder.createLight("MTEwNTg3NDEzNzcwMTk0MTMyMQ.GU7mHJ.rGfZPIg23IqXzFjZRpJuaZSvH5wxuMoRwvWce0", GatewayIntent.GUILD_MESSAGES, GatewayIntent.MESSAGE_CONTENT, GatewayIntent.GUILD_MEMBERS)
+                .setActivity(Activity.playing("Apprendre"))
+                .build();
 
-        bot.addEventListeners(new Mine());
+        bot.addEventListener(new Mine());
     }
 }

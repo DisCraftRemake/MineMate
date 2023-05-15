@@ -4,16 +4,15 @@ package me.Rl242Dev.Classes.Items.Ressource.Ores;
 
 @A = Rl242Dev
 @U = Items
-@E = Class for Gold that will be used when user mines
+@E = Class for Obsidian that will be used when user mines
 
  */
 
-public class Gold {
-
+public class Obsidian {
     /* Attributes */
 
-    private final static int price = 50;
-    private final static String EmojiID = "<:gold:1107291948789813250>";
+    private final static int price = 200;
+    private final static String EmojiID = "<:obsidian:1107341809459396638>";
 
     /* Methods */
 

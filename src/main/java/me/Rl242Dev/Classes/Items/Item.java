@@ -1,8 +1,8 @@
-package me.Rl242Dev.classes.Items;
+package me.Rl242Dev.Classes.Items;
 
-import me.Rl242Dev.Main;
-import me.Rl242Dev.classes.Items.Ressource.RessourceUtils;
-import me.Rl242Dev.classes.Items.Ressource.Type;
+import me.Rl242Dev.Classes.Items.Ressource.Material;
+import me.Rl242Dev.Classes.Items.Ressource.RessourceUtils;
+import me.Rl242Dev.Classes.Items.Ressource.Type;
 
 /*
 
@@ -17,14 +17,15 @@ public class Item {
     /* Attributes */
 
     private String name;
-    private Type material;
+    private Material material;
     private int generalSpeed;
-    private final int id;
-    private final int EmojiID;
+    private final Type type;
+    private final String id;
+    private final String EmojiID;
 
     /* Methods */
 
-    public int getEmojiID() {
+    public String getEmojiID() {
         return EmojiID;
     }
 
@@ -32,11 +33,11 @@ public class Item {
         return name;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public Type getMaterial() {
+    public Material getMaterial() {
         return material;
     }
 
@@ -44,7 +45,7 @@ public class Item {
         this.name = name;
     }
 
-    public void setMaterial(Type material) {
+    public void setMaterial(Material material) {
         this.material = material;
     }
 
@@ -58,24 +59,12 @@ public class Item {
 
     /* Constructor */
 
-    public Item(String name, Type type, int EmojiID, int id){
+    public Item(String name, Material material, Type type, String id) {
         this.name = name;
-        this.material = type;
-        this.EmojiID = EmojiID; // Ressource Utils
-        this.id = id; // UserID + (Concatenate) hash(this.material)
+        this.material = material;
+        this.type = type;
+        this.EmojiID = RessourceUtils.getEmojiIDFromType(type);
+        this.id = id;
     }
 
-    /*
-
-    En gros, l'utilisateur va faire sa commande : on va faire le choix random de tout ses ressources selon le type de son item
-
-    Wood = Stone/Coal
-    Stone = Stone/Coal/Iron
-    Iron = Stone/Coal/Iron/Gold/Diamond
-    Gold = Stone/Coal/Iron/Gold (et un truc en plus comme ça c'est rentable de l'avoir)
-    Diamond = Stone/Coal/Iron/Gold (et un truc en plus comme ça c'est rentable de l'avoir)
-
-    par exemple il a Wood Pickaxe : .Mine on va prendre 2 Stone et 1 Coal (donc stone = 1 BreakingSpeed et Coal = 3) donc (2*1 + 3*1) = 5 / Item.getGeneralSpeed()
-
-     */
 }

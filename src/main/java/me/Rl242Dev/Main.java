@@ -1,6 +1,6 @@
 package me.Rl242Dev;
 
-import me.Rl242Dev.classes.CommandHandler.MC.Mine;
+import me.Rl242Dev.CommandHandler.MC.MineHandler;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Activity;
@@ -23,16 +23,15 @@ Comments :
 @U = Main
 @E = Main code of the bot
 
-
  */
 
 public class Main {
 
     public static void main(String[] args) {
-        JDA bot = JDABuilder.createLight("MTEwNTg3NDEzNzcwMTk0MTMyMQ.GU7mHJ.rGfZPIg23IqXzFjZRpJuaZSvH5wxuMoRwvWce0", GatewayIntent.GUILD_MESSAGES, GatewayIntent.MESSAGE_CONTENT, GatewayIntent.GUILD_MEMBERS)
-                .setActivity(Activity.playing("Apprendre"))
+        JDA bot = JDABuilder.createLight("", GatewayIntent.GUILD_MESSAGES, GatewayIntent.MESSAGE_CONTENT, GatewayIntent.GUILD_MEMBERS)
+                .setActivity(Activity.playing("Getting build"))
                 .build();
 
-        bot.addEventListener(new Mine());
+        bot.addEventListener(new MineHandler());
     }
 }

@@ -1,4 +1,4 @@
-package me.Rl242Dev.classes.Items.Ressource.Ores;
+package me.Rl242Dev.Classes.Items.Ressource.Ores;
 
 /*
 
@@ -12,16 +12,16 @@ public class Stone {
 
     /* Attributes */
 
-    public static int price = 2;
-    public static float breakingSpeed = 0.3F;
+    private static int price = 2;
+    private static String EmojiID = "<:stone:1107294365463891998>";
 
     /* Methods*/
 
-    public static float getBreakingSpeed(){
-        return breakingSpeed;
-    }
-
     public static int getPrice(){
         return price;
+    }
+
+    public static String getEmojiID() {
+        return EmojiID;
     }
 }

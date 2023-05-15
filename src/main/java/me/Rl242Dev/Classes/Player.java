@@ -1,4 +1,4 @@
-package me.Rl242Dev.classes;
+package me.Rl242Dev.Classes;
 
 public class Player {
 }

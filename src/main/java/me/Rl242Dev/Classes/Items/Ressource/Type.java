@@ -1,9 +1,8 @@
-package me.Rl242Dev.classes.Items.Ressource;
+package me.Rl242Dev.Classes.Items.Ressource;
 
 public enum Type {
-    WOOD,
-    STONE,
-    IRON,
-    GOLD,
-    DIAMOND,
+    PICKAXE,
+    FISHING_ROD,
+    AXE,
+    SWORD,
 }

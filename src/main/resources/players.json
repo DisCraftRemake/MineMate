@@ -1,8 +1,19 @@
-{
-  "uuid" : 16156516542312478,
-  "pickaxe": {
-    "name" : "Test",
-    "material" : "Gold",
-    "id" : 161565165423124784
+[
+  {
+    "player": {
+      "uuid": "1068617036692992131",
+      "pickaxe": {
+        "name": "Test",
+        "material": "Gold",
+        "id": 10686170366929921314
+      },
+      "inventory": {
+        "stone": 0,
+        "coal": 0,
+        "iron": 0,
+        "gold": 0,
+        "diamond": 0
+      }
+    }
   }
-}
+]

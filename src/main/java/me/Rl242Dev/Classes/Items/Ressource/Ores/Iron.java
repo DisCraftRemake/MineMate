@@ -1,4 +1,4 @@
-package me.Rl242Dev.classes.Items.Ressource.Ores;
+package me.Rl242Dev.Classes.Items.Ressource.Ores;
 
 /*
 
@@ -12,16 +12,16 @@ public class Iron {
 
     /* Attributes */
 
-    public final static int price = 25;
-    public final static float breakingSpeed = 1.5F;
+    private final static int price = 25;
+    private final static String EmojiID = "<:iron:1107295865875480657>";
 
     /* Methods */
 
-    public static float getBreakingSpeed(){
-        return breakingSpeed;
-    }
-
     public static int getPrice(){
         return price;
+    }
+
+    public static String getEmojiID() {
+        return EmojiID;
     }
 }

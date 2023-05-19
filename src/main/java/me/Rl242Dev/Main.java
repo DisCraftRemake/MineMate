@@ -1,5 +1,6 @@
 package me.Rl242Dev;
 
+import me.Rl242Dev.CommandHandler.DS.StartHandler;
 import me.Rl242Dev.CommandHandler.MC.Actions.MineHandler;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
@@ -33,5 +34,6 @@ public class Main {
                 .build();
 
         bot.addEventListener(new MineHandler());
+        bot.addEventListener(new StartHandler());
     }
 }

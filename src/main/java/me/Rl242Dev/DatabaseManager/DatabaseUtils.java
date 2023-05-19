@@ -7,6 +7,7 @@ import me.Rl242Dev.Classes.Items.Ressource.RessourceUtils;
 import me.Rl242Dev.Classes.Items.Ressource.Type;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -95,6 +96,60 @@ public class DatabaseUtils {
                 writer.flush();
                 writer.close();
             }
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+    }
+
+    public static boolean UserExist(String UUID){
+        try  {
+            String jsonString = new String(Files.readAllBytes(Paths.get("src/main/resources/players.json")), StandardCharsets.UTF_8);
+
+            JSONObject json = new JSONObject(jsonString);
+
+            JSONObject players = json.getJSONObject("players");
+
+            if(players.has(UUID)){
+                return true;
+            }
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public static void RegisterUser(String UUID){
+        try {
+            String jsonString = new String(Files.readAllBytes(Paths.get("src/main/resources/players.json")), StandardCharsets.UTF_8);
+
+            JSONObject json = new JSONObject(jsonString);
+
+            JSONObject players = json.getJSONObject("players");
+
+            JSONObject player = new JSONObject();
+
+            JSONObject pickaxe = new JSONObject();
+            pickaxe.put("material", "Gold");
+            pickaxe.put("type", "Pickaxe");
+            pickaxe.put("id", UUID);
+
+            JSONObject resources = new JSONObject();
+            resources.put("stone", 0);
+            resources.put("coal", 0);
+            resources.put("iron", 0);
+            resources.put("gold", 0);
+            resources.put("diamond", 0);
+            resources.put("obsidian", 0);
+
+            player.put("pickaxe", pickaxe);
+            player.put("resources", resources);
+
+            players.put(UUID, player);
+            FileWriter writer = new FileWriter("src/main/resources/players.json");
+            writer.write(json.toString());
+            writer.flush();
+            writer.close();
+
         }catch (IOException e){
             e.printStackTrace();
         }

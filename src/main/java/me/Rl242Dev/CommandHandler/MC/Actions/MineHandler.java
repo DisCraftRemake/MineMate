@@ -64,7 +64,7 @@ public class MineHandler extends ListenerAdapter {
             description.append("<@");
             description.append(user.getId());
             description.append(">");
-            description.append("➔ You have mined using : ");
+            description.append(" ➔ You have mined using : ");
             description.append(pickaxe.getDisplayName());
 
             /* Embed */

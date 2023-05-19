@@ -1,6 +1,6 @@
 package me.Rl242Dev;
 
-import me.Rl242Dev.CommandHandler.MC.MineHandler;
+import me.Rl242Dev.CommandHandler.MC.Actions.MineHandler;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Activity;

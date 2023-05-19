@@ -59,8 +59,12 @@ public class Item {
 
     /* Constructor */
 
-    public Item(String name, Material material, Type type, String id) {
-        this.name = name;
+    public Item(Material material, Type type, String id) {
+        StringBuilder displayName = new StringBuilder();
+        displayName.append(RessourceUtils.getNameFromMaterial(material));
+        displayName.append(RessourceUtils.getNameFromType(type));
+
+        this.name = displayName.toString();
         this.material = material;
         this.type = type;
         this.EmojiID = RessourceUtils.getEmojiIDFromType(type);

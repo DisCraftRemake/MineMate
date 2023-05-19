@@ -1,12 +1,10 @@
 package me.Rl242Dev.Classes.Items.Ressource;
 
-import jdk.jshell.execution.Util;
 import me.Rl242Dev.Classes.Items.Ressource.Ores.Ores;
 import me.Rl242Dev.Utils;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Random;
 
 /*
 
@@ -23,34 +21,49 @@ public class RessourceUtils {
             case SWORD -> "<:sword:1107339351324643388>";
             case PICKAXE -> "<:pickaxe:1107341471725649990>";
             case AXE -> "Not Yet";
-            case FISHING_ROD -> "Not Yet";
         };
         return EmojiID;
     }
 
+    public static String getNameFromMaterial(Material material){
+        String displayName = switch (material){
+            case WOOD -> "Wooden ";
+            case STONE -> "Stone ";
+            case GOLD -> "Gold ";
+            case IRON -> "Iron ";
+            case DIAMOND -> "Diamond ";
+        };
+        return displayName;
+    }
 
+    public static String getNameFromType(Type type){
+        String displayName = switch (type){
+            case PICKAXE -> "Pickaxe";
+            case AXE -> "Axe";
+            case SWORD -> "Sword";
+        };
+        return displayName;
+    }
 
-    public static Material getTypeFromString(String str) {
-        Material type;
-        switch (str) {
-            case "Wood":
-                type = Material.WOOD;
-                break;
-            case "Stone":
-                type = Material.STONE;
-                break;
-            case "Iron":
-                type = Material.IRON;
-                break;
-            case "Gold":
-                type = Material.GOLD;
-                break;
-            case "Diamond":
-                type = Material.DIAMOND;
-                break;
-            default:
-                throw new IllegalArgumentException("Invalid type: " + str);
-        }
+    public static Material getMaterialFromString(String str) {
+        Material type = switch (str) {
+            case "Wood" -> Material.WOOD;
+            case "Stone" -> Material.STONE;
+            case "Iron" -> Material.IRON;
+            case "Gold" -> Material.GOLD;
+            case "Diamond" -> Material.DIAMOND;
+            default -> throw new IllegalArgumentException("Invalid type: " + str);
+        };
+        return type;
+    }
+
+    public static Type getTypeFromString(String str){
+        Type type = switch (str){
+            case "Pickaxe" -> Type.PICKAXE;
+            case "Sword" -> Type.SWORD;
+            case "Axe" -> Type.AXE;
+            default -> throw new IllegalArgumentException("Invalid type: " + str);
+        };
         return type;
     }
 

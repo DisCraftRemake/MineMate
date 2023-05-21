@@ -1,5 +1,6 @@
 package me.Rl242Dev.Classes.Items.Ressource;
 
+import me.Rl242Dev.Classes.Items.Ressource.Harvest.Crops;
 import me.Rl242Dev.Classes.Items.Ressource.Ores.Ores;
 import me.Rl242Dev.Utils;
 
@@ -20,10 +21,17 @@ public class RessourceUtils {
         String EmojiID = switch (type){
             case SWORD -> "<:sword:1107339351324643388>";
             case PICKAXE -> "<:pickaxe:1107341471725649990>";
-            case AXE -> "Not Yet";
+            case HOE -> "<:hoe:1109429828454723637>";
         };
         return EmojiID;
     }
+
+    /*
+    public static int getOrePriceFromString(String str){
+
+    }
+
+     */
 
     public static String getNameFromMaterial(Material material){
         String displayName = switch (material){
@@ -39,7 +47,7 @@ public class RessourceUtils {
     public static String getNameFromType(Type type){
         String displayName = switch (type){
             case PICKAXE -> "Pickaxe";
-            case AXE -> "Axe";
+            case HOE -> "Hoe";
             case SWORD -> "Sword";
         };
         return displayName;
@@ -61,7 +69,7 @@ public class RessourceUtils {
         Type type = switch (str){
             case "Pickaxe" -> Type.PICKAXE;
             case "Sword" -> Type.SWORD;
-            case "Axe" -> Type.AXE;
+            case "Hoe" -> Type.HOE;
             default -> throw new IllegalArgumentException("Invalid type: " + str);
         };
         return type;
@@ -69,71 +77,91 @@ public class RessourceUtils {
 
 
     /* Ressource generation*/
-    public static Map<Ores, Integer> getRessourceForPickaxe(Material material){
+
+    public static Map<Ores, Integer> getResourceForPickaxe(Material material){
         Map<Ores, Integer> ressources = new HashMap<Ores, Integer>();
 
         switch (material){
             case WOOD :
-                int stoneAmountWood = Utils.getRandomNumberInRange(1, 7);
-                int coalAmoutWood = Utils.getRandomNumberInRange(1,4);
-
-                ressources.put(Ores.STONE, stoneAmountWood);
-                ressources.put(Ores.COAL, coalAmoutWood);
+                ressources.put(Ores.STONE, Utils.getRandomNumberInRange(1, 7));
+                ressources.put(Ores.COAL, Utils.getRandomNumberInRange(1,4));
                 ressources.put(Ores.IRON, 0);
                 ressources.put(Ores.GOLD, 0);
                 ressources.put(Ores.DIAMOND, 0);
                 ressources.put(Ores.OBSIDIAN, 0);
                 break;
             case STONE:
-                int stoneAmountStone = Utils.getRandomNumberInRange(4, 9);
-                int coalAmoutStone = Utils.getRandomNumberInRange(2,6);
-                int ironAmoutStone = Utils.getRandomNumberInRange(1,3);
-
-                ressources.put(Ores.STONE, stoneAmountStone);
-                ressources.put(Ores.COAL, coalAmoutStone);
-                ressources.put(Ores.IRON, ironAmoutStone);
+                ressources.put(Ores.STONE, Utils.getRandomNumberInRange(4, 9));
+                ressources.put(Ores.COAL, Utils.getRandomNumberInRange(2,6));
+                ressources.put(Ores.IRON, Utils.getRandomNumberInRange(1,3));
                 ressources.put(Ores.GOLD, 0);
                 ressources.put(Ores.DIAMOND, 0);
                 ressources.put(Ores.OBSIDIAN, 0);
                 break;
             case IRON:
-                int coalAmoutIron = Utils.getRandomNumberInRange(7,12);
-                int ironAmoutIron = Utils.getRandomNumberInRange(4, 8);
-                int goldAmoutIron = Utils.getRandomNumberInRange(2, 5);
-
                 ressources.put(Ores.STONE, 0);
-                ressources.put(Ores.COAL, coalAmoutIron);
-                ressources.put(Ores.IRON, ironAmoutIron);
-                ressources.put(Ores.GOLD, goldAmoutIron);
+                ressources.put(Ores.COAL, Utils.getRandomNumberInRange(7,12));
+                ressources.put(Ores.IRON, Utils.getRandomNumberInRange(4, 8));
+                ressources.put(Ores.GOLD, Utils.getRandomNumberInRange(2, 5));
                 ressources.put(Ores.DIAMOND, 0);
                 ressources.put(Ores.OBSIDIAN, 0);
                 break;
             case GOLD:
-                int ironAmoutGold = Utils.getRandomNumberInRange(8, 13);
-                int goldAmoutGold = Utils.getRandomNumberInRange(6, 11);
-                int diamondAmoutGold = Utils.getRandomNumberInRange(0, 3);
-
                 ressources.put(Ores.STONE, 0);
                 ressources.put(Ores.COAL, 0);
-                ressources.put(Ores.IRON, ironAmoutGold);
-                ressources.put(Ores.GOLD, goldAmoutGold);
-                ressources.put(Ores.DIAMOND, diamondAmoutGold);
+                ressources.put(Ores.IRON, Utils.getRandomNumberInRange(8, 13));
+                ressources.put(Ores.GOLD, Utils.getRandomNumberInRange(6, 11));
+                ressources.put(Ores.DIAMOND, Utils.getRandomNumberInRange(0, 3));
                 ressources.put(Ores.OBSIDIAN, 0);
                 break;
 
             case DIAMOND:
-                int goldAmoutDiamond = Utils.getRandomNumberInRange(11, 24);
-                int diamondAmoutDiamond = Utils.getRandomNumberInRange(3, 7);
-                int obsidianAmoutDiamond = Utils.getRandomNumberInRange(0,2);
-
                 ressources.put(Ores.STONE, 0);
                 ressources.put(Ores.COAL, 0);
                 ressources.put(Ores.IRON, 0);
-                ressources.put(Ores.GOLD, goldAmoutDiamond);
-                ressources.put(Ores.DIAMOND, diamondAmoutDiamond);
-                ressources.put(Ores.OBSIDIAN, obsidianAmoutDiamond);
+                ressources.put(Ores.GOLD, Utils.getRandomNumberInRange(11, 24));
+                ressources.put(Ores.DIAMOND, Utils.getRandomNumberInRange(3, 7));
+                ressources.put(Ores.OBSIDIAN, Utils.getRandomNumberInRange(0,2));
                 break;
         }
         return ressources;
+    }
+
+    public static Map<Crops, Integer> getResourcesForHoe(Material material){
+        Map<Crops, Integer> resources = new HashMap<Crops, Integer>();
+
+        switch (material){
+            case WOOD:
+                resources.put(Crops.WHEAT, Utils.getRandomNumberInRange(1,6));
+                resources.put(Crops.POTATO, 0);
+                resources.put(Crops.CARROT, 0);
+                resources.put(Crops.SUGARCANE, 0);
+                break;
+            case STONE:
+                resources.put(Crops.WHEAT, Utils.getRandomNumberInRange(3, 9));
+                resources.put(Crops.POTATO, Utils.getRandomNumberInRange(1, 5));
+                resources.put(Crops.CARROT, 0);
+                resources.put(Crops.SUGARCANE, 0);
+                break;
+            case IRON:
+                resources.put(Crops.WHEAT, 0);
+                resources.put(Crops.POTATO, Utils.getRandomNumberInRange(4, 10));
+                resources.put(Crops.CARROT, Utils.getRandomNumberInRange(1, 7));
+                resources.put(Crops.SUGARCANE, 0);
+                break;
+            case GOLD:
+                resources.put(Crops.WHEAT, 0);
+                resources.put(Crops.POTATO, Utils.getRandomNumberInRange(12, 23));
+                resources.put(Crops.CARROT, Utils.getRandomNumberInRange(5, 12));
+                resources.put(Crops.SUGARCANE, 0);
+                break;
+            case DIAMOND:
+                resources.put(Crops.WHEAT, 0);
+                resources.put(Crops.POTATO, 0);
+                resources.put(Crops.CARROT, Utils.getRandomNumberInRange(10, 17));
+                resources.put(Crops.SUGARCANE, Utils.getRandomNumberInRange(0,3));
+                break;
+        }
+        return resources;
     }
 }

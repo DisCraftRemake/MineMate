@@ -1,6 +1,8 @@
 package me.Rl242Dev.CommandHandler.DS;
 
+import me.Rl242Dev.Classes.Items.Ressource.Ores.Ores;
 import me.Rl242Dev.DatabaseManager.DatabaseUtils;
+import me.Rl242Dev.Utils;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.User;
@@ -10,8 +12,9 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 import java.awt.*;
 import java.time.Instant;
+import java.util.Map;
 
-public class StartHandler extends ListenerAdapter {
+public class SellHandler extends ListenerAdapter {
 
     @Override
     public void onMessageReceived(MessageReceivedEvent event){
@@ -24,28 +27,37 @@ public class StartHandler extends ListenerAdapter {
         Message message = event.getMessage();
         MessageChannelUnion channel = event.getChannel();
 
-        if(message.getContentRaw().equals(".start")){
-            if(!DatabaseUtils.UserExist(uuid)){
-                DatabaseUtils.RegisterUser(uuid);
-            }else {
+        if(message.getContentRaw().equals(".sell")){
+            String[] args = message.getContentRaw().split(" ");
+            if(args.length != 2){
                 EmbedBuilder embedBuilder = new EmbedBuilder();
-                StringBuilder description = new StringBuilder();
+                StringBuilder stringBuilder = new StringBuilder();
 
-                description.append("<@");
-                description.append(user.getId());
-                description.append(">");
-                description.append(" ➔ You already have started an adventure. Help : .help");
+                stringBuilder.append("<@");
+                stringBuilder.append(user.getId());
+                stringBuilder.append(">");
+                stringBuilder.append(" ➔ You must specify an ore or sell all : .sell [Ore] | .sell all");
 
-                embedBuilder.setTitle("<:pickaxe:1107341471725649990> Start Action");
                 embedBuilder.setColor(Color.green);
-
-                embedBuilder.setDescription(description.toString());
+                embedBuilder.setTitle("<:emerald:1107339353727979652> Sell Action");
+                embedBuilder.setDescription(stringBuilder.toString());
 
                 embedBuilder.setTimestamp(Instant.now());
                 embedBuilder.setFooter("DisCraft");
 
                 channel.sendMessageEmbeds(embedBuilder.build()).queue();
             }
+            try {
+                if(args[1].equals("all")){
+                    Map<Ores, Integer> resources = DatabaseUtils.GetRessourcesFromUUID(uuid);
+
+
+                }
+            }catch (IndexOutOfBoundsException e){
+                e.printStackTrace();
+            }
+
+
         }
     }
 }

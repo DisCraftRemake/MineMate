@@ -18,7 +18,6 @@ public class Item {
 
     private String name;
     private Material material;
-    private int generalSpeed;
     private final Type type;
     private final String id;
     private final String EmojiID;
@@ -47,14 +46,6 @@ public class Item {
 
     public void setMaterial(Material material) {
         this.material = material;
-    }
-
-    public int getGeneralSpeed() {
-        return generalSpeed;
-    }
-
-    public void setGeneralSpeed(int generalSpeed) {
-        this.generalSpeed = generalSpeed;
     }
 
     /* Constructor */

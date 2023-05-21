@@ -1,10 +1,8 @@
 package me.Rl242Dev.CommandHandler.MC.Actions;
 
 import me.Rl242Dev.Classes.Items.Item;
-import me.Rl242Dev.Classes.Items.Ressource.Material;
 import me.Rl242Dev.Classes.Items.Ressource.Ores.*;
 import me.Rl242Dev.Classes.Items.Ressource.RessourceUtils;
-import me.Rl242Dev.Classes.Items.Ressource.Type;
 import me.Rl242Dev.DatabaseManager.DatabaseUtils;
 import me.Rl242Dev.Utils;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -15,7 +13,6 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 import java.awt.*;
-import java.sql.SQLException;
 import java.time.Instant;
 import java.util.Map;
 
@@ -29,6 +26,7 @@ TODO:
  Pet luck (More luck to have obisidian and diamond), Pet quantity (More Item when mining (Iron, Gold), Pet Selling (Price = More)
  Store ressources to database
  Fix Query for user pickaxe
+
  */
 
 public class MineHandler extends ListenerAdapter {
@@ -58,14 +56,14 @@ public class MineHandler extends ListenerAdapter {
             }
 
             /* Generate Ores*/
-            Map<Ores, Integer> resources = RessourceUtils.getRessourceForPickaxe(pickaxe.getMaterial());
+            Map<Ores, Integer> resources = RessourceUtils.getResourceForPickaxe(pickaxe.getMaterial());
 
             /* Description */
             description.append("<@");
             description.append(user.getId());
             description.append(">");
-            description.append("➔ You have mined using : ");
-            description.append(pickaxe.getDisplayName());
+            description.append(" ➔ You have mined using : ");
+            description.append(pickaxe.getEmojiID()).append(" ").append(pickaxe.getDisplayName());
 
             /* Embed */
 
@@ -86,7 +84,7 @@ public class MineHandler extends ListenerAdapter {
 
             channel.sendMessageEmbeds(embedBuilder.build()).queue();
 
-            DatabaseUtils.SaveResourcesToUUID(uuid, resources);
+            DatabaseUtils.SaveOresToUUID(uuid, resources);
         }
     }
 }

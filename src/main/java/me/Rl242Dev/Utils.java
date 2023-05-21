@@ -16,29 +16,13 @@ import java.util.Random;
 
 public class Utils {
 
-    /*
-
-    public static int GenerateUUID(int UserID, Type Pickaxetype){
-
-        StringBuilder uuidString = new StringBuilder();
-        uuidString.append(Integer.toString(UserID));
-
-        int TypeInt = switch (Pickaxetype){
-            case WOOD -> 1;
-            case STONE -> 2;
-            case IRON -> 3;
-            case GOLD -> 4;
-            case DIAMOND -> 5;
-        };
-
-        uuidString.append(TypeInt);
-        int uuid = Integer.parseInt(uuidString.toString());
-
-        return uuid;
+    public static int hash(String str){
+        int hash = 7;
+        for(int i = 0; i < str.length(); i++){
+            hash = hash*31 + str.charAt(i);
+        }
+        return hash;
     }
-
-
-     */
 
     /* Utils */
 

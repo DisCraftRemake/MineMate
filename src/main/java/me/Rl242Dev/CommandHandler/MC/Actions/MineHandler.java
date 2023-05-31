@@ -2,7 +2,9 @@ package me.Rl242Dev.CommandHandler.MC.Actions;
 
 import me.Rl242Dev.Classes.Items.Item;
 import me.Rl242Dev.Classes.Items.Ressource.Ores.*;
-import me.Rl242Dev.Classes.Items.Ressource.RessourceUtils;
+import me.Rl242Dev.Classes.Items.Ressource.ResourceUtils;
+import me.Rl242Dev.Classes.Player;
+import me.Rl242Dev.Classes.Utils.Emoji;
 import me.Rl242Dev.DatabaseManager.DatabaseUtils;
 import me.Rl242Dev.Utils;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -39,14 +41,16 @@ public class MineHandler extends ListenerAdapter {
             return;
         }
 
+        Player player = new Player(uuid);
+
         Message message = event.getMessage();
-        if(message.getContentRaw().equals(".mine")){
+        if(message.getContentRaw().equals(".mine") || message.getContentRaw().equals(".m")){
             MessageChannelUnion channel = event.getChannel();
             StringBuilder description = new StringBuilder();
 
             /* Retrieve Pickaxe */
 
-            Item pickaxe = DatabaseUtils.getPickaxeFromUUID(uuid);
+            Item pickaxe = player.getPickaxe();
 
             /* Handle null pickaxe */
 
@@ -56,7 +60,7 @@ public class MineHandler extends ListenerAdapter {
             }
 
             /* Generate Ores*/
-            Map<Ores, Integer> resources = RessourceUtils.getResourceForPickaxe(pickaxe.getMaterial());
+            Map<Ores, Integer> resources = ResourceUtils.getResourceForPickaxe(pickaxe.getMaterial());
 
             /* Description */
             description.append("<@");
@@ -69,7 +73,7 @@ public class MineHandler extends ListenerAdapter {
 
             EmbedBuilder embedBuilder = new EmbedBuilder();
             embedBuilder.setColor(Color.green);
-            embedBuilder.setTitle("<:pickaxe:1107341471725649990> Mining action");
+            embedBuilder.setTitle(Emoji.getPickaxeEmoji() + " Mining action");
             embedBuilder.setDescription(description.toString());
 
             embedBuilder.addField(Stone.getEmojiID(), Utils.IntToString(resources.get(Ores.STONE)), true);

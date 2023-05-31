@@ -1,7 +1,7 @@
 package me.Rl242Dev.Classes.Items;
 
 import me.Rl242Dev.Classes.Items.Ressource.Material;
-import me.Rl242Dev.Classes.Items.Ressource.RessourceUtils;
+import me.Rl242Dev.Classes.Items.Ressource.ResourceUtils;
 import me.Rl242Dev.Classes.Items.Ressource.Type;
 
 /*
@@ -21,6 +21,7 @@ public class Item {
     private final Type type;
     private final String id;
     private final String EmojiID;
+    private final int SellPrice;
 
     /* Methods */
 
@@ -48,18 +49,25 @@ public class Item {
         this.material = material;
     }
 
+    public Type getType() {
+        return type;
+    }
+
+    public int getSellPrice() {
+        return SellPrice;
+    }
+
     /* Constructor */
 
     public Item(Material material, Type type, String id) {
-        StringBuilder displayName = new StringBuilder();
-        displayName.append(RessourceUtils.getNameFromMaterial(material));
-        displayName.append(RessourceUtils.getNameFromType(type));
+        String displayName = ResourceUtils.getNameFromMaterial(material) + ResourceUtils.getNameFromType(type);
 
-        this.name = displayName.toString();
+        this.name = displayName;
         this.material = material;
         this.type = type;
-        this.EmojiID = RessourceUtils.getEmojiIDFromType(type);
+        this.EmojiID = ResourceUtils.getEmojiIDFromType(type);
         this.id = id;
+        this.SellPrice = ResourceUtils.getItemPriceFromMaterial(material);
     }
 
 }

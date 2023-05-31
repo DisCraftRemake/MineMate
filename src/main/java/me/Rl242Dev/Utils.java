@@ -1,5 +1,6 @@
 package me.Rl242Dev;
 
+import me.Rl242Dev.Classes.Items.Ressource.Resources;
 import net.dv8tion.jda.api.EmbedBuilder;
 
 import java.awt.*;
@@ -16,6 +17,8 @@ import java.util.Random;
 
 public class Utils {
 
+    /* Private Hadh Util*/
+
     public static int hash(String str){
         int hash = 7;
         for(int i = 0; i < str.length(); i++){
@@ -25,6 +28,15 @@ public class Utils {
     }
 
     /* Utils */
+
+    public static boolean ResourcesEnumContainsString(String str){
+        for(Resources resources : Resources.values()){
+            if (resources.name().equals(str)){
+                return true;
+            }
+        }
+        return false;
+    }
 
     public static String IntToString(int integer){
         return Integer.toString(integer);

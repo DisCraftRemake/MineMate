@@ -1,7 +1,9 @@
 package me.Rl242Dev;
 
-import me.Rl242Dev.CommandHandler.DS.SellHandler;
+import me.Rl242Dev.CommandHandler.DS.Shop.SellHandler;
+import me.Rl242Dev.CommandHandler.DS.Shop.ShopDisplayHandler;
 import me.Rl242Dev.CommandHandler.DS.StartHandler;
+import me.Rl242Dev.CommandHandler.DS.UtilsHandler;
 import me.Rl242Dev.CommandHandler.MC.Actions.HarvestHandler;
 import me.Rl242Dev.CommandHandler.MC.Actions.MineHandler;
 import net.dv8tion.jda.api.JDA;
@@ -38,6 +40,8 @@ public class Main {
         bot.addEventListener(new MineHandler());
         bot.addEventListener(new StartHandler());
         bot.addEventListener(new HarvestHandler());
-        // bot.addEventListener(new SellHandler());
+        bot.addEventListener(new UtilsHandler());
+        bot.addEventListener(new SellHandler());
+        bot.addEventListener(new ShopDisplayHandler());
     }
 }

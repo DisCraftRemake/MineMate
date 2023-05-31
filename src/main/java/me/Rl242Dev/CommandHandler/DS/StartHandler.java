@@ -27,6 +27,23 @@ public class StartHandler extends ListenerAdapter {
         if(message.getContentRaw().equals(".start")){
             if(!DatabaseUtils.UserExist(uuid)){
                 DatabaseUtils.RegisterUser(uuid);
+
+                EmbedBuilder embedBuilder = new EmbedBuilder();
+                StringBuilder description = new StringBuilder();
+
+                description.append("<@");
+                description.append(user.getId());
+                description.append(">");
+                description.append(" ➔ You have started an adventure, Good Luck. Help : .help");
+
+                embedBuilder.setTitle("<:pickaxe:1107341471725649990> Start Action");
+                embedBuilder.setColor(Color.green);
+                embedBuilder.setDescription(description.toString());
+
+                embedBuilder.setTimestamp(Instant.now());
+                embedBuilder.setFooter("DisCraft");
+
+                channel.sendMessageEmbeds(embedBuilder.build()).queue();
             }else {
                 EmbedBuilder embedBuilder = new EmbedBuilder();
                 StringBuilder description = new StringBuilder();

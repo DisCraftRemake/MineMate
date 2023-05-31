@@ -2,8 +2,12 @@ package me.Rl242Dev.Classes.Items.Ressource;
 
 import me.Rl242Dev.Classes.Items.Ressource.Harvest.Crops;
 import me.Rl242Dev.Classes.Items.Ressource.Ores.Ores;
+import me.Rl242Dev.Classes.Utils.Emoji;
 import me.Rl242Dev.Utils;
 
+import java.io.IOException;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -15,23 +19,54 @@ import java.util.Map;
 
  */
 
-public class RessourceUtils {
+public class ResourceUtils {
 
     public static String getEmojiIDFromType(Type type){
         String EmojiID = switch (type){
-            case SWORD -> "<:sword:1107339351324643388>";
-            case PICKAXE -> "<:pickaxe:1107341471725649990>";
-            case HOE -> "<:hoe:1109429828454723637>";
+            case SWORD -> Emoji.getSwordEmoji();
+            case PICKAXE -> Emoji.getPickaxeEmoji();
+            case HOE -> Emoji.getHoeEmoji();
         };
         return EmojiID;
     }
 
-    /*
-    public static int getOrePriceFromString(String str){
-
+    public static int getPriceFromString(String str){
+        int price = switch (str.toUpperCase()){
+            case "STONE" -> 2;
+            case "COAL" -> 10;
+            case "IRON" -> 25;
+            case "GOLD" -> 50;
+            case "DIAMOND" -> 100;
+            case "OBSIDIAN" -> 200;
+            case "WHEAT" -> 10;
+            case "POTATO" -> 20;
+            case "CARROT" -> 30;
+            case "SUGARCANE" -> 50;
+            default -> throw new IllegalArgumentException("Invalid type: " + str);
+        };
+        return price;
     }
 
-     */
+    public static int getItemPriceFromMaterial(Material material){
+        int price = switch (material){
+            case WOOD -> 100;
+            case STONE -> 10_000;
+            case IRON -> 100_000;
+            case GOLD -> 1_000_000;
+            case DIAMOND -> 10_000_000;
+        };
+        return price;
+    }
+
+    public static String PriceToString(int price){
+        String pattern = "###,###,###";
+        DecimalFormatSymbols symbols = new DecimalFormatSymbols();
+        symbols.setGroupingSeparator(' ');
+        DecimalFormat decimalFormat = new DecimalFormat(pattern, symbols);
+
+        String format = decimalFormat.format(price);
+        return format;
+    }
 
     public static String getNameFromMaterial(Material material){
         String displayName = switch (material){

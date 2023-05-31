@@ -2,8 +2,9 @@ package me.Rl242Dev.CommandHandler.MC.Actions;
 
 import me.Rl242Dev.Classes.Items.Item;
 import me.Rl242Dev.Classes.Items.Ressource.Harvest.*;
-import me.Rl242Dev.Classes.Items.Ressource.Ores.Ores;
-import me.Rl242Dev.Classes.Items.Ressource.RessourceUtils;
+import me.Rl242Dev.Classes.Items.Ressource.ResourceUtils;
+import me.Rl242Dev.Classes.Player;
+import me.Rl242Dev.Classes.Utils.Emoji;
 import me.Rl242Dev.DatabaseManager.DatabaseUtils;
 import me.Rl242Dev.Utils;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -35,22 +36,24 @@ public class HarvestHandler extends ListenerAdapter {
             return;
         }
 
+        Player player = new Player(uuid);
+
 
         Message message = event.getMessage();
-        if(message.getContentRaw().equals(".harvest")){
+        if(message.getContentRaw().equals(".harvest") || message.getContentRaw().equals(".h")){
             MessageChannelUnion channel = event.getChannel();
             EmbedBuilder embedBuilder = new EmbedBuilder();
             StringBuilder stringBuilder = new StringBuilder();
 
             /* Retrieve Hoe */
-            Item hoe = DatabaseUtils.getHoeFromUUID(uuid);
+            Item hoe = player.getHoe();
 
             if(hoe == null){
                 channel.sendMessageEmbeds(Utils.StartErrorEmbed(user.getId()).build()).queue();
                 return;
             }
 
-            Map<Crops, Integer> resources = RessourceUtils.getResourcesForHoe(hoe.getMaterial());
+            Map<Crops, Integer> resources = ResourceUtils.getResourcesForHoe(hoe.getMaterial());
 
             stringBuilder.append("<@");
             stringBuilder.append(user.getId());
@@ -58,7 +61,7 @@ public class HarvestHandler extends ListenerAdapter {
             stringBuilder.append(" ➔ You have mined using : ");
             stringBuilder.append(hoe.getEmojiID()).append(" ").append(hoe.getDisplayName());
 
-            embedBuilder.setTitle("<:hoe:1109429828454723637> Harvesting Action");
+            embedBuilder.setTitle(Emoji.getHoeEmoji() + " Harvesting Action");
             embedBuilder.setColor(Color.green);
             embedBuilder.setDescription(stringBuilder.toString());
 

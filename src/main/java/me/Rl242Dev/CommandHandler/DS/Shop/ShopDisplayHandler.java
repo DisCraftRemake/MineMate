@@ -23,7 +23,7 @@ public class ShopDisplayHandler extends ListenerAdapter {
     @Override
     public void onMessageReceived(MessageReceivedEvent event){
         User user = event.getAuthor();
-        String uuid = user.getId();
+
         if (user.equals(event.getJDA().getSelfUser())){
             return;
         }
@@ -96,16 +96,6 @@ public class ShopDisplayHandler extends ListenerAdapter {
 
                 channel.sendMessageEmbeds(embedBuilder.build()).queue();
             }
-
-            /*
-
-            Items :
-
-                **Pickaxes : ** | Stone (10000 Coins) | false
-
-            Pets :
-
-             */
         }
     }
 }

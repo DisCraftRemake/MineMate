@@ -71,8 +71,6 @@ public class DatabaseUtils {
         return 0;
     }
 
-
-
     public static Item getHoeFromUUID(String UUID){
         try {
             String jsonString = new String(Files.readAllBytes(Paths.get("src/main/resources/players.json")), StandardCharsets.UTF_8);
@@ -231,6 +229,34 @@ public class DatabaseUtils {
         }
     }
 
+    public static void RemoveBalanceToUUID(String UUID, int balance){
+        try {
+            String jsonString = new String(Files.readAllBytes(Paths.get("src/main/resources/players.json")), StandardCharsets.UTF_8);
+
+            JSONObject json = new JSONObject(jsonString);
+
+            JSONObject players = json.getJSONObject("players");
+
+            if(players.has(UUID)){
+                JSONObject player = players.getJSONObject(UUID);
+
+                int UserBalance = player.getInt("balance");
+
+                /* Write data */
+                player.remove("balance");
+
+                player.put("balance", UserBalance - balance);
+
+                FileWriter writer = new FileWriter("src/main/resources/players.json" ,false);
+                writer.write(json.toString());
+                writer.flush();
+                writer.close();
+            }
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+    }
+
     public static void SaveCropsToUUID(String UUID, Map<Crops, Integer> ressourcesMap){
         try {
             String jsonString = new String(Files.readAllBytes(Paths.get("src/main/resources/players.json")), StandardCharsets.UTF_8);
@@ -309,39 +335,6 @@ public class DatabaseUtils {
 
             JSONObject player = new JSONObject();
 
-            JSONObject pickaxe = new JSONObject();
-            pickaxe.put("material", "Wood");
-            pickaxe.put("type", "Pickaxe");
-            pickaxe.put("id", UUID + Utils.IntToString(Utils.hash("Pickaxe")));
-
-            JSONObject hoe = new JSONObject();
-            hoe.put("material", "Wood");
-            hoe.put("type", "Hoe");
-            hoe.put("id", UUID + Utils.IntToString(Utils.hash("Hoe")));
-
-            JSONObject sword = new JSONObject();
-            sword.put("material", "Wood");
-            sword.put("type", "Sword");
-            sword.put("id", UUID + Utils.IntToString(Utils.hash("Sword")));
-
-            JSONObject resources = new JSONObject();
-            resources.put("stone", 0);
-            resources.put("coal", 0);
-            resources.put("iron", 0);
-            resources.put("gold", 0);
-            resources.put("diamond", 0);
-            resources.put("obsidian", 0);
-            resources.put("wheat", 0);
-            resources.put("potato", 0);
-            resources.put("carrot", 0);
-            resources.put("sugar_cane", 0);
-
-            player.put("pickaxe", pickaxe);
-            player.put("resources", resources);
-            player.put("hoe", hoe);
-            player.put("sword", sword);
-            player.put("balance", 0);
-            player.put("level", 0);
 
             players.put(UUID, player);
             FileWriter writer = new FileWriter("src/main/resources/players.json");
@@ -349,6 +342,31 @@ public class DatabaseUtils {
             writer.flush();
             writer.close();
 
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+    }
+
+    public static void saveLevelToUUID(String UUID, int level){
+        try {
+            String jsonString = new String(Files.readAllBytes(Paths.get("src/main/resources/players.json")), StandardCharsets.UTF_8);
+
+            JSONObject json = new JSONObject(jsonString);
+
+            JSONObject players = json.getJSONObject("players");
+
+            if (players.has(UUID)) {
+                JSONObject player = players.getJSONObject(UUID);
+
+                player.remove("level");
+
+                player.put("level", level);
+
+                FileWriter writer = new FileWriter("src/main/resources/players.json");
+                writer.write(json.toString());
+                writer.flush();
+                writer.close();
+            }
         }catch (IOException e){
             e.printStackTrace();
         }

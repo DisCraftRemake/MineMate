@@ -1,5 +1,6 @@
 package me.Rl242Dev;
 
+import me.Rl242Dev.CommandHandler.DS.LevelHandler;
 import me.Rl242Dev.CommandHandler.DS.Shop.SellHandler;
 import me.Rl242Dev.CommandHandler.DS.Shop.ShopDisplayHandler;
 import me.Rl242Dev.CommandHandler.DS.StartHandler;
@@ -43,5 +44,6 @@ public class Main {
         bot.addEventListener(new UtilsHandler());
         bot.addEventListener(new SellHandler());
         bot.addEventListener(new ShopDisplayHandler());
+        bot.addEventListener(new LevelHandler());
     }
 }

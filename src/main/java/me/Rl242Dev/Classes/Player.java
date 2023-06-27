@@ -10,7 +10,7 @@ package me.Rl242Dev.Classes;
 
 import me.Rl242Dev.Classes.Entity.Pets.Pets;
 import me.Rl242Dev.Classes.Items.Item;
-import me.Rl242Dev.Classes.Levels.RankUtils;
+import me.Rl242Dev.Classes.Levels.RanksUtils;
 import me.Rl242Dev.DatabaseManager.DatabaseUtils;
 
 public class Player {
@@ -72,7 +72,7 @@ public class Player {
         this.balance = DatabaseUtils.GetBalanceFromUUID(UUID);
 
         this.level = DatabaseUtils.getLevelFromUUID(UUID);
-        this.rank = RankUtils.EnumToString(RankUtils.GetRankFromLevel(this.level));
+        this.rank = RanksUtils.EnumToString(RanksUtils.GetRankFromLevel(this.level));
 
         this.uuid = UUID;
     }

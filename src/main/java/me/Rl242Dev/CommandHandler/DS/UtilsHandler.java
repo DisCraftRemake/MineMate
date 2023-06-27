@@ -1,8 +1,10 @@
 package me.Rl242Dev.CommandHandler.DS;
 
+import me.Rl242Dev.Classes.Items.Ressource.ResourceUtils;
 import me.Rl242Dev.Classes.Utils.Coin;
 import me.Rl242Dev.Classes.Player;
 import me.Rl242Dev.Classes.Utils.Emoji;
+import me.Rl242Dev.DatabaseManager.DatabaseUtils;
 import me.Rl242Dev.Utils;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
@@ -64,7 +66,7 @@ public class UtilsHandler extends ListenerAdapter {
 
             embedBuilder.setDescription(stringBuilder.toString());
 
-            embedBuilder.addField(Coin.getEmojiID() + " **Balance** :", Utils.IntToString(player.getBalance()),false);
+            embedBuilder.addField(Coin.getEmojiID() + " **Balance** :", ResourceUtils.PriceToString(player.getBalance()),false);
             embedBuilder.addField(Emoji.getXpEmoji() + " **Level** :", Utils.IntToString(player.getLevel()), false);
             embedBuilder.addField(Emoji.getNametagEmoji() + " **Rank** :", player.getRank(), false);
 

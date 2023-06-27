@@ -1,6 +1,6 @@
 package me.Rl242Dev.Classes.Levels;
 
-public class RankUtils {
+public class RanksUtils {
 
     public static Ranks GetRankFromLevel(int level)
     {
@@ -57,5 +57,9 @@ public class RankUtils {
             }
         }
         return null;
+    }
+
+    public static int getPriceForLevelUp(int level){
+        return 100000 * level;
     }
 }

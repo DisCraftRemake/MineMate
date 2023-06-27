@@ -49,11 +49,11 @@ public class ResourceUtils {
 
     public static int getItemPriceFromMaterial(Material material){
         int price = switch (material){
-            case WOOD -> 100;
-            case STONE -> 10_000;
-            case IRON -> 100_000;
-            case GOLD -> 1_000_000;
-            case DIAMOND -> 10_000_000;
+            case WOOD -> 1_000;
+            case STONE -> 100_000;
+            case IRON -> 1_000_000;
+            case GOLD -> 10_000_000;
+            case DIAMOND -> 100_000_000;
         };
         return price;
     }

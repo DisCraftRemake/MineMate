@@ -7,7 +7,6 @@ import java.util.List;
 
 import me.Rl242Dev.Classes.Player;
 import me.Rl242Dev.Classes.Utils.Coin;
-import me.Rl242Dev.Utils;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.User;
@@ -31,9 +30,6 @@ public class BuyHandler extends ListenerAdapter{
 
         Player player = new Player(uuid);
 
-        String type;
-        String material;
-
         List<String> args = Arrays.asList(message.getContentRaw().split(" "));
 
         if(args.contains(".buy")){
@@ -55,14 +51,6 @@ public class BuyHandler extends ListenerAdapter{
                 embedBuilder.setFooter("DisCraft");
 
                 channel.sendMessageEmbeds(embedBuilder.build()).queue();
-            }
-            if(args.size() == 3){
-                type = args.get(1);
-                material = args.get(2);
-
-                if(!Utils.TypeEnumContainsString(type)){
-
-                }
             }
         }
     }

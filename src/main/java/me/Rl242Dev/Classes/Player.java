@@ -23,14 +23,6 @@ public class Player {
 
     private int balance;
 
-    public int getLevel() {
-        return level;
-    }
-
-    public String getRank() {
-        return rank;
-    }
-
     private int level;
 
     private Pets pet;
@@ -62,6 +54,14 @@ public class Player {
 
     public int getBalance() {
         return balance;
+    }
+
+    public int getLevel() {
+        return level;
+    }
+
+    public String getRank() {
+        return rank;
     }
 
     /* Constructor */

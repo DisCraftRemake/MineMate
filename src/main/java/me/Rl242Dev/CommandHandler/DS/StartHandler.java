@@ -34,7 +34,7 @@ public class StartHandler extends ListenerAdapter {
                 description.append("<@");
                 description.append(user.getId());
                 description.append(">");
-                description.append(" ➔ You have started an adventure, Good Luck. Help : .help");
+                description.append(" ➔ You have started an adventure, Good Luck. Help : .help | .h");
 
                 embedBuilder.setTitle("<:pickaxe:1107341471725649990> Start Action");
                 embedBuilder.setColor(Color.green);

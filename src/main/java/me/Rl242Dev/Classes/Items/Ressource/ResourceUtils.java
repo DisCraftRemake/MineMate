@@ -5,7 +5,6 @@ import me.Rl242Dev.Classes.Items.Ressource.Ores.Ores;
 import me.Rl242Dev.Classes.Utils.Emoji;
 import me.Rl242Dev.Utils;
 
-import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.HashMap;

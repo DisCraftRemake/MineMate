@@ -7,7 +7,7 @@ import me.Rl242Dev.Classes.Items.Ressource.Ores.Ores;
 import me.Rl242Dev.Classes.Items.Ressource.ResourceUtils;
 import me.Rl242Dev.Classes.Items.Ressource.Resources;
 import me.Rl242Dev.Classes.Items.Ressource.Type;
-import me.Rl242Dev.Utils;
+import me.Rl242Dev.DisCraft;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -20,6 +20,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class DatabaseUtils {
+
+    private final String playerUrl = DisCraft.getInstance().getBaseURL() + "players.db";
 
     public static Item getPickaxeFromUUID(String UUID){
         try {

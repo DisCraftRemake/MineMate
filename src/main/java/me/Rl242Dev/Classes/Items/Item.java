@@ -10,7 +10,7 @@ import me.Rl242Dev.Classes.Items.Ressource.Type;
 @u = Main
 @e = Item Class for general items that will be loaded on start
 
- */
+*/
 
 public class Item {
 

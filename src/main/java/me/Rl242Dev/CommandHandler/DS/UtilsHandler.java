@@ -4,7 +4,6 @@ import me.Rl242Dev.Classes.Items.Ressource.ResourceUtils;
 import me.Rl242Dev.Classes.Utils.Coin;
 import me.Rl242Dev.Classes.Player;
 import me.Rl242Dev.Classes.Utils.Emoji;
-import me.Rl242Dev.DatabaseManager.DatabaseUtils;
 import me.Rl242Dev.Utils;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
@@ -13,8 +12,8 @@ import net.dv8tion.jda.api.entities.channel.unions.MessageChannelUnion;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
-import java.awt.*;
 import java.time.Instant;
+import java.awt.Color;
 
 public class UtilsHandler extends ListenerAdapter {
 
@@ -30,13 +29,14 @@ public class UtilsHandler extends ListenerAdapter {
 
         Message message = event.getMessage();
         MessageChannelUnion channel = event.getChannel();
+
         if(message.getContentRaw().equals(".bal") || message.getContentRaw().equals(".balance")){
 
             EmbedBuilder embedBuilder = new EmbedBuilder();
             StringBuilder stringBuilder = new StringBuilder();
 
             stringBuilder.append("<@");
-            stringBuilder.append(user.getId());
+            stringBuilder.append(player.getUuid());
             stringBuilder.append(">");
             stringBuilder.append(" ➔ You have a total of : ");
             stringBuilder.append(player.getBalance());
@@ -57,11 +57,11 @@ public class UtilsHandler extends ListenerAdapter {
             StringBuilder stringBuilder = new StringBuilder();
 
             stringBuilder.append("<@");
-            stringBuilder.append(user.getId());
+            stringBuilder.append(player.getUuid());
             stringBuilder.append(">");
-            stringBuilder.append(" ➔ Inventory :");
+            stringBuilder.append(" ➔ Profil :");
 
-            embedBuilder.setTitle(" Profil Action");
+            embedBuilder.setTitle(" Profil Action"); //TODO: add emoji
             embedBuilder.setColor(Color.green);
 
             embedBuilder.setDescription(stringBuilder.toString());
@@ -80,10 +80,34 @@ public class UtilsHandler extends ListenerAdapter {
 
             channel.sendMessageEmbeds(embedBuilder.build()).queue();
         }
+        if(message.getContentRaw().equals(".help")){
+            EmbedBuilder embedBuilder = new EmbedBuilder();
+            StringBuilder stringBuilder = new StringBuilder();
+
+            stringBuilder.append("<@");
+            stringBuilder.append(player.getUuid());
+            stringBuilder.append(">");
+            stringBuilder.append(" ➔ Help :");
+
+            embedBuilder.setTitle(" Help Action");
+            embedBuilder.setColor(Color.green);
+
+            embedBuilder.setDescription(stringBuilder.toString());
+
+            embedBuilder.addField("**Start**", ".start", false);
+            embedBuilder.addField("**Mine**", ".mine | .m", false);
+            embedBuilder.addField("**Harvest**", ".harvest | .h", false);
+            embedBuilder.addField("**Shop**", ".shop", false);
+            embedBuilder.addField("**Sell**", ".sell all | .sell [resource]", false);      
+
+
+            embedBuilder.setFooter("DisCraft");
+            embedBuilder.setTimestamp(Instant.now());
+
+            channel.sendMessageEmbeds(embedBuilder.build()).queue();
+        }
     }
 
-
-    // Help
-    // LeaderBoard
+    // LeaderBoard | Once in a while index the json file and put in a db [Player UUID, Player Money]
     // Inv
 }

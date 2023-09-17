@@ -12,7 +12,7 @@ Java Discord Bot, to play minecraft (Fish, Mine, Hunt, and more...)
 
 ### ➕ IG Features :
 
-PVP | Dimensions | Clans | Levels (Ranks) | Prestige | Badges | Pets  | Quests | Crates
+PVP | Dimensions | Clans | Prestige | Badges | Pets | Quests | Crates | Profil
 
 ### ➕ Dev Features :
-Unit Tests | Commands Tests 
+Unit Tests | Commands Tests | Logging Commands | API 

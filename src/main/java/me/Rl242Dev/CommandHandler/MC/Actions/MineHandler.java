@@ -25,9 +25,7 @@ import java.util.Map;
 @E = Mine command executed when user type .mine
 
 TODO:
- Pet luck (More luck to have obisidian and diamond), Pet quantity (More Item when mining (Iron, Gold), Pet Selling (Price = More)
- Store ressources to database
- Fix Query for user pickaxe
+ Pet luck (More luck to have obisidian and diamond), Pet quantity (More Item when mining (Iron, Gold), Pet Selling (Price = More) | Global actions
 
  */
 

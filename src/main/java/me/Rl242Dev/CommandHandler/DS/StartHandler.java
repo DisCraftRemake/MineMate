@@ -1,6 +1,6 @@
 package me.Rl242Dev.CommandHandler.DS;
 
-import me.Rl242Dev.DatabaseManager.DatabaseUtils;
+import me.Rl242Dev.DisCraft;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.User;
@@ -25,8 +25,8 @@ public class StartHandler extends ListenerAdapter {
         MessageChannelUnion channel = event.getChannel();
 
         if(message.getContentRaw().equals(".start")){
-            if(!DatabaseUtils.UserExist(uuid)){
-                DatabaseUtils.RegisterUser(uuid);
+            if(!DisCraft.getInstance().getDatabaseManager().userExist(uuid)){
+                DisCraft.getInstance().getDatabaseManager().registerUser(uuid);
 
                 EmbedBuilder embedBuilder = new EmbedBuilder();
                 StringBuilder description = new StringBuilder();

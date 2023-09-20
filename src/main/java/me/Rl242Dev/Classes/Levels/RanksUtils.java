@@ -26,39 +26,6 @@ public class RanksUtils {
             throw new IllegalArgumentException("Invalid level value");
     }
 
-    public static String EnumToString(Ranks ranks){
-        switch (ranks){
-            case BRONZE -> {
-                return "Bronze";
-            }
-            case SILVER -> {
-                return "Silver";
-            }
-            case GOLD -> {
-                return "Gold";
-            }
-            case PLATINUM -> {
-                return "Platinum";
-            }
-            case DIAMOND -> {
-                return "Diamond";
-            }
-            case MASTER -> {
-                return "Master";
-            }
-            case GRAND_MASTER -> {
-                return "Grand Master";
-            }
-            case CHALLENGER -> {
-                return "Challenger";
-            }
-            case LEGEND -> {
-                return "Legend";
-            }
-        }
-        return null;
-    }
-
     public static int getPriceForLevelUp(int level){
         return 100000 * level;
     }

@@ -5,7 +5,7 @@ import me.Rl242Dev.Classes.Items.Ressource.Harvest.*;
 import me.Rl242Dev.Classes.Items.Ressource.ResourceUtils;
 import me.Rl242Dev.Classes.Player;
 import me.Rl242Dev.Classes.Utils.Emoji;
-import me.Rl242Dev.DatabaseManager.DatabaseUtils;
+import me.Rl242Dev.DisCraft;
 import me.Rl242Dev.Utils;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
@@ -75,7 +75,7 @@ public class HarvestHandler extends ListenerAdapter {
 
             channel.sendMessageEmbeds(embedBuilder.build()).queue();
 
-            DatabaseUtils.SaveCropsToUUID(uuid, resources);
+            DisCraft.getInstance().getDatabaseManager().saveCropsToUUID(uuid, resources);
         }
     }
 }

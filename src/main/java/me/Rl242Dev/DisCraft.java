@@ -3,6 +3,7 @@ package me.Rl242Dev;
 import java.io.File;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
@@ -13,6 +14,7 @@ import me.Rl242Dev.CommandHandler.DS.StartHandler;
 import me.Rl242Dev.CommandHandler.DS.UtilsHandler;
 import me.Rl242Dev.CommandHandler.MC.Actions.HarvestHandler;
 import me.Rl242Dev.CommandHandler.MC.Actions.MineHandler;
+import me.Rl242Dev.DatabaseManager.DatabaseManager;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Activity;
@@ -42,9 +44,10 @@ public class DisCraft {
     static JDA bot;
     private final String BASE_URL = "src/main/resources/";
     public static DisCraft instance;
+    private DatabaseManager databaseManager;
 
     public static void main(String[] args) {
-        JDA bot = JDABuilder.createLight("MTEwNTg3NDEzNzcwMTk0MTMyMQ.GuXOj7.lw1ePmkCBiflVKgb8NFRnWpFdZpVXi8rEqmIE4", GatewayIntent.GUILD_MESSAGES, GatewayIntent.MESSAGE_CONTENT, GatewayIntent.GUILD_MEMBERS)
+        JDA bot = JDABuilder.createLight("MTEwNTg3NDEzNzcwMTk0MTMyMQ.GSnY4V.ZAls7_o799PKkxvn_n5Ch5rTofaGIjj4rUUeFg", GatewayIntent.GUILD_MESSAGES, GatewayIntent.MESSAGE_CONTENT, GatewayIntent.GUILD_MEMBERS)
                 .setActivity(Activity.playing("Getting build"))
                 .build();
 
@@ -58,6 +61,9 @@ public class DisCraft {
 
         instance = new DisCraft();
 
+        DatabaseManager databaseManager = new DatabaseManager();
+        databaseManager.connect();
+
         initDatabases();
     }
 
@@ -69,24 +75,32 @@ public class DisCraft {
             String url = "jdbc:sqlite:"+DisCraft.getInstance().getBaseURL()+"players.db";
     
             conn = DriverManager.getConnection(url);
-    
+
             String createPlayersTableSQL = "CREATE TABLE IF NOT EXISTS players (" +
                     "player_id TEXT PRIMARY KEY," +
                     "balance INT," +
                     "level INT" +
                     ")";
+
             String createPlayerItemsTableSQL = "CREATE TABLE IF NOT EXISTS player_items (" +
                     "item_id TEXT PRIMARY KEY," +
                     "player_id TEXT," +
                     "type TEXT," +
-                    "material TEXT," +
+                    "material TEXT" +
+                    ")";
+
+            String createPlayerResourcesTableSQL = "CREATE TABLE IF NOT EXISTS player_resources (" +
+                    "item_id TEXT PRIMARY KEY," +
+                    "player_id TEXT," +
+                    "resource TEXT," +
                     "quantity INT" +
                     ")";
-    
+
             Statement stmt = conn.createStatement();
             stmt.execute(createPlayersTableSQL);
             stmt.execute(createPlayerItemsTableSQL);
-    
+            stmt.execute(createPlayerResourcesTableSQL);
+
             conn.close();
         } catch (ClassNotFoundException e) {
             System.out.println("SQLite JDBC driver not found.");
@@ -113,5 +127,9 @@ public class DisCraft {
 
     public static DisCraft getInstance(){
         return instance;
+    }
+
+    public DatabaseManager getDatabaseManager() {
+        return databaseManager;
     }
 }

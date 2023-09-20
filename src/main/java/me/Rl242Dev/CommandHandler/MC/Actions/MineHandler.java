@@ -5,7 +5,7 @@ import me.Rl242Dev.Classes.Items.Ressource.Ores.*;
 import me.Rl242Dev.Classes.Items.Ressource.ResourceUtils;
 import me.Rl242Dev.Classes.Player;
 import me.Rl242Dev.Classes.Utils.Emoji;
-import me.Rl242Dev.DatabaseManager.DatabaseUtils;
+import me.Rl242Dev.DisCraft;
 import me.Rl242Dev.Utils;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
@@ -86,7 +86,7 @@ public class MineHandler extends ListenerAdapter {
 
             channel.sendMessageEmbeds(embedBuilder.build()).queue();
 
-            DatabaseUtils.SaveOresToUUID(uuid, resources);
+            DisCraft.getInstance().getDatabaseManager().saveOresToUUID(uuid, resources);
         }
     }
 }

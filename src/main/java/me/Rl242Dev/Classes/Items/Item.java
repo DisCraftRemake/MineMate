@@ -70,4 +70,6 @@ public class Item {
         this.SellPrice = ResourceUtils.getItemPriceFromMaterial(material);
     }
 
+    // Serialize for SQL database refactor
+    // Deserialize
 }

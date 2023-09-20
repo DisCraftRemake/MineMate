@@ -3,7 +3,7 @@ package me.Rl242Dev.CommandHandler.DS;
 import me.Rl242Dev.Classes.Levels.RanksUtils;
 import me.Rl242Dev.Classes.Player;
 import me.Rl242Dev.Classes.Utils.Emoji;
-import me.Rl242Dev.DatabaseManager.DatabaseUtils;
+import me.Rl242Dev.DisCraft;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.User;
@@ -36,8 +36,8 @@ public class LevelHandler extends ListenerAdapter {
             int price = RanksUtils.getPriceForLevelUp(level);
 
             if(price < balance){
-                DatabaseUtils.saveLevelToUUID(uuid, level + 1);
-                DatabaseUtils.RemoveBalanceToUUID(uuid, price);
+                DisCraft.getInstance().getDatabaseManager().saveLevelToUUID(uuid, level + 1);
+                DisCraft.getInstance().getDatabaseManager().removeBalanceFromUUID(uuid, price);
 
                 EmbedBuilder embedBuilder = new EmbedBuilder();
                 StringBuilder description = new StringBuilder();

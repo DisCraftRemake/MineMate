@@ -9,5 +9,5 @@ public enum Ranks {
     MASTER, // 100 - 125
     GRAND_MASTER, // 125 - 150
     CHALLENGER, // 150 - 300
-    LEGEND, // 301
+    LEGEND, // 301 - ++
 }

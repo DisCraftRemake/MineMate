@@ -11,7 +11,7 @@ package me.Rl242Dev.Classes;
 import me.Rl242Dev.Classes.Entity.Pets.Pets;
 import me.Rl242Dev.Classes.Items.Item;
 import me.Rl242Dev.Classes.Levels.RanksUtils;
-import me.Rl242Dev.DatabaseManager.DatabaseUtils;
+import me.Rl242Dev.DisCraft;
 
 public class Player {
 
@@ -67,12 +67,12 @@ public class Player {
     /* Constructor */
 
     public Player(String UUID){
-        this.pickaxe = DatabaseUtils.getPickaxeFromUUID(UUID);
-        this.hoe = DatabaseUtils.getHoeFromUUID(UUID);
-        this.balance = DatabaseUtils.GetBalanceFromUUID(UUID);
+        this.pickaxe = DisCraft.getInstance().getDatabaseManager().getPickaxeFromUUID(UUID);
+        this.hoe = DisCraft.getInstance().getDatabaseManager().getHoeFromUUID(UUID);
+        this.balance = DisCraft.getInstance().getDatabaseManager().getBalanceFromUUID(UUID);
 
-        this.level = DatabaseUtils.getLevelFromUUID(UUID);
-        this.rank = RanksUtils.EnumToString(RanksUtils.GetRankFromLevel(this.level));
+        this.level = DisCraft.getInstance().getDatabaseManager().getLevelFromUUID(UUID);
+        this.rank = RanksUtils.GetRankFromLevel(this.level).toString();
 
         this.uuid = UUID;
     }

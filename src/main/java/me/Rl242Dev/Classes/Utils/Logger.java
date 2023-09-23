@@ -36,7 +36,7 @@ public class Logger {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
             String formattedTime = formatter.format(currentInstant.atZone(ZoneId.of("UTC")));
 
-            System.out.println("["+formattedTime+"] "+this.logger.toString());
+            System.out.println("[DISCRAFT] ["+formattedTime+"] "+this.logger.toString());
             this.logger = new StringBuilder();
         }else {
             System.out.println(logger.toString());

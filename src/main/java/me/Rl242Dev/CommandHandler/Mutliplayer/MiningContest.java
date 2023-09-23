@@ -42,8 +42,6 @@ public class MiningContest extends ListenerAdapter {
             return;
         }
 
-        Player player = new Player(uuid);
-
         MessageChannelUnion channel = event.getChannel();
 
         if (event.getMessage().getContentRaw().equals(".miningContest")) {

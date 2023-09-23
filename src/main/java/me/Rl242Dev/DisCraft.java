@@ -166,18 +166,15 @@ public class DisCraft {
         /* Normal Case */
         Map<NormalLoots, Integer> normalLootsIntegerMap = new HashMap<>();
         normalLootsIntegerMap.put(NormalLoots.PET_GOAT, 20);
-        normalLootsIntegerMap.put(NormalLoots.PET_CAT, 20);
+        normalLootsIntegerMap.put(NormalLoots.PET_CAT, 5);
         normalLootsIntegerMap.put(NormalLoots.PET_BEE, 20);
         normalLootsIntegerMap.put(NormalLoots.ITEM_IRON_PICKAXE, 5);
-        normalLootsIntegerMap.put(NormalLoots.LEVEL_TWO, 10);
+        normalLootsIntegerMap.put(NormalLoots.LEVEL_TWO, 15);
         normalLootsIntegerMap.put(NormalLoots.LEVEL_FIVE, 10);
-        normalLootsIntegerMap.put(NormalLoots.GRADE_NORMAL_LOOT, 15);
+        normalLootsIntegerMap.put(NormalLoots.GRADE_NORMAL_LOOT, 25);
 
         Case normalCase = new Case("\uD83D\uDD10 | Normal Case", 100000, normalLootsIntegerMap);
         getInstance().cases.add(normalCase);
-
-        Map<HeroLoots, Integer> heroLootsIntegerMap = new HashMap<>();
-
     }
 
     public static JDA getBot(){

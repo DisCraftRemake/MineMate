@@ -69,7 +69,6 @@ public class Player { //TODO: [SET Methods, Serialize, Deserialize]
 
     public void setBalance(int balance) {
         this.balance = balance;
-
     }
 
     public int getLevel() {

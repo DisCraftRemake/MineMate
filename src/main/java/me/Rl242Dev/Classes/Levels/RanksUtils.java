@@ -1,6 +1,14 @@
 package me.Rl242Dev.Classes.Levels;
 
-public class RankUtils {
+/*
+
+@A = Rl242Dev
+@U = Ranks
+@E = Utils for Ranks
+
+ */
+
+public class RanksUtils {
 
     public static Ranks GetRankFromLevel(int level)
     {
@@ -26,8 +34,12 @@ public class RankUtils {
             throw new IllegalArgumentException("Invalid level value");
     }
 
-    public static String EnumToString(Ranks ranks){
-        switch (ranks){
+    public static int getPriceForLevelUp(int level){
+        return 100000 * level;
+    }
+
+    public static String presentRank(Ranks rank){
+        switch (rank){
             case BRONZE -> {
                 return "Bronze";
             }

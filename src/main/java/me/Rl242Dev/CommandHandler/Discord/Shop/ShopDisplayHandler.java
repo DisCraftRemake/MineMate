@@ -1,4 +1,4 @@
-package me.Rl242Dev.CommandHandler.DS.Shop;
+package me.Rl242Dev.CommandHandler.Discord.Shop;
 
 import me.Rl242Dev.Classes.Items.Item;
 import me.Rl242Dev.Classes.Utils.Coin;
@@ -18,12 +18,20 @@ import java.time.Instant;
 import java.util.Arrays;
 import java.util.List;
 
+/*
+
+@A = Rl242Dev
+@U = Shop
+@E = Class for ShopDisplayHandler
+
+ */
+
 public class ShopDisplayHandler extends ListenerAdapter {
 
     @Override
     public void onMessageReceived(MessageReceivedEvent event){
         User user = event.getAuthor();
-        String uuid = user.getId();
+
         if (user.equals(event.getJDA().getSelfUser())){
             return;
         }
@@ -96,16 +104,6 @@ public class ShopDisplayHandler extends ListenerAdapter {
 
                 channel.sendMessageEmbeds(embedBuilder.build()).queue();
             }
-
-            /*
-
-            Items :
-
-                **Pickaxes : ** | Stone (10000 Coins) | false
-
-            Pets :
-
-             */
         }
     }
 }

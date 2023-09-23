@@ -3,6 +3,7 @@ package me.Rl242Dev.Classes.Items;
 import me.Rl242Dev.Classes.Items.Ressource.Material;
 import me.Rl242Dev.Classes.Items.Ressource.ResourceUtils;
 import me.Rl242Dev.Classes.Items.Ressource.Type;
+import me.Rl242Dev.Utils;
 
 /*
 
@@ -10,7 +11,7 @@ import me.Rl242Dev.Classes.Items.Ressource.Type;
 @u = Main
 @e = Item Class for general items that will be loaded on start
 
- */
+*/
 
 public class Item {
 
@@ -70,4 +71,10 @@ public class Item {
         this.SellPrice = ResourceUtils.getItemPriceFromMaterial(material);
     }
 
+    public static String hashItemId(String UUID, Type type){
+        return Utils.IntToString(Utils.hash(UUID+type.name()));
+    }
+
+    // Serialize for SQL database refactor
+    // Deserialize
 }

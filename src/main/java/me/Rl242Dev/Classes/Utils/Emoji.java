@@ -1,5 +1,13 @@
 package me.Rl242Dev.Classes.Utils;
 
+/*
+
+@A = Rl242Dev
+@U = Main
+@E = Class/Enum for Emojis
+
+ */
+
 public class Emoji {
     private static final String pickaxeEmoji = "<:pickaxe:1107341471725649990>";
     private static final String hoeEmoji = "<:hoe:1109429828454723637>";

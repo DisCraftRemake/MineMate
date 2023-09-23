@@ -1,6 +1,6 @@
-package me.Rl242Dev.CommandHandler.DS;
+package me.Rl242Dev.CommandHandler.Discord;
 
-import me.Rl242Dev.DatabaseManager.DatabaseUtils;
+import me.Rl242Dev.DisCraft;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.User;
@@ -10,6 +10,14 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 import java.awt.*;
 import java.time.Instant;
+
+/*
+
+@A = Rl242Dev
+@U = Start
+@E = Class for the StartHandler, when users start the adventure
+
+ */
 
 public class StartHandler extends ListenerAdapter {
 
@@ -25,8 +33,8 @@ public class StartHandler extends ListenerAdapter {
         MessageChannelUnion channel = event.getChannel();
 
         if(message.getContentRaw().equals(".start")){
-            if(!DatabaseUtils.UserExist(uuid)){
-                DatabaseUtils.RegisterUser(uuid);
+            if(!DisCraft.getInstance().getDatabaseManager().userExist(uuid)){
+                DisCraft.getInstance().getDatabaseManager().registerUser(uuid);
 
                 EmbedBuilder embedBuilder = new EmbedBuilder();
                 StringBuilder description = new StringBuilder();
@@ -34,7 +42,7 @@ public class StartHandler extends ListenerAdapter {
                 description.append("<@");
                 description.append(user.getId());
                 description.append(">");
-                description.append(" ➔ You have started an adventure, Good Luck. Help : .help");
+                description.append(" ➔ You have started an adventure, Good Luck. Help : .help | .h");
 
                 embedBuilder.setTitle("<:pickaxe:1107341471725649990> Start Action");
                 embedBuilder.setColor(Color.green);

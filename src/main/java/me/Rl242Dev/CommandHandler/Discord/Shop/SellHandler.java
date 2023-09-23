@@ -1,4 +1,4 @@
-package me.Rl242Dev.CommandHandler.DS.Shop;
+package me.Rl242Dev.CommandHandler.Discord.Shop;
 
 import me.Rl242Dev.Classes.Items.Ressource.ResourceUtils;
 import me.Rl242Dev.Classes.Utils.Coin;
@@ -8,7 +8,7 @@ import me.Rl242Dev.Classes.Items.Ressource.Harvest.SugarCane;
 import me.Rl242Dev.Classes.Items.Ressource.Harvest.Wheat;
 import me.Rl242Dev.Classes.Items.Ressource.Ores.*;
 import me.Rl242Dev.Classes.Items.Ressource.Resources;
-import me.Rl242Dev.DatabaseManager.DatabaseUtils;
+import me.Rl242Dev.DisCraft;
 import me.Rl242Dev.Utils;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
@@ -22,6 +22,14 @@ import java.time.Instant;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+
+/*
+
+@A = Rl242Dev
+@U = Shop
+@E = Class for the SellHandler, used when users sell resources
+
+ */
 
 @SuppressWarnings("ReassignedVariable")
 public class SellHandler extends ListenerAdapter {
@@ -38,8 +46,6 @@ public class SellHandler extends ListenerAdapter {
         MessageChannelUnion channel = event.getChannel();
 
         List<String> args = Arrays.asList(message.getContentRaw().split(" "));
-
-
 
         if(args.contains(".sell")){
             if(args.size() != 2){
@@ -65,7 +71,7 @@ public class SellHandler extends ListenerAdapter {
 
                 if(args.get(1).equals("all")){
                     try {
-                        Map<Resources, Integer> resources = DatabaseUtils.GetResourcesFromUUID(uuid);
+                        Map<Resources, Integer> resources = DisCraft.getInstance().getDatabaseManager().getResourcesFromUUID(uuid);
 
                         int GeneratedMoney = 0;
 
@@ -102,8 +108,8 @@ public class SellHandler extends ListenerAdapter {
                             return;
                         }
 
-                        DatabaseUtils.SaveBalanceToUUID(uuid, GeneratedMoney);
-                        DatabaseUtils.ResetResourcesFromUUID(uuid);
+                        DisCraft.getInstance().getDatabaseManager().addToBalanceFromUUID(uuid, GeneratedMoney);
+                        DisCraft.getInstance().getDatabaseManager().resetResourcesFromUUID(uuid);
 
                         EmbedBuilder embedBuilder = new EmbedBuilder();
                         StringBuilder description = new StringBuilder();
@@ -129,10 +135,10 @@ public class SellHandler extends ListenerAdapter {
                 }
                 if(Utils.ResourcesEnumContainsString(ore)){
                     int price = ResourceUtils.getPriceFromString(args.get(1));
-                    int quantity = DatabaseUtils.getResourceQuantityFromString(uuid, args.get(1));
+                    int quantity = DisCraft.getInstance().getDatabaseManager().getResourceQuantityFromString(uuid, args.get(1));
 
-                    DatabaseUtils.ResetResourceFromString(uuid, ore.toLowerCase());
-                    DatabaseUtils.SaveBalanceToUUID(uuid, price*quantity);
+                    DisCraft.getInstance().getDatabaseManager().resetResourceFromString(uuid, ore.toLowerCase());
+                    DisCraft.getInstance().getDatabaseManager().addToBalanceFromUUID(uuid, price*quantity);
 
                     EmbedBuilder embedBuilder = new EmbedBuilder();
                     StringBuilder description = new StringBuilder();
@@ -140,7 +146,7 @@ public class SellHandler extends ListenerAdapter {
                     description.append("<@");
                     description.append(user.getId());
                     description.append(">");
-                    description.append(" ➔ You have sold ").append(Utils.IntToString(quantity)).append(" ").append(args.get(1).toLowerCase()).append(" for :");
+                    description.append(" ➔ You have sold ").append(Utils.IntToString(quantity)).append(" ").append(args.get(1).toLowerCase()).append(" for : ");
                     description.append(Utils.IntToString(price*quantity)).append(" ");
                     description.append(Coin.getEmojiID());
 

@@ -1,11 +1,11 @@
-package me.Rl242Dev.CommandHandler.MC.Actions;
+package me.Rl242Dev.CommandHandler.Minecraft.Actions;
 
 import me.Rl242Dev.Classes.Items.Item;
 import me.Rl242Dev.Classes.Items.Ressource.Ores.*;
 import me.Rl242Dev.Classes.Items.Ressource.ResourceUtils;
 import me.Rl242Dev.Classes.Player;
 import me.Rl242Dev.Classes.Utils.Emoji;
-import me.Rl242Dev.DatabaseManager.DatabaseUtils;
+import me.Rl242Dev.DisCraft;
 import me.Rl242Dev.Utils;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
@@ -25,9 +25,7 @@ import java.util.Map;
 @E = Mine command executed when user type .mine
 
 TODO:
- Pet luck (More luck to have obisidian and diamond), Pet quantity (More Item when mining (Iron, Gold), Pet Selling (Price = More)
- Store ressources to database
- Fix Query for user pickaxe
+ Pet luck (More luck to have obisidian and diamond), Pet quantity (More Item when mining (Iron, Gold), Pet Selling (Price = More) | Global actions
 
  */
 
@@ -88,7 +86,7 @@ public class MineHandler extends ListenerAdapter {
 
             channel.sendMessageEmbeds(embedBuilder.build()).queue();
 
-            DatabaseUtils.SaveOresToUUID(uuid, resources);
+            DisCraft.getInstance().getDatabaseManager().saveOresToUUID(uuid, resources);
         }
     }
 }

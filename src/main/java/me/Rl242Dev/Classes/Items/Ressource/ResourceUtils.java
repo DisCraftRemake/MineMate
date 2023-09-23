@@ -5,7 +5,6 @@ import me.Rl242Dev.Classes.Items.Ressource.Ores.Ores;
 import me.Rl242Dev.Classes.Utils.Emoji;
 import me.Rl242Dev.Utils;
 
-import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.HashMap;
@@ -49,11 +48,11 @@ public class ResourceUtils {
 
     public static int getItemPriceFromMaterial(Material material){
         int price = switch (material){
-            case WOOD -> 100;
-            case STONE -> 10_000;
-            case IRON -> 100_000;
-            case GOLD -> 1_000_000;
-            case DIAMOND -> 10_000_000;
+            case WOOD -> 1_000;
+            case STONE -> 100_000;
+            case IRON -> 1_000_000;
+            case GOLD -> 10_000_000;
+            case DIAMOND -> 100_000_000;
         };
         return price;
     }

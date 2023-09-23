@@ -1,4 +1,4 @@
-package me.Rl242Dev.CommandHandler.DS.Shop;
+package me.Rl242Dev.CommandHandler.Discord.Shop;
 
 import me.Rl242Dev.Classes.Items.Ressource.ResourceUtils;
 import me.Rl242Dev.Classes.Utils.Coin;
@@ -22,6 +22,14 @@ import java.time.Instant;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+
+/*
+
+@A = Rl242Dev
+@U = Shop
+@E = Class for the SellHandler, used when users sell resources
+
+ */
 
 @SuppressWarnings("ReassignedVariable")
 public class SellHandler extends ListenerAdapter {
@@ -138,7 +146,7 @@ public class SellHandler extends ListenerAdapter {
                     description.append("<@");
                     description.append(user.getId());
                     description.append(">");
-                    description.append(" ➔ You have sold ").append(Utils.IntToString(quantity)).append(" ").append(args.get(1).toLowerCase()).append(" for :");
+                    description.append(" ➔ You have sold ").append(Utils.IntToString(quantity)).append(" ").append(args.get(1).toLowerCase()).append(" for : ");
                     description.append(Utils.IntToString(price*quantity)).append(" ");
                     description.append(Coin.getEmojiID());
 

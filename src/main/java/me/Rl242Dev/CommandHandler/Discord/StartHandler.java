@@ -1,4 +1,4 @@
-package me.Rl242Dev.CommandHandler.DS;
+package me.Rl242Dev.CommandHandler.Discord;
 
 import me.Rl242Dev.DisCraft;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -10,6 +10,14 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 import java.awt.*;
 import java.time.Instant;
+
+/*
+
+@A = Rl242Dev
+@U = Start
+@E = Class for the StartHandler, when users start the adventure
+
+ */
 
 public class StartHandler extends ListenerAdapter {
 

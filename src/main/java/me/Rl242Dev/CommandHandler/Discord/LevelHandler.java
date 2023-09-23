@@ -1,4 +1,4 @@
-package me.Rl242Dev.CommandHandler.DS;
+package me.Rl242Dev.CommandHandler.Discord;
 
 import me.Rl242Dev.Classes.Levels.RanksUtils;
 import me.Rl242Dev.Classes.Player;
@@ -13,6 +13,14 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 import java.awt.*;
 import java.time.Instant;
+
+/*
+
+@A = Rl242Dev
+@U = Action
+@E = Class for the LevelHandler, used when users level up
+
+ */
 
 public class LevelHandler extends ListenerAdapter {
 
@@ -31,6 +39,27 @@ public class LevelHandler extends ListenerAdapter {
 
         if(message.getContentRaw().equals(".levelUP") || message.getContentRaw().equals(".lUP") || message.getContentRaw().equals(".level")){
             int level = player.getLevel();
+            if(level == 301){
+                EmbedBuilder embedBuilder = new EmbedBuilder();
+                StringBuilder description = new StringBuilder();
+
+                description.append("<@");
+                description.append(user.getId());
+                description.append(">");
+                description.append(" ➔ You can't level up above level 301");
+                description.append(player.getLevel() + 1);
+
+                embedBuilder.setTitle(Emoji.getXpEmoji() + " Level Up Action");
+                embedBuilder.setColor(Color.green);
+
+                embedBuilder.setDescription(description.toString());
+
+                embedBuilder.setTimestamp(Instant.now());
+                embedBuilder.setFooter("DisCraft");
+
+                channel.sendMessageEmbeds(embedBuilder.build()).queue();
+                return;
+            }
             int balance = player.getBalance();
 
             int price = RanksUtils.getPriceForLevelUp(level);

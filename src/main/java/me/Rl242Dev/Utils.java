@@ -1,5 +1,7 @@
 package me.Rl242Dev;
 
+import me.Rl242Dev.Classes.Cases.Case;
+import me.Rl242Dev.Classes.Cases.HeroLoots;
 import me.Rl242Dev.Classes.Items.Ressource.Material;
 import me.Rl242Dev.Classes.Items.Ressource.Resources;
 import me.Rl242Dev.Classes.Items.Ressource.Type;
@@ -8,6 +10,8 @@ import net.dv8tion.jda.api.EmbedBuilder;
 
 import java.awt.*;
 import java.time.Instant;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 
 /*
@@ -34,7 +38,7 @@ public class Utils {
 
     public static boolean ResourcesEnumContainsString(String str){
         for(Resources resources : Resources.values()){
-            if (resources.name().equals(str)){
+            if (resources.name().equals(str.toUpperCase())){
                 return true;
             }
         }

@@ -11,9 +11,16 @@ package me.Rl242Dev.Classes;
 import me.Rl242Dev.Classes.Entity.Pets.Pets;
 import me.Rl242Dev.Classes.Items.Item;
 import me.Rl242Dev.Classes.Levels.RanksUtils;
+import me.Rl242Dev.Classes.Utils.Coin;
 import me.Rl242Dev.DisCraft;
+import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.entities.channel.concrete.PrivateChannel;
 
-public class Player {
+import java.awt.*;
+import java.time.Instant;
+
+public class Player { //TODO: [SET Methods, Serialize, Deserialize]
 
     /* Attributes */
 
@@ -36,32 +43,61 @@ public class Player {
         return pickaxe;
     }
 
+    public void setPickaxe(Item pickaxe) {
+        this.pickaxe = pickaxe;
+    }
+
     public Item getAxe() {
         return axe;
+    }
+
+    public void setAxe(Item axe) {
+        this.axe = axe;
     }
 
     public Item getHoe() {
         return hoe;
     }
 
-    public Pets getPet() {
-        return pet;
-    }
-
-    public String getUuid() {
-        return uuid;
+    public void setHoe(Item hoe) {
+        this.hoe = hoe;
     }
 
     public int getBalance() {
         return balance;
     }
 
+    public void setBalance(int balance) {
+        this.balance = balance;
+
+    }
+
     public int getLevel() {
         return level;
     }
 
+    public void setLevel(int level) {
+        this.level = level;
+    }
+
+    public Pets getPet() {
+        return pet;
+    }
+
+    public void setPet(Pets pet) {
+        this.pet = pet;
+    }
+
+    public String getUuid() {
+        return uuid;
+    }
+
     public String getRank() {
         return rank;
+    }
+
+    public void setRank(String rank) {
+        this.rank = rank;
     }
 
     /* Constructor */
@@ -75,5 +111,24 @@ public class Player {
         this.rank = RanksUtils.GetRankFromLevel(this.level).toString();
 
         this.uuid = UUID;
+    }
+
+    public void sendMessage(String action, StringBuilder message){
+        User user = DisCraft.getBot().retrieveUserById(this.uuid).complete();
+
+        assert user != null;
+        PrivateChannel channel = user.openPrivateChannel().complete();
+
+        EmbedBuilder embedBuilder = new EmbedBuilder();
+
+        embedBuilder.setTitle("\uD83D\uDD10 " + action);
+        embedBuilder.setColor(Color.green);
+
+        embedBuilder.setDescription(message.toString());
+
+        embedBuilder.setFooter("DisCraft");
+        embedBuilder.setTimestamp(Instant.now());
+
+        channel.sendMessageEmbeds(embedBuilder.build()).queue();
     }
 }

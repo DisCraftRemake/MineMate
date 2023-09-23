@@ -1,4 +1,4 @@
-package me.Rl242Dev.CommandHandler.DS.Shop;
+package me.Rl242Dev.CommandHandler.Discord.Shop;
 
 import java.awt.Color;
 import java.time.Instant;
@@ -13,6 +13,14 @@ import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.entities.channel.unions.MessageChannelUnion;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+
+/*
+
+@A = Rl242Dev
+@U = Shop
+@E = Class for the BuyHandler, used when users buy Items
+
+ */
 
 public class BuyHandler extends ListenerAdapter{
 

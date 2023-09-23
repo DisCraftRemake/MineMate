@@ -1,5 +1,13 @@
 package me.Rl242Dev.Classes.Levels;
 
+/*
+
+@A = Rl242Dev
+@U = Ranks
+@E = Enum for Ranks available in DisCraft
+
+ */
+
 public enum Ranks {
     BRONZE, // 0 - 20
     SILVER, // 20 - 40

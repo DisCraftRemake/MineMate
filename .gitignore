@@ -12,6 +12,9 @@ target/
 *.iml
 *.ipr
 
+### Token ###
+src/main/resources/token.json
+
 ### Eclipse ###
 .apt_generated
 .classpath

@@ -3,6 +3,7 @@ package me.Rl242Dev.Classes.Items;
 import me.Rl242Dev.Classes.Items.Ressource.Material;
 import me.Rl242Dev.Classes.Items.Ressource.ResourceUtils;
 import me.Rl242Dev.Classes.Items.Ressource.Type;
+import me.Rl242Dev.Utils;
 
 /*
 
@@ -68,6 +69,10 @@ public class Item {
         this.EmojiID = ResourceUtils.getEmojiIDFromType(type);
         this.id = id;
         this.SellPrice = ResourceUtils.getItemPriceFromMaterial(material);
+    }
+
+    public static String hashItemId(String UUID, Type type){
+        return Utils.IntToString(Utils.hash(UUID+type.name()));
     }
 
     // Serialize for SQL database refactor

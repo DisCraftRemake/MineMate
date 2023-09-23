@@ -1,4 +1,4 @@
-package me.Rl242Dev.CommandHandler.MC.Actions;
+package me.Rl242Dev.CommandHandler.Minecraft.Actions;
 
 import me.Rl242Dev.Classes.Items.Item;
 import me.Rl242Dev.Classes.Items.Ressource.Harvest.*;
@@ -37,7 +37,6 @@ public class HarvestHandler extends ListenerAdapter {
         }
 
         Player player = new Player(uuid);
-
 
         Message message = event.getMessage();
         if(message.getContentRaw().equals(".harvest") || message.getContentRaw().equals(".h")){

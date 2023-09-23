@@ -2,17 +2,13 @@ package me.Rl242Dev.DatabaseManager;
 
 import me.Rl242Dev.Classes.Items.Item;
 import me.Rl242Dev.Classes.Items.Ressource.Harvest.Crops;
+import me.Rl242Dev.Classes.Items.Ressource.Material;
 import me.Rl242Dev.Classes.Items.Ressource.Ores.Ores;
 import me.Rl242Dev.Classes.Items.Ressource.ResourceUtils;
 import me.Rl242Dev.Classes.Items.Ressource.Resources;
+import me.Rl242Dev.Classes.Items.Ressource.Type;
 import me.Rl242Dev.DisCraft;
-import org.json.JSONObject;
 
-import java.io.FileWriter;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -20,6 +16,14 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.HashMap;
 import java.util.Map;
+
+/*
+
+@A = Rl242Dev
+@U = Database
+@E = Class for the DatabaseManager, used to query data
+
+ */
 
 public class DatabaseManager {
 
@@ -32,7 +36,8 @@ public class DatabaseManager {
             String url = "jdbc:sqlite:"+DisCraft.getInstance().getBaseURL()+"players.db";
     
             connection = DriverManager.getConnection(url);
-            System.out.println("DatabaseManager connected");
+            DisCraft.logger.appendLogger("DatabaseManager connected");
+            DisCraft.logger.send();
         }catch(SQLException | ClassNotFoundException exception){
             System.out.println(exception.getMessage());
         }
@@ -41,7 +46,7 @@ public class DatabaseManager {
     public Item getPickaxeFromUUID(String UUID){
         try {
             Statement stmt = connection.createStatement();
-            String query = "SELECT * FROM players_items WHERE player_id = '" + UUID + "' AND type = 'Pickaxe';";
+            String query = "SELECT * FROM player_items WHERE player_id = '" + UUID + "' AND type = 'Pickaxe';";
 
             ResultSet results = stmt.executeQuery(query);
             
@@ -60,11 +65,11 @@ public class DatabaseManager {
     public int getResourceQuantityFromString(String UUID, String resource){
         try {
             Statement stmt = connection.createStatement();
-            String query = "SELECT resource from player_resources WHERE player_id = '"+UUID+"' AND resource = '"+resource+"';";
+            String query = "SELECT quantity from player_resources WHERE player_id = '"+UUID+"' AND resource = '"+resource+"';";
 
             ResultSet resultSet = stmt.executeQuery(query);
 
-            return resultSet.getInt("resource");
+            return resultSet.getInt("quantity");
         }catch (SQLException e){
             e.printStackTrace();
         }
@@ -74,7 +79,7 @@ public class DatabaseManager {
     public Item getHoeFromUUID(String UUID){
         try {
             Statement stmt = connection.createStatement();
-            String query = "SELECT * FROM players_items WHERE player_id = '" + UUID + "' AND type = 'Hoe';";
+            String query = "SELECT * FROM player_items WHERE player_id = '" + UUID + "' AND type = 'Hoe';";
 
             ResultSet results = stmt.executeQuery(query);
 
@@ -109,58 +114,19 @@ public class DatabaseManager {
     }
 
     public void saveOresToUUID(String UUID, Map<Ores, Integer> ressourcesMap){
-        try {
-            String jsonString = new String(Files.readAllBytes(Paths.get("src/main/resources/players.json")), StandardCharsets.UTF_8);
+        for(Ores ore : ressourcesMap.keySet()){
+            try {
+                Statement statement = connection.createStatement();
+                String queryResource = "SELECT quantity FROM player_resources WHERE player_id = '"+UUID+"' AND resource = '"+ore.name()+"';";
 
-            JSONObject json = new JSONObject(jsonString);
+                ResultSet resourceResult = statement.executeQuery(queryResource);
 
-            JSONObject players = json.getJSONObject("players");
-
-            if(players.has(UUID)){
-                JSONObject player = players.getJSONObject(UUID);
-
-                JSONObject resources = player.getJSONObject("resources");
-
-                /* User data */
-
-                int Stone = resources.getInt("stone");
-                int Coal = resources.getInt("coal");
-                int Iron = resources.getInt("iron"); 
-                int Gold = resources.getInt("gold");
-                int Diamond = resources.getInt("diamond");
-                int Obsidian = resources.getInt("obsidian");
-
-                /* Current data */
-
-                int StoneMap = ressourcesMap.get(Ores.STONE);
-                int CoalMap = ressourcesMap.get(Ores.COAL);
-                int IronMap = ressourcesMap.get(Ores.IRON);
-                int GoldMap = ressourcesMap.get(Ores.GOLD);
-                int DiamondMap = ressourcesMap.get(Ores.DIAMOND);
-                int ObsidianMap = ressourcesMap.get(Ores.OBSIDIAN);
-
-                /* Write data */
-                resources.remove("stone");
-                resources.remove("coal");
-                resources.remove("iron");
-                resources.remove("gold");
-                resources.remove("diamond");
-                resources.remove("obsidian");
-
-                resources.put("stone", Stone + StoneMap);
-                resources.put("coal", Coal + CoalMap);
-                resources.put("iron", Iron + IronMap);
-                resources.put("gold", Gold + GoldMap);
-                resources.put("diamond", Diamond + DiamondMap);
-                resources.put("obsidian", Obsidian + ObsidianMap);
-
-                FileWriter writer = new FileWriter("src/main/resources/players.json" ,false);
-                writer.write(json.toString());
-                writer.flush();
-                writer.close();
+                int total = resourceResult.getInt("quantity") + ressourcesMap.get(ore);
+                String query = "UPDATE player_resources SET quantity = '"+total+"' WHERE player_id = '"+UUID+"' AND resource = '"+ore.name()+"';";
+                statement.execute(query);
+            }catch (SQLException e){
+                e.printStackTrace();
             }
-        }catch (IOException e){
-            e.printStackTrace();
         }
     }
 
@@ -192,51 +158,43 @@ public class DatabaseManager {
         }
     }
 
-    public void saveCropsToUUID(String UUID, Map<Crops, Integer> ressourcesMap){
+    public Map<String, Integer> getLeaderboard(){
         try {
-            String jsonString = new String(Files.readAllBytes(Paths.get("src/main/resources/players.json")), StandardCharsets.UTF_8);
+            Map<String, Integer> leaderboard = new HashMap<>();
+            Statement statement = connection.createStatement();
 
-            JSONObject json = new JSONObject(jsonString);
+            String query = "SELECT player_id, balance FROM players ORDER BY balance ASC LIMIT 10";
+            ResultSet result = statement.executeQuery(query);
 
-            JSONObject players = json.getJSONObject("players");
-
-            if(players.has(UUID)){
-                JSONObject player = players.getJSONObject(UUID);
-
-                JSONObject resources = player.getJSONObject("resources");
-
-                /* User data */
-
-                int Wheat = resources.getInt("wheat");
-                int Potato = resources.getInt("potato");
-                int Carrot = resources.getInt("carrot");
-                int SugarCane = resources.getInt("sugar_cane");
-
-                /* Current data */
-
-                int WheatMap = ressourcesMap.get(Crops.WHEAT);
-                int PotatoMap = ressourcesMap.get(Crops.POTATO);
-                int CarrotMap = ressourcesMap.get(Crops.CARROT);
-                int SugarCaneMap = ressourcesMap.get(Crops.SUGARCANE);
-
-                /* Write data */
-                resources.remove("wheat");
-                resources.remove("potato");
-                resources.remove("carrot");
-                resources.remove("sugar_cane");
-
-                resources.put("wheat", Wheat + WheatMap);
-                resources.put("potato", Potato + PotatoMap);
-                resources.put("carrot", Carrot + CarrotMap);
-                resources.put("sugar_cane", SugarCane + SugarCaneMap);
-
-                FileWriter writer = new FileWriter("src/main/resources/players.json" ,false);
-                writer.write(json.toString());
-                writer.flush();
-                writer.close();
+            while (result.next()){
+                leaderboard.put(
+                        result.getString("player_id"),
+                        result.getInt("balance")
+                );
             }
-        }catch (IOException e){
+
+            return leaderboard;
+        }catch (SQLException e){
             e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    public void saveCropsToUUID(String UUID, Map<Crops, Integer> ressourcesMap){
+        for(Crops crop : ressourcesMap.keySet()){
+            try {
+                Statement statement = connection.createStatement();
+                String queryResource = "SELECT quantity FROM player_resources WHERE player_id = '"+UUID+"' AND resource = '"+crop.name()+"';";
+
+                ResultSet resourceResult = statement.executeQuery(queryResource);
+
+                int total = resourceResult.getInt("quantity") + ressourcesMap.get(crop);
+                String query = "UPDATE player_resources SET quantity = '"+total+"' WHERE player_id = '"+UUID+"' AND resource = '"+crop.name()+"';";
+                statement.execute(query);
+            }catch (SQLException e){
+                e.printStackTrace();
+            }
         }
     }
 
@@ -257,21 +215,21 @@ public class DatabaseManager {
 
     public void registerUser(String UUID){
         try {
-            String jsonString = new String(Files.readAllBytes(Paths.get("src/main/resources/players.json")), StandardCharsets.UTF_8);
+            Statement statement = connection.createStatement();
 
-            JSONObject json = new JSONObject(jsonString);
+            String playersQuery = "INSERT INTO players (player_id, balance, level) VALUES ('"+UUID+"', '0', '0');"; // players
+            statement.execute(playersQuery);
 
-            JSONObject players = json.getJSONObject("players");
+            for(Resources resources : Resources.values()){
+                String playerResourcesQuery = "INSERT INTO player_resources (player_id, resource, quantity) VALUES ('"+UUID+"', '"+resources.name()+"', '0');";
+                statement.execute(playerResourcesQuery);
+            }
 
-            JSONObject player = new JSONObject();
-
-            players.put(UUID, player);
-            FileWriter writer = new FileWriter("src/main/resources/players.json");
-            writer.write(json.toString());
-            writer.flush();
-            writer.close();
-
-        }catch (IOException e){
+            for(Type type : Type.values()){
+                String playerItemsQuery = "INSERT INTO player_items (item_id, player_id, type, material) VALUES ('"+Item.hashItemId(UUID, type)+"', '"+UUID+"', '"+DatabaseUtils.getNameFromType(type)+"','"+DatabaseUtils.getNameFromMaterial(Material.WOOD)+"');"; // player_items
+                statement.execute(playerItemsQuery);
+            }
+        }catch (SQLException e){
             e.printStackTrace();
         }
     }
@@ -303,7 +261,7 @@ public class DatabaseManager {
     public void resetResourceFromString(String UUID, String resource){
         try {
             Statement statement = connection.createStatement();
-            String query = "UPDATE player_resources SET quantity = 0 WHERE player_id = '"+UUID+"';";
+            String query = "UPDATE player_resources SET quantity = 0 WHERE player_id = '"+UUID+"' AND resource = '"+resource+"';";
 
             statement.execute(query);
         }catch (SQLException e){
@@ -313,61 +271,29 @@ public class DatabaseManager {
 
     public void resetResourcesFromUUID(String UUID) {
         try {
-            String jsonString = new String(Files.readAllBytes(Paths.get("src/main/resources/players.json")), StandardCharsets.UTF_8);
+            Statement statement = connection.createStatement();
+            Map<Resources, Integer> resources = getResourcesFromUUID(UUID);
 
-            JSONObject json = new JSONObject(jsonString);
-
-            JSONObject players = json.getJSONObject("players");
-
-            if (players.has(UUID)) {
-                JSONObject player = players.getJSONObject(UUID);
-
-                JSONObject resources = player.getJSONObject("resources");
-
-                resources.remove("stone");
-                resources.remove("coal");
-                resources.remove("iron");
-                resources.remove("gold");
-                resources.remove("diamond");
-                resources.remove("obsidian");
-
-                resources.remove("wheat");
-                resources.remove("potato");
-                resources.remove("carrot");
-                resources.remove("sugar_cane");
-
-                resources.put("wheat", 0);
-                resources.put("potato", 0);
-                resources.put("carrot", 0);
-                resources.put("sugar_cane", 0);
-
-                resources.put("stone", 0);
-                resources.put("coal", 0);
-                resources.put("iron", 0);
-                resources.put("gold", 0);
-                resources.put("diamond", 0);
-                resources.put("obsidian", 0);
-
-                FileWriter writer = new FileWriter("src/main/resources/players.json", false);
-                writer.write(json.toString());
-                writer.flush();
-                writer.close();
+            for(Resources resource : resources.keySet()){
+                String query = "UPDATE player_resources SET quantity = 0 WHERE player_id = '"+UUID+"' AND resource = '"+resource.name()+"';";
+                statement.execute(query);
             }
-        } catch (IOException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
-        public int getBalanceFromUUID(String UUID) {
-            try {
-                Statement statement = connection.createStatement();
-                String query = "SELECT balance FROM players WHERE player_id = '"+UUID+"';";
+    public int getBalanceFromUUID(String UUID) {
+        try {
+            Statement statement = connection.createStatement();
+            String query = "SELECT balance FROM players WHERE player_id = '"+UUID+"';";
 
-                ResultSet resultSet = statement.executeQuery(query);
-                return resultSet.getInt("balance");
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-            return 0;
+            ResultSet resultSet = statement.executeQuery(query);
+            return resultSet.getInt("balance");
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
+
+        return 0;
+    }
 }

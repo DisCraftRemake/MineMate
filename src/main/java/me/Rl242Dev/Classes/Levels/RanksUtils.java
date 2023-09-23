@@ -1,5 +1,13 @@
 package me.Rl242Dev.Classes.Levels;
 
+/*
+
+@A = Rl242Dev
+@U = Ranks
+@E = Utils for Ranks
+
+ */
+
 public class RanksUtils {
 
     public static Ranks GetRankFromLevel(int level)
@@ -28,5 +36,38 @@ public class RanksUtils {
 
     public static int getPriceForLevelUp(int level){
         return 100000 * level;
+    }
+
+    public static String presentRank(Ranks rank){
+        switch (rank){
+            case BRONZE -> {
+                return "Bronze";
+            }
+            case SILVER -> {
+                return "Silver";
+            }
+            case GOLD -> {
+                return "Gold";
+            }
+            case PLATINUM -> {
+                return "Platinum";
+            }
+            case DIAMOND -> {
+                return "Diamond";
+            }
+            case MASTER -> {
+                return "Master";
+            }
+            case GRAND_MASTER -> {
+                return "Grand Master";
+            }
+            case CHALLENGER -> {
+                return "Challenger";
+            }
+            case LEGEND -> {
+                return "Legend";
+            }
+        }
+        return null;
     }
 }

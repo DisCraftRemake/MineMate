@@ -1,4 +1,4 @@
-package me.Rl242Dev.CommandHandler.DS.Shop;
+package me.Rl242Dev.CommandHandler.Discord.Shop;
 
 import me.Rl242Dev.Classes.Items.Item;
 import me.Rl242Dev.Classes.Utils.Coin;
@@ -17,6 +17,14 @@ import java.awt.*;
 import java.time.Instant;
 import java.util.Arrays;
 import java.util.List;
+
+/*
+
+@A = Rl242Dev
+@U = Shop
+@E = Class for ShopDisplayHandler
+
+ */
 
 public class ShopDisplayHandler extends ListenerAdapter {
 

@@ -1,4 +1,4 @@
-package me.Rl242Dev.CommandHandler.MC.Actions;
+package me.Rl242Dev.CommandHandler.Minecraft.Actions;
 
 import me.Rl242Dev.Classes.Items.Item;
 import me.Rl242Dev.Classes.Items.Ressource.Ores.*;

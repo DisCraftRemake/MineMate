@@ -11,8 +11,7 @@ package me.Rl242Dev.Classes;
 import me.Rl242Dev.Classes.Entity.Pets.Pets;
 import me.Rl242Dev.Classes.Items.Item;
 import me.Rl242Dev.Classes.Levels.RanksUtils;
-import me.Rl242Dev.Classes.Utils.Coin;
-import me.Rl242Dev.DisCraft;
+import me.Rl242Dev.MineMate;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.entities.channel.concrete.PrivateChannel;
@@ -31,6 +30,7 @@ public class Player { //TODO: [SET Methods, Serialize, Deserialize]
     private int balance;
 
     private int level;
+    private int prestige;
 
     private Pets pet;
 
@@ -69,7 +69,6 @@ public class Player { //TODO: [SET Methods, Serialize, Deserialize]
 
     public void setBalance(int balance) {
         this.balance = balance;
-
     }
 
     public int getLevel() {
@@ -100,21 +99,31 @@ public class Player { //TODO: [SET Methods, Serialize, Deserialize]
         this.rank = rank;
     }
 
+    public int getPrestige() {
+        return prestige;
+    }
+
+    public void setPrestige(int prestige) {
+        this.prestige = prestige;
+    }
+
     /* Constructor */
 
     public Player(String UUID){
-        this.pickaxe = DisCraft.getInstance().getDatabaseManager().getPickaxeFromUUID(UUID);
-        this.hoe = DisCraft.getInstance().getDatabaseManager().getHoeFromUUID(UUID);
-        this.balance = DisCraft.getInstance().getDatabaseManager().getBalanceFromUUID(UUID);
+        this.pickaxe = MineMate.getInstance().getDatabaseManager().getPickaxeFromUUID(UUID);
+        this.hoe = MineMate.getInstance().getDatabaseManager().getHoeFromUUID(UUID);
+        this.balance = MineMate.getInstance().getDatabaseManager().getBalanceFromUUID(UUID);
 
-        this.level = DisCraft.getInstance().getDatabaseManager().getLevelFromUUID(UUID);
+        this.level = MineMate.getInstance().getDatabaseManager().getLevelFromUUID(UUID);
         this.rank = RanksUtils.GetRankFromLevel(this.level).toString();
+
+        this.prestige = MineMate.getInstance().getDatabaseManager().getPrestige(UUID);
 
         this.uuid = UUID;
     }
 
     public void sendMessage(String action, StringBuilder message){
-        User user = DisCraft.getBot().retrieveUserById(this.uuid).complete();
+        User user = MineMate.getBot().retrieveUserById(this.uuid).complete();
 
         assert user != null;
         PrivateChannel channel = user.openPrivateChannel().complete();
@@ -126,7 +135,7 @@ public class Player { //TODO: [SET Methods, Serialize, Deserialize]
 
         embedBuilder.setDescription(message.toString());
 
-        embedBuilder.setFooter("DisCraft");
+        embedBuilder.setFooter(MineMate.getConfigManager().getString("general.name"));
         embedBuilder.setTimestamp(Instant.now());
 
         channel.sendMessageEmbeds(embedBuilder.build()).queue();

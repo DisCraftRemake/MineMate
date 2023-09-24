@@ -6,9 +6,10 @@ import me.Rl242Dev.Classes.Levels.RanksUtils;
 import me.Rl242Dev.Classes.Utils.Coin;
 import me.Rl242Dev.Classes.Player;
 import me.Rl242Dev.Classes.Utils.Emoji;
-import me.Rl242Dev.DisCraft;
+import me.Rl242Dev.MineMate;
 import me.Rl242Dev.Utils;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.entities.channel.unions.MessageChannelUnion;
@@ -44,6 +45,10 @@ public class UtilsHandler extends ListenerAdapter {
         MessageChannelUnion channel = event.getChannel();
 
         if(message.getContentRaw().equals(".bal") || message.getContentRaw().equals(".balance")){
+            if(MineMate.debug){
+                MineMate.getLogger().appendLogger(player.getUuid()+" Issued .balance");
+                MineMate.getLogger().send();
+            }
 
             EmbedBuilder embedBuilder = new EmbedBuilder();
             StringBuilder stringBuilder = new StringBuilder();
@@ -60,12 +65,15 @@ public class UtilsHandler extends ListenerAdapter {
 
             embedBuilder.setDescription(stringBuilder.toString());
 
-            embedBuilder.setFooter("DisCraft");
+            embedBuilder.setFooter(MineMate.getConfigManager().getString("general.name"));
             embedBuilder.setTimestamp(Instant.now());
 
             channel.sendMessageEmbeds(embedBuilder.build()).queue();
         }
         if(message.getContentRaw().equals(".profil")){
+            MineMate.getLogger().appendLogger(player.getUuid()+" Issued .profil");
+            MineMate.getLogger().send();
+
             EmbedBuilder embedBuilder = new EmbedBuilder();
             StringBuilder stringBuilder = new StringBuilder();
 
@@ -82,45 +90,61 @@ public class UtilsHandler extends ListenerAdapter {
             embedBuilder.addField(Coin.getEmojiID() + " **Balance** :", ResourceUtils.PriceToString(player.getBalance()),false);
             embedBuilder.addField(Emoji.getXpEmoji() + " **Level** :", Utils.IntToString(player.getLevel()), false);
             embedBuilder.addField(Emoji.getNametagEmoji() + " **Rank** :", Objects.requireNonNull(RanksUtils.presentRank(Ranks.valueOf(player.getRank()))), false);
+            embedBuilder.addField(Emoji.getTotemEmoji()+ " **Prestige** :", Utils.IntToString(player.getPrestige()), false);
 
             embedBuilder.addField(Emoji.getPickaxeEmoji() + " **Pickaxe** :", player.getPickaxe().getDisplayName(), false);
             embedBuilder.addField(Emoji.getHoeEmoji() + " **Hoe** :", player.getHoe().getDisplayName(), false);
             // Axe
             // Pets
 
-            embedBuilder.setFooter("DisCraft");
+            embedBuilder.setFooter(MineMate.getConfigManager().getString("general.name"));
             embedBuilder.setTimestamp(Instant.now());
 
             channel.sendMessageEmbeds(embedBuilder.build()).queue();
         }
         if(message.getContentRaw().equals(".help")){
-            EmbedBuilder embedBuilder = new EmbedBuilder();
-            StringBuilder stringBuilder = new StringBuilder();
+            MineMate.getLogger().appendLogger(player.getUuid()+" Issued .help");
+            MineMate.getLogger().send();
 
-            stringBuilder.append("<@");
-            stringBuilder.append(player.getUuid());
-            stringBuilder.append(">");
-            stringBuilder.append(" ➔ Help :");
+            if(event.getMember().hasPermission(Permission.ADMINISTRATOR)){
+                event.getGuild()
+                        .getTextChannelById(MineMate.getConfigManager().getString("help"))
+                        .getHistory()
+                        .retrievePast(1)
+                        .queue(history -> {
+                            int messageCount = history.size();
 
-            embedBuilder.setTitle(" Help Action");
-            embedBuilder.setColor(Color.green);
+                            if (messageCount > 0) {
+                                // basic help
+                            } else {
+                                // admin help
+                            }
+                        });
+            }else{
+                EmbedBuilder embedBuilder = new EmbedBuilder();
+                StringBuilder stringBuilder = new StringBuilder();
 
-            embedBuilder.setDescription(stringBuilder.toString());
+                stringBuilder.append("<@");
+                stringBuilder.append(player.getUuid());
+                stringBuilder.append(">");
+                stringBuilder.append(" ➔ Help : <#"+MineMate.getConfigManager().getString("help")+">");
 
-            embedBuilder.addField("**Start**", ".start", false);
-            embedBuilder.addField("**Mine**", ".mine | .m", false);
-            embedBuilder.addField("**Harvest**", ".harvest | .h", false);
-            embedBuilder.addField("**Shop**", ".shop", false);
-            embedBuilder.addField("**Sell**", ".sell all | .sell [resource]", false);      
+                embedBuilder.setTitle(" Help Action");
+                embedBuilder.setColor(Color.green);
 
+                embedBuilder.setDescription(stringBuilder.toString());
 
-            embedBuilder.setFooter("DisCraft");
-            embedBuilder.setTimestamp(Instant.now());
+                embedBuilder.setFooter(MineMate.getConfigManager().getString("general.name"));
+                embedBuilder.setTimestamp(Instant.now());
 
-            channel.sendMessageEmbeds(embedBuilder.build()).queue();
+                channel.sendMessageEmbeds(embedBuilder.build()).queue();
+            }
         }
         if(message.getContentRaw().equals(".leaderboard")){
-            Map<String, Integer> leaderbord = DisCraft.getInstance().getDatabaseManager().getLeaderboard();
+            MineMate.getLogger().appendLogger(player.getUuid()+" Issued .leaderboard");
+            MineMate.getLogger().send();
+
+            Map<String, Integer> leaderbord = MineMate.getInstance().getDatabaseManager().getLeaderboard();
 
             EmbedBuilder embedBuilder = new EmbedBuilder();
             StringBuilder stringBuilder = new StringBuilder();
@@ -136,8 +160,8 @@ public class UtilsHandler extends ListenerAdapter {
 
             int iterator = 1;
             for(String userLeaderBoard : leaderbord.keySet()){
-                String nameBuilder = DisCraft.getBot().retrieveUserById(userLeaderBoard).complete().getName();
-                DisCraft.getBot().retrieveUserById(userLeaderBoard).complete().getName();
+                String nameBuilder = MineMate.getBot().retrieveUserById(userLeaderBoard).complete().getName();
+                MineMate.getBot().retrieveUserById(userLeaderBoard).complete().getName();
 
                 embedBuilder.addField(
                         Coin.getEmojiID()+" "+Utils.IntToString(iterator)+" | "+ nameBuilder,
@@ -147,7 +171,7 @@ public class UtilsHandler extends ListenerAdapter {
                 iterator++;
             }
 
-            embedBuilder.setFooter("DisCraft");
+            embedBuilder.setFooter(MineMate.getConfigManager().getString("general.name"));
             embedBuilder.setTimestamp(Instant.now());
 
             channel.sendMessageEmbeds(embedBuilder.build()).queue();

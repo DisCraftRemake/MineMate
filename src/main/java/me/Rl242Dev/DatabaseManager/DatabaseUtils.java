@@ -1,8 +1,8 @@
 package me.Rl242Dev.DatabaseManager;
 
+import me.Rl242Dev.Classes.Entity.Pets.Pets;
 import me.Rl242Dev.Classes.Items.Ressource.Material;
 import me.Rl242Dev.Classes.Items.Ressource.Type;
-import me.Rl242Dev.DisCraft;
 
 /*
 
@@ -29,6 +29,15 @@ public class DatabaseUtils {
             case PICKAXE -> "Pickaxe";
             case HOE -> "Hoe";
             case SWORD -> "Sword";
+        };
+        return displayName;
+    }
+
+    public static String getNameFromPet(Pets pets){
+        String displayName = switch (pets){
+            case BEE -> "Bee";
+            case CAT -> "Cat";
+            case GOAT -> "Goat";
         };
         return displayName;
     }

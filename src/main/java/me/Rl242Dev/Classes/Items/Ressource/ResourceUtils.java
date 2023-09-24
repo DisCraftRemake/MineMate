@@ -3,6 +3,7 @@ package me.Rl242Dev.Classes.Items.Ressource;
 import me.Rl242Dev.Classes.Items.Ressource.Harvest.Crops;
 import me.Rl242Dev.Classes.Items.Ressource.Ores.Ores;
 import me.Rl242Dev.Classes.Utils.Emoji;
+import me.Rl242Dev.MineMate;
 import me.Rl242Dev.Utils;
 
 import java.text.DecimalFormat;
@@ -48,11 +49,11 @@ public class ResourceUtils {
 
     public static int getItemPriceFromMaterial(Material material){
         int price = switch (material){
-            case WOOD -> 1_000;
-            case STONE -> 100_000;
-            case IRON -> 1_000_000;
-            case GOLD -> 10_000_000;
-            case DIAMOND -> 100_000_000;
+            case WOOD -> MineMate.getConfigManager().getInt("prices.materials.wood");
+            case STONE -> MineMate.getConfigManager().getInt("prices.materials.stone");
+            case IRON -> MineMate.getConfigManager().getInt("prices.materials.iron");
+            case GOLD -> MineMate.getConfigManager().getInt("prices.materials.gold");
+            case DIAMOND -> MineMate.getConfigManager().getInt("prices.materials.diamond");
         };
         return price;
     }
@@ -88,27 +89,26 @@ public class ResourceUtils {
     }
 
     public static Material getMaterialFromString(String str) {
-        Material type = switch (str) {
-            case "Wood" -> Material.WOOD;
-            case "Stone" -> Material.STONE;
-            case "Iron" -> Material.IRON;
-            case "Gold" -> Material.GOLD;
-            case "Diamond" -> Material.DIAMOND;
+        Material type = switch (str.toUpperCase()) {
+            case "WOODEN", "WOOD" -> Material.WOOD;
+            case "STONE" -> Material.STONE;
+            case "IRON" -> Material.IRON;
+            case "GOLD" -> Material.GOLD;
+            case "DIAMOND" -> Material.DIAMOND;
             default -> throw new IllegalArgumentException("Invalid type: " + str);
         };
         return type;
     }
 
     public static Type getTypeFromString(String str){
-        Type type = switch (str){
-            case "Pickaxe" -> Type.PICKAXE;
-            case "Sword" -> Type.SWORD;
-            case "Hoe" -> Type.HOE;
+        Type type = switch (str.toUpperCase()){
+            case "PICKAXE" -> Type.PICKAXE;
+            case "SWORD" -> Type.SWORD;
+            case "HOE" -> Type.HOE;
             default -> throw new IllegalArgumentException("Invalid type: " + str);
         };
         return type;
     }
-
 
     /* Ressource generation*/
 

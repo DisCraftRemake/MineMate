@@ -8,10 +8,12 @@ package me.Rl242Dev.Classes.Items.Ressource.Ores;
 
  */
 
+import me.Rl242Dev.MineMate;
+
 public class Obsidian {
     /* Attributes */
 
-    private final static int price = 200;
+    private final static int price = MineMate.getConfigManager().getInt("prices.resources.obsidian");
     private final static String EmojiID = "<:obsidian:1107341809459396638>";
 
     /* Methods */

@@ -5,7 +5,7 @@ import me.Rl242Dev.Classes.Items.Ressource.Harvest.*;
 import me.Rl242Dev.Classes.Items.Ressource.ResourceUtils;
 import me.Rl242Dev.Classes.Player;
 import me.Rl242Dev.Classes.Utils.Emoji;
-import me.Rl242Dev.DisCraft;
+import me.Rl242Dev.MineMate;
 import me.Rl242Dev.Utils;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
@@ -40,6 +40,11 @@ public class HarvestHandler extends ListenerAdapter {
 
         Message message = event.getMessage();
         if(message.getContentRaw().equals(".harvest") || message.getContentRaw().equals(".h")){
+            if(MineMate.debug){
+                MineMate.getLogger().appendLogger(player.getUuid()+" Issued .harvest");
+                MineMate.getLogger().send();
+            }
+
             MessageChannelUnion channel = event.getChannel();
             EmbedBuilder embedBuilder = new EmbedBuilder();
             StringBuilder stringBuilder = new StringBuilder();
@@ -70,11 +75,11 @@ public class HarvestHandler extends ListenerAdapter {
             embedBuilder.addField(SugarCane.getEmojiID(), Utils.IntToString(resources.get(Crops.SUGARCANE)), false);
 
             embedBuilder.setTimestamp(Instant.now());
-            embedBuilder.setFooter("DisCraft");
+            embedBuilder.setFooter(MineMate.getConfigManager().getString("general.name"));
 
             channel.sendMessageEmbeds(embedBuilder.build()).queue();
 
-            DisCraft.getInstance().getDatabaseManager().saveCropsToUUID(uuid, resources);
+            MineMate.getInstance().getDatabaseManager().saveCropsToUUID(uuid, resources);
         }
     }
 }

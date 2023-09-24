@@ -3,7 +3,7 @@ package me.Rl242Dev.CommandHandler.Discord;
 import me.Rl242Dev.Classes.Levels.RanksUtils;
 import me.Rl242Dev.Classes.Player;
 import me.Rl242Dev.Classes.Utils.Emoji;
-import me.Rl242Dev.DisCraft;
+import me.Rl242Dev.MineMate;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.User;
@@ -37,7 +37,12 @@ public class LevelHandler extends ListenerAdapter {
 
         Player player = new Player(uuid);
 
-        if(message.getContentRaw().equals(".levelUP") || message.getContentRaw().equals(".lUP") || message.getContentRaw().equals(".level")){
+        if(message.getContentRaw().equals(".levelUP")){
+            if(MineMate.debug){
+                MineMate.getLogger().appendLogger(player.getUuid()+" Issued .levelUP");
+                MineMate.getLogger().send();
+            }
+
             int level = player.getLevel();
             if(level == 301){
                 EmbedBuilder embedBuilder = new EmbedBuilder();
@@ -55,7 +60,7 @@ public class LevelHandler extends ListenerAdapter {
                 embedBuilder.setDescription(description.toString());
 
                 embedBuilder.setTimestamp(Instant.now());
-                embedBuilder.setFooter("DisCraft");
+                embedBuilder.setFooter(MineMate.getConfigManager().getString("general.name"));
 
                 channel.sendMessageEmbeds(embedBuilder.build()).queue();
                 return;
@@ -65,8 +70,8 @@ public class LevelHandler extends ListenerAdapter {
             int price = RanksUtils.getPriceForLevelUp(level);
 
             if(price < balance){
-                DisCraft.getInstance().getDatabaseManager().saveLevelToUUID(uuid, level + 1);
-                DisCraft.getInstance().getDatabaseManager().removeBalanceFromUUID(uuid, price);
+                MineMate.getInstance().getDatabaseManager().saveLevelToUUID(uuid, level + 1);
+                MineMate.getInstance().getDatabaseManager().removeBalanceFromUUID(uuid, price);
 
                 EmbedBuilder embedBuilder = new EmbedBuilder();
                 StringBuilder description = new StringBuilder();
@@ -85,7 +90,7 @@ public class LevelHandler extends ListenerAdapter {
                 embedBuilder.setDescription(description.toString());
 
                 embedBuilder.setTimestamp(Instant.now());
-                embedBuilder.setFooter("DisCraft");
+                embedBuilder.setFooter(MineMate.getConfigManager().getString("general.name"));
 
                 channel.sendMessageEmbeds(embedBuilder.build()).queue();
             }else {
@@ -103,9 +108,56 @@ public class LevelHandler extends ListenerAdapter {
                 embedBuilder.setDescription(description.toString());
 
                 embedBuilder.setTimestamp(Instant.now());
-                embedBuilder.setFooter("DisCraft");
+                embedBuilder.setFooter(MineMate.getConfigManager().getString("general.name"));
 
                 channel.sendMessageEmbeds(embedBuilder.build()).queue();
+            }
+        }
+        if(message.getContentRaw().equals(".prestigeUP")){
+            if(MineMate.debug){
+                MineMate.getLogger().appendLogger(player.getUuid()+" Issued .prestigeUP");
+                MineMate.getLogger().send();
+            }
+
+            if(player.getLevel() > MineMate.getConfigManager().getInt("prestige_level")){
+                MineMate.getInstance().getDatabaseManager().prestigeUser(uuid);
+
+                EmbedBuilder embedBuilder = new EmbedBuilder();
+                StringBuilder description = new StringBuilder();
+
+                description.append("<@");
+                description.append(user.getId());
+                description.append(">");
+                description.append(" ➔ You are have leveled up your prestige");
+
+                embedBuilder.setTitle(Emoji.getTotemEmoji() + " Prestige Up Action");
+                embedBuilder.setColor(Color.green);
+
+                embedBuilder.setDescription(description.toString());
+
+                embedBuilder.setTimestamp(Instant.now());
+                embedBuilder.setFooter(MineMate.getConfigManager().getString("general.name"));
+
+                channel.sendMessageEmbeds(embedBuilder.build()).queue();
+            }else{
+                EmbedBuilder embedBuilder = new EmbedBuilder();
+                StringBuilder description = new StringBuilder();
+
+                description.append("<@");
+                description.append(user.getId());
+                description.append(">");
+                description.append(" ➔ You are too low level to prestige up ").append(player.getLevel()).append("/").append(MineMate.getConfigManager().getInt("prestige_level"));
+
+                embedBuilder.setTitle(Emoji.getXpEmoji() + " Prestige Up Action");
+                embedBuilder.setColor(Color.green);
+
+                embedBuilder.setDescription(description.toString());
+
+                embedBuilder.setTimestamp(Instant.now());
+                embedBuilder.setFooter(MineMate.getConfigManager().getString("general.name"));
+
+                channel.sendMessageEmbeds(embedBuilder.build()).queue();
+
             }
         }
     }

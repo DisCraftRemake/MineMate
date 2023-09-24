@@ -8,11 +8,13 @@ package me.Rl242Dev.Classes.Items.Ressource.Ores;
 
  */
 
+import me.Rl242Dev.MineMate;
+
 public class Coal {
 
     /* Attributes*/
 
-    private static final int price = 10;
+    private static final int price = MineMate.getConfigManager().getInt("prices.resources.coal");
     private static final String EmojID = "<:coal:1107291933623210045>";
 
     /* Methods */

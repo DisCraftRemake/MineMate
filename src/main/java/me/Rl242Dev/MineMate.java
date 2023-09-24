@@ -1,5 +1,6 @@
 package me.Rl242Dev;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -14,10 +15,10 @@ import java.util.List;
 import java.util.Map;
 
 import me.Rl242Dev.Classes.Cases.Case;
-import me.Rl242Dev.Classes.Cases.HeroLoots;
 import me.Rl242Dev.Classes.Cases.NormalLoots;
 import me.Rl242Dev.Classes.Utils.Logger;
 import me.Rl242Dev.CommandHandler.Discord.LevelHandler;
+import me.Rl242Dev.CommandHandler.Discord.Shop.BuyHandler;
 import me.Rl242Dev.CommandHandler.Discord.Shop.SellHandler;
 import me.Rl242Dev.CommandHandler.Discord.Shop.ShopDisplayHandler;
 import me.Rl242Dev.CommandHandler.Discord.StartHandler;
@@ -26,6 +27,7 @@ import me.Rl242Dev.CommandHandler.Minecraft.Actions.HarvestHandler;
 import me.Rl242Dev.CommandHandler.Minecraft.Actions.MineHandler;
 import me.Rl242Dev.CommandHandler.Mutliplayer.MiningContest;
 import me.Rl242Dev.DatabaseManager.DatabaseManager;
+import me.Rl242Dev.DatabaseManager.JsonManager;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Activity;
@@ -51,16 +53,27 @@ Comments :
 
  */
 
-public class DisCraft {
+public class MineMate {
 
     private static JDA bot;
     private final String BASE_URL = "src/main/resources/";
-    private static DisCraft instance;
+    private static MineMate instance;
     private static DatabaseManager databaseManager;
     private List<Case> cases = new ArrayList<>();
     public static Logger logger;
+    private static JsonManager configManager;
+
+    public static boolean debug;
 
     public static void main(String[] args) {
+        try {
+            File configFile = new File("src/main/resources/config.json"); // Replace with your JSON file path
+            JsonManager jsonManager = new JsonManager(configFile);
+            configManager = jsonManager;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         logger = new Logger(true);
         JDA bot = JDABuilder.createLight(getToken(), GatewayIntent.GUILD_MESSAGES, GatewayIntent.MESSAGE_CONTENT, GatewayIntent.GUILD_MEMBERS)
                 .setActivity(Activity.playing("Getting build"))
@@ -73,9 +86,9 @@ public class DisCraft {
         bot.addEventListener(new SellHandler());
         bot.addEventListener(new ShopDisplayHandler());
         bot.addEventListener(new LevelHandler());
-        bot.addEventListener(new MiningContest());
+        bot.addEventListener(new BuyHandler());
 
-        instance = new DisCraft();
+        instance = new MineMate();
 
         DatabaseManager databaseManagerLocal = new DatabaseManager();
         databaseManagerLocal.connect();
@@ -89,6 +102,24 @@ public class DisCraft {
 
         logger.appendLogger("Connected to: "+getBot().getSelfUser().getName());
         logger.send();
+
+        debug = getConfigManager().getBoolean("dev.debug");
+
+        loadCustomModules();
+    }
+
+    private static void loadCustomModules(){
+        StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
+        StackTraceElement caller = stackTrace[2];
+        String callingClassName = caller.getClassName();
+
+        if(!callingClassName.equals("me.Rl242Dev.MineMate")){
+            return;
+        }
+
+        if(configManager.getBoolean("modules.miningContest")){
+            bot.addEventListener(new MiningContest());
+        }
     }
 
     private static String getToken(){
@@ -96,7 +127,7 @@ public class DisCraft {
         StackTraceElement caller = stackTrace[2];
         String callingClassName = caller.getClassName();
 
-        if(!callingClassName.equals("me.Rl242Dev.DisCraft")){
+        if(!callingClassName.equals("me.Rl242Dev.MineMate")){
             return null;
         }
 
@@ -118,7 +149,7 @@ public class DisCraft {
         try { 
             Class.forName("org.sqlite.JDBC");
     
-            String url = "jdbc:sqlite:"+DisCraft.getInstance().getBaseURL()+"players.db";
+            String url = "jdbc:sqlite:"+ MineMate.getInstance().getBaseURL()+"players.db";
     
             conn = DriverManager.getConnection(url);
 
@@ -189,12 +220,20 @@ public class DisCraft {
         return cases;
     }
 
-    public static DisCraft getInstance(){
+    public static MineMate getInstance(){
         return instance;
     }
 
     public static void setBot(JDA bot) {
-        DisCraft.bot = bot;
+        MineMate.bot = bot;
+    }
+
+    public static Logger getLogger() {
+        return logger;
+    }
+
+    public static JsonManager getConfigManager(){
+        return configManager;
     }
 
     public DatabaseManager getDatabaseManager() {

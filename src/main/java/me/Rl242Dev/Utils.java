@@ -47,7 +47,7 @@ public class Utils {
 
     public static boolean TypeEnumContainsString(String str){
         for(Type type : Type.values()){
-            if(type.name().equals(str)){
+            if(type.name().equals(str.toUpperCase())){
                 return true;
             }
         }
@@ -56,7 +56,7 @@ public class Utils {
 
     public static boolean MaterialEnumContainsString(String str){
         for(Material material : Material.values()){
-            if(material.name().equals(str)){
+            if(material.name().equals(str.toUpperCase())){
                 return true;
             }
         }
@@ -92,7 +92,7 @@ public class Utils {
         main.append(">");
         main.append("➔ To create an adventure and start playing type : .start");
 
-        embedBuilder.setFooter("DisCraft");
+        embedBuilder.setFooter(MineMate.getConfigManager().getString("general.name"));
         embedBuilder.setColor(Color.green);
         embedBuilder.setTitle("Starting an adventure");
         embedBuilder.setTimestamp(Instant.now());

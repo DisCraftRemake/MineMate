@@ -1,0 +1,39 @@
+{
+  "general": {
+    "name": "MineMate"
+  },
+  "dev": {
+    "debug": true,
+    "utc": "UTC"
+  },
+  "channels": {
+    "help": "1155442031913619496"
+  },
+  "prices": {
+    "resources": {
+      "stone": 2,
+      "coal": 10,
+      "iron": 25,
+      "gold": 50,
+      "diamond": 100,
+      "obsidian": 200,
+      "wheat": 10,
+      "potato": 20,
+      "carrot": 30,
+      "sugarcane": 50
+    },
+    "materials": {
+      "wood": 1000,
+      "stone": 100000,
+      "iron": 1000000,
+      "gold": 10000000,
+      "diamond": 100000000
+    }
+  },
+  "modules": {
+    "miningContest": true,
+    "cases": false
+  },
+
+  "prestige_level": 200
+}

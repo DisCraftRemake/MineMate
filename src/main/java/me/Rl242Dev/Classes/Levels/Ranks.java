@@ -4,7 +4,7 @@ package me.Rl242Dev.Classes.Levels;
 
 @A = Rl242Dev
 @U = Ranks
-@E = Enum for Ranks available in DisCraft
+@E = Enum for Ranks available in MineMate
 
  */
 

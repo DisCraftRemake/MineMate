@@ -1,10 +1,12 @@
 package me.Rl242Dev.Classes.Items.Ressource.Harvest;
 
+import me.Rl242Dev.MineMate;
+
 public class Potato {
 
     /* Attributes */
 
-    private static final int price = 20;
+    private static final int price = MineMate.getConfigManager().getInt("prices.resources.potato");
     private static final String EmojiID = "<:MCpotato:1109407247638999101>";
 
     /* Methods */

@@ -1,6 +1,7 @@
 package me.Rl242Dev.CommandHandler.Discord.Shop;
 
 import me.Rl242Dev.Classes.Items.Ressource.ResourceUtils;
+import me.Rl242Dev.Classes.Player;
 import me.Rl242Dev.Classes.Utils.Coin;
 import me.Rl242Dev.Classes.Items.Ressource.Harvest.Carrot;
 import me.Rl242Dev.Classes.Items.Ressource.Harvest.Potato;
@@ -8,7 +9,7 @@ import me.Rl242Dev.Classes.Items.Ressource.Harvest.SugarCane;
 import me.Rl242Dev.Classes.Items.Ressource.Harvest.Wheat;
 import me.Rl242Dev.Classes.Items.Ressource.Ores.*;
 import me.Rl242Dev.Classes.Items.Ressource.Resources;
-import me.Rl242Dev.DisCraft;
+import me.Rl242Dev.MineMate;
 import me.Rl242Dev.Utils;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
@@ -47,7 +48,14 @@ public class SellHandler extends ListenerAdapter {
 
         List<String> args = Arrays.asList(message.getContentRaw().split(" "));
 
+        Player player = new Player(uuid);
+
         if(args.contains(".sell")){
+            if(MineMate.debug){
+                MineMate.getLogger().appendLogger(player.getUuid()+" Issued .sell");
+                MineMate.getLogger().send();
+            }
+
             if(args.size() != 2){
                 EmbedBuilder embedBuilder = new EmbedBuilder();
                 StringBuilder stringBuilder = new StringBuilder();
@@ -55,14 +63,14 @@ public class SellHandler extends ListenerAdapter {
                 stringBuilder.append("<@");
                 stringBuilder.append(user.getId());
                 stringBuilder.append(">");
-                stringBuilder.append(" ➔ You must specify an ore or sell all : .sell [Resource] | .sell all | .help");
+                stringBuilder.append(" ➔ You must specify an ore or sell all : .sell [Resource] | .sell all | <#"+MineMate.getConfigManager().getString("help")+">");
 
                 embedBuilder.setColor(Color.green);
                 embedBuilder.setTitle(Coin.getEmojiID() + " Sell Action");
                 embedBuilder.setDescription(stringBuilder.toString());
 
                 embedBuilder.setTimestamp(Instant.now());
-                embedBuilder.setFooter("DisCraft");
+                embedBuilder.setFooter(MineMate.getConfigManager().getString("general.name"));
 
                 channel.sendMessageEmbeds(embedBuilder.build()).queue();
             }else{
@@ -71,7 +79,7 @@ public class SellHandler extends ListenerAdapter {
 
                 if(args.get(1).equals("all")){
                     try {
-                        Map<Resources, Integer> resources = DisCraft.getInstance().getDatabaseManager().getResourcesFromUUID(uuid);
+                        Map<Resources, Integer> resources = MineMate.getInstance().getDatabaseManager().getResourcesFromUUID(uuid);
 
                         int GeneratedMoney = 0;
 
@@ -101,15 +109,15 @@ public class SellHandler extends ListenerAdapter {
                             embedBuilder.setDescription(description.toString());
 
                             embedBuilder.setTimestamp(Instant.now());
-                            embedBuilder.setFooter("DisCraft");
+                            embedBuilder.setFooter(MineMate.getConfigManager().getString("general.name"));
 
                             channel.sendMessageEmbeds(embedBuilder.build()).queue();
 
                             return;
                         }
 
-                        DisCraft.getInstance().getDatabaseManager().addToBalanceFromUUID(uuid, GeneratedMoney);
-                        DisCraft.getInstance().getDatabaseManager().resetResourcesFromUUID(uuid);
+                        MineMate.getInstance().getDatabaseManager().addToBalanceFromUUID(uuid, GeneratedMoney);
+                        MineMate.getInstance().getDatabaseManager().resetResourcesFromUUID(uuid);
 
                         EmbedBuilder embedBuilder = new EmbedBuilder();
                         StringBuilder description = new StringBuilder();
@@ -126,7 +134,7 @@ public class SellHandler extends ListenerAdapter {
                         embedBuilder.setDescription(description.toString());
 
                         embedBuilder.setTimestamp(Instant.now());
-                        embedBuilder.setFooter("DisCraft");
+                        embedBuilder.setFooter(MineMate.getConfigManager().getString("general.name"));
 
                         channel.sendMessageEmbeds(embedBuilder.build()).queue();
                     }catch (IndexOutOfBoundsException e){
@@ -135,10 +143,10 @@ public class SellHandler extends ListenerAdapter {
                 }
                 if(Utils.ResourcesEnumContainsString(ore)){
                     int price = ResourceUtils.getPriceFromString(args.get(1));
-                    int quantity = DisCraft.getInstance().getDatabaseManager().getResourceQuantityFromString(uuid, args.get(1));
+                    int quantity = MineMate.getInstance().getDatabaseManager().getResourceQuantityFromString(uuid, args.get(1));
 
-                    DisCraft.getInstance().getDatabaseManager().resetResourceFromString(uuid, ore.toLowerCase());
-                    DisCraft.getInstance().getDatabaseManager().addToBalanceFromUUID(uuid, price*quantity);
+                    MineMate.getInstance().getDatabaseManager().resetResourceFromString(uuid, ore.toLowerCase());
+                    MineMate.getInstance().getDatabaseManager().addToBalanceFromUUID(uuid, price*quantity);
 
                     EmbedBuilder embedBuilder = new EmbedBuilder();
                     StringBuilder description = new StringBuilder();
@@ -156,7 +164,7 @@ public class SellHandler extends ListenerAdapter {
                     embedBuilder.setDescription(description.toString());
 
                     embedBuilder.setTimestamp(Instant.now());
-                    embedBuilder.setFooter("DisCraft");
+                    embedBuilder.setFooter(MineMate.getConfigManager().getString("general.name"));
 
                     channel.sendMessageEmbeds(embedBuilder.build()).queue();
                 }else {
@@ -177,7 +185,7 @@ public class SellHandler extends ListenerAdapter {
                     embedBuilder.setDescription(stringBuilder.toString());
 
                     embedBuilder.setTimestamp(Instant.now());
-                    embedBuilder.setFooter("DisCraft");
+                    embedBuilder.setFooter(MineMate.getConfigManager().getString("general.name"));
 
                     channel.sendMessageEmbeds(embedBuilder.build()).queue();
                 }

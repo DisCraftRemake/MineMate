@@ -1,5 +1,7 @@
 package me.Rl242Dev.Classes.Utils;
 
+import me.Rl242Dev.MineMate;
+
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
@@ -34,9 +36,9 @@ public class Logger {
         if(this.Timestamp){
             Instant currentInstant = Instant.now();
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
-            String formattedTime = formatter.format(currentInstant.atZone(ZoneId.of("UTC")));
+            String formattedTime = formatter.format(currentInstant.atZone(ZoneId.of(MineMate.getConfigManager().getString("dev.utc"))));
 
-            System.out.println("[DISCRAFT] ["+formattedTime+"] "+this.logger.toString());
+            System.out.println("["+ MineMate.getConfigManager().getString("general.name")+"] ["+formattedTime+"] "+this.logger.toString());
             this.logger = new StringBuilder();
         }else {
             System.out.println(logger.toString());

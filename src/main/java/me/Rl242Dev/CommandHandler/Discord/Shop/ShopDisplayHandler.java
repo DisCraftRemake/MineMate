@@ -1,11 +1,13 @@
 package me.Rl242Dev.CommandHandler.Discord.Shop;
 
 import me.Rl242Dev.Classes.Items.Item;
+import me.Rl242Dev.Classes.Player;
 import me.Rl242Dev.Classes.Utils.Coin;
 import me.Rl242Dev.Classes.Items.Ressource.Material;
 import me.Rl242Dev.Classes.Items.Ressource.ResourceUtils;
 import me.Rl242Dev.Classes.Items.Ressource.Type;
 import me.Rl242Dev.Classes.Utils.Emoji;
+import me.Rl242Dev.MineMate;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.User;
@@ -46,7 +48,14 @@ public class ShopDisplayHandler extends ListenerAdapter {
         // Sword
         // Axe
 
+        Player player = new Player(user.getId());
+
         if(args.contains(".shop")){
+            if(MineMate.debug){
+                MineMate.getLogger().appendLogger(player.getUuid()+" Issued .shop");
+                MineMate.getLogger().send();
+            }
+
             if(args.size() != 2){
                 EmbedBuilder embedBuilder = new EmbedBuilder();
                 StringBuilder stringBuilder = new StringBuilder();
@@ -54,14 +63,14 @@ public class ShopDisplayHandler extends ListenerAdapter {
                 stringBuilder.append("<@");
                 stringBuilder.append(user.getId());
                 stringBuilder.append(">");
-                stringBuilder.append(" ➔ Shop Error :");
+                stringBuilder.append(" ➔ Shop Display :");
 
                 embedBuilder.setTitle(Coin.getEmojiID() + "Shop Action");
                 embedBuilder.setColor(Color.green);
 
                 embedBuilder.setDescription(stringBuilder.toString());
 
-                embedBuilder.addField(Emoji.getPickaxeEmoji() + " Pickaxes", ".shop p | .shop pickaxes | .shop pick", false);
+                embedBuilder.addField(Emoji.getPickaxeEmoji() + " Pickaxes", ".shop pickaxes | .shop pick", false);
                 embedBuilder.addField(Emoji.getHoeEmoji() + " Hoes", ".shop h | .shop hoes", false);
                 // Utils (TNT...)
                 // Pets
@@ -69,11 +78,11 @@ public class ShopDisplayHandler extends ListenerAdapter {
                 // Axe
 
                 embedBuilder.setTimestamp(Instant.now());
-                embedBuilder.setFooter("DisCraft");
+                embedBuilder.setFooter(MineMate.getConfigManager().getString("general.name"));
 
                 channel.sendMessageEmbeds(embedBuilder.build()).queue();
             }
-            if(args.contains("pickaxes") || args.contains("pick") || args.contains("p")){
+            if(args.contains("pickaxes") || args.contains("pick")){
                 EmbedBuilder embedBuilder = new EmbedBuilder();
                 StringBuilder stringBuilder = new StringBuilder();
 
@@ -86,7 +95,7 @@ public class ShopDisplayHandler extends ListenerAdapter {
                 stringBuilder.append("<@");
                 stringBuilder.append(user.getId());
                 stringBuilder.append(">");
-                stringBuilder.append(" ➔ Pickaxes Shop :");
+                stringBuilder.append(" ➔ Pickaxes Shop | .buy Pickaxe [Material] :");
 
                 embedBuilder.setTitle(Emoji.getPickaxeEmoji() + "Shop Action");
                 embedBuilder.setColor(Color.green);
@@ -100,7 +109,7 @@ public class ShopDisplayHandler extends ListenerAdapter {
                 embedBuilder.addField(Emoji.getPickaxeEmoji() + DiamondPickaxe.getDisplayName(), ResourceUtils.PriceToString(DiamondPickaxe.getSellPrice()) + Coin.getEmojiID(), false);
 
                 embedBuilder.setTimestamp(Instant.now());
-                embedBuilder.setFooter("DisCraft");
+                embedBuilder.setFooter(MineMate.getConfigManager().getString("general.name"));
 
                 channel.sendMessageEmbeds(embedBuilder.build()).queue();
             }

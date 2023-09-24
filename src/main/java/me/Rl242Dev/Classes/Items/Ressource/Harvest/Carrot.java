@@ -8,11 +8,13 @@ package me.Rl242Dev.Classes.Items.Ressource.Harvest;
 
  */
 
+import me.Rl242Dev.MineMate;
+
 public class Carrot {
 
     /* Attributes */
 
-    private static final int price = 30;
+    private static final int price = MineMate.getConfigManager().getInt("prices.resources.carrot");
     private static final String EmojiID = "<:MCcarrot:1109407077715157025>";
 
     /* Methods */

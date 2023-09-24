@@ -1,5 +1,6 @@
 package me.Rl242Dev.DatabaseManager;
 
+import me.Rl242Dev.Classes.Entity.Pets.Pets;
 import me.Rl242Dev.Classes.Items.Item;
 import me.Rl242Dev.Classes.Items.Ressource.Harvest.Crops;
 import me.Rl242Dev.Classes.Items.Ressource.Material;
@@ -7,15 +8,18 @@ import me.Rl242Dev.Classes.Items.Ressource.Ores.Ores;
 import me.Rl242Dev.Classes.Items.Ressource.ResourceUtils;
 import me.Rl242Dev.Classes.Items.Ressource.Resources;
 import me.Rl242Dev.Classes.Items.Ressource.Type;
-import me.Rl242Dev.DisCraft;
+import me.Rl242Dev.MineMate;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 /*
 
@@ -33,11 +37,11 @@ public class DatabaseManager {
         try {
             Class.forName("org.sqlite.JDBC");
     
-            String url = "jdbc:sqlite:"+DisCraft.getInstance().getBaseURL()+"players.db";
+            String url = "jdbc:sqlite:"+ MineMate.getInstance().getBaseURL()+"players.db";
     
             connection = DriverManager.getConnection(url);
-            DisCraft.logger.appendLogger("DatabaseManager connected");
-            DisCraft.logger.send();
+            MineMate.logger.appendLogger("DatabaseManager connected");
+            MineMate.logger.send();
         }catch(SQLException | ClassNotFoundException exception){
             System.out.println(exception.getMessage());
         }
@@ -213,11 +217,67 @@ public class DatabaseManager {
         return false;
     }
 
+    public void updateItem(String UUID, Item item){
+        try {
+            Statement statement = connection.createStatement();
+            String query = "UPDATE player_items SET material = '"+item.getMaterial().toString()+"' WHERE player_id = '"+UUID+"' AND type = '"+DatabaseUtils.getNameFromType(item.getType())+"';";
+
+            statement.execute(query);
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+    }
+
+    public void prestigeUser(String UUID){
+        try {
+            Statement statement = connection.createStatement();
+
+            for(Type type : Type.values()){
+                String query = "UPDATE player_items SET material = 'Wood' WHERE player_id = '"+UUID+"' AND type = '"+DatabaseUtils.getNameFromType(type)+"';";
+                statement.execute(query);
+            }
+            for(Pets pet : Pets.values()){
+                String query = "UPDATE player_pets SET pet = '' WHERE player_id = '"+UUID+"' AND pet = '"+DatabaseUtils.getNameFromPet(pet)+"';";
+                statement.execute(query);
+            }
+
+            String balance = "UPDATE players SET balance = 0 WHERE player_id = '"+UUID+"';";
+            String level = "UPDATE players SET level = 0 WHERE player_id = '"+UUID+"';";
+
+            statement.execute(balance);
+            statement.execute(level);
+
+            resetResourcesFromUUID(UUID);
+
+            String updatePrestige = "UPDATE players SET prestige = '"+getPrestige(UUID)+1+"' WHERE player_id = '"+UUID+"';";
+            statement.execute(updatePrestige);
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+    }
+
+    public int getPrestige(String UUID){
+        try {
+            Statement statement = connection.createStatement();
+            String query = "SELECT prestige FROM players WHERE player_id = '"+UUID+"';";
+
+            ResultSet resultSet = statement.executeQuery(query);
+            return resultSet.getInt("prestige");
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+
+        return 0;
+    }
+
     public void registerUser(String UUID){
         try {
             Statement statement = connection.createStatement();
 
-            String playersQuery = "INSERT INTO players (player_id, balance, level) VALUES ('"+UUID+"', '0', '0');"; // players
+            SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
+            Date date = new Date();
+
+            String playersQuery = "INSERT INTO players (player_id, balance, level, start_date, prestige) VALUES ('"+UUID+"', '0', '0', '"+format.format(date)+"', '0');";
             statement.execute(playersQuery);
 
             for(Resources resources : Resources.values()){

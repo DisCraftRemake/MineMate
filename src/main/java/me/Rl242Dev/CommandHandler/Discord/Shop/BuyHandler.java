@@ -4,9 +4,17 @@ import java.awt.Color;
 import java.time.Instant;
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 
+import me.Rl242Dev.Classes.Items.Item;
+import me.Rl242Dev.Classes.Items.Ressource.Material;
+import me.Rl242Dev.Classes.Items.Ressource.ResourceUtils;
+import me.Rl242Dev.Classes.Items.Ressource.Resources;
+import me.Rl242Dev.Classes.Items.Ressource.Type;
 import me.Rl242Dev.Classes.Player;
 import me.Rl242Dev.Classes.Utils.Coin;
+import me.Rl242Dev.MineMate;
+import me.Rl242Dev.Utils;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.User;
@@ -41,6 +49,11 @@ public class BuyHandler extends ListenerAdapter{
         List<String> args = Arrays.asList(message.getContentRaw().split(" "));
 
         if(args.contains(".buy")){
+            if(MineMate.debug){
+                MineMate.getLogger().appendLogger(player.getUuid()+" Issued .buy");
+                MineMate.getLogger().send();
+            }
+
             if(args.size() != 3) {
                 EmbedBuilder embedBuilder = new EmbedBuilder();
                 StringBuilder stringBuilder = new StringBuilder();
@@ -48,7 +61,7 @@ public class BuyHandler extends ListenerAdapter{
                 stringBuilder.append("<@");
                 stringBuilder.append(user.getId());
                 stringBuilder.append(">");
-                stringBuilder.append(" ➔ .buy [Type] [Material] | .help");
+                stringBuilder.append(" ➔ .buy [Type] [Material] | <#"+MineMate.getConfigManager().getString("channels.help")+">");
 
                 embedBuilder.setTitle(Coin.getEmojiID() + " Buy Action");
                 embedBuilder.setColor(Color.green);
@@ -56,9 +69,82 @@ public class BuyHandler extends ListenerAdapter{
                 embedBuilder.setDescription(stringBuilder.toString());
 
                 embedBuilder.setTimestamp(Instant.now());
-                embedBuilder.setFooter("DisCraft");
+                embedBuilder.setFooter(MineMate.getConfigManager().getString("general.name"));
 
                 channel.sendMessageEmbeds(embedBuilder.build()).queue();
+            }else {
+                //TODO: else for Items
+                Type type = null;
+                Material material = null;
+                if(Utils.TypeEnumContainsString(args.get(1))){
+                    type = ResourceUtils.getTypeFromString(args.get(1));
+                }
+                if(Utils.MaterialEnumContainsString(args.get(2))){
+                    material = ResourceUtils.getMaterialFromString(args.get(2));
+                }
+
+                if(material == null || type == null){
+                    EmbedBuilder embedBuilder = new EmbedBuilder();
+                    StringBuilder description = new StringBuilder();
+
+                    description.append("<@");
+                    description.append(user.getId());
+                    description.append(">");
+                    description.append(" ➔ Type or Material incorrect | <#"+MineMate.getConfigManager().getString("channels.help")+">");
+
+                    embedBuilder.setTitle(Coin.getEmojiID() + " Buy Action");
+                    embedBuilder.setColor(Color.green);
+
+                    embedBuilder.setDescription(description.toString());
+
+                    embedBuilder.setTimestamp(Instant.now());
+                    embedBuilder.setFooter(MineMate.getConfigManager().getString("general.name"));
+
+                    channel.sendMessageEmbeds(embedBuilder.build()).queue();
+                    return;
+                }
+
+                Item item = new Item(material, type, "0");
+                if(player.getBalance() < item.getSellPrice()){
+                    EmbedBuilder embedBuilder = new EmbedBuilder();
+                    StringBuilder description = new StringBuilder();
+
+                    description.append("<@");
+                    description.append(user.getId());
+                    description.append(">");
+                    description.append(" ➔ You don't have enought money to buy this Item | " + player.getBalance()+"/"+item.getSellPrice());
+
+                    embedBuilder.setTitle(Coin.getEmojiID() + " Buy Action");
+                    embedBuilder.setColor(Color.green);
+
+                    embedBuilder.setDescription(description.toString());
+
+                    embedBuilder.setTimestamp(Instant.now());
+                    embedBuilder.setFooter(MineMate.getConfigManager().getString("general.name"));
+
+                    channel.sendMessageEmbeds(embedBuilder.build()).queue();
+                }else {
+                    EmbedBuilder embedBuilder = new EmbedBuilder();
+                    StringBuilder description = new StringBuilder();
+
+                    description.append("<@");
+                    description.append(user.getId());
+                    description.append(">");
+                    description.append(" ➔ You successfully bought this Item | " + item.getDisplayName());
+
+                    embedBuilder.setTitle(Coin.getEmojiID() + " Buy Action");
+                    embedBuilder.setColor(Color.green);
+
+                    embedBuilder.setDescription(description.toString());
+
+                    embedBuilder.setTimestamp(Instant.now());
+                    embedBuilder.setFooter(MineMate.getConfigManager().getString("general.name"));
+
+                    channel.sendMessageEmbeds(embedBuilder.build()).queue();
+
+                    MineMate.getInstance().getDatabaseManager().removeBalanceFromUUID(player.getUuid(), item.getSellPrice());
+                    MineMate.getInstance().getDatabaseManager().updateItem(player.getUuid(), item);
+                }
             }
         }
     }

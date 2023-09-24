@@ -1,6 +1,6 @@
 package me.Rl242Dev.CommandHandler.Discord;
 
-import me.Rl242Dev.DisCraft;
+import me.Rl242Dev.MineMate;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.User;
@@ -33,8 +33,13 @@ public class StartHandler extends ListenerAdapter {
         MessageChannelUnion channel = event.getChannel();
 
         if(message.getContentRaw().equals(".start")){
-            if(!DisCraft.getInstance().getDatabaseManager().userExist(uuid)){
-                DisCraft.getInstance().getDatabaseManager().registerUser(uuid);
+            if(MineMate.debug){
+                MineMate.getLogger().appendLogger(uuid+" Issued .start");
+                MineMate.getLogger().send();
+            }
+
+            if(!MineMate.getInstance().getDatabaseManager().userExist(uuid)){
+                MineMate.getInstance().getDatabaseManager().registerUser(uuid);
 
                 EmbedBuilder embedBuilder = new EmbedBuilder();
                 StringBuilder description = new StringBuilder();
@@ -42,14 +47,14 @@ public class StartHandler extends ListenerAdapter {
                 description.append("<@");
                 description.append(user.getId());
                 description.append(">");
-                description.append(" ➔ You have started an adventure, Good Luck. Help : .help | .h");
+                description.append(" ➔ You have started an adventure, Good Luck. Help : <#"+MineMate.getConfigManager().getString("channels.help")+"> | .h");
 
                 embedBuilder.setTitle("<:pickaxe:1107341471725649990> Start Action");
                 embedBuilder.setColor(Color.green);
                 embedBuilder.setDescription(description.toString());
 
                 embedBuilder.setTimestamp(Instant.now());
-                embedBuilder.setFooter("DisCraft");
+                embedBuilder.setFooter(MineMate.getConfigManager().getString("general.name"));
 
                 channel.sendMessageEmbeds(embedBuilder.build()).queue();
             }else {
@@ -59,7 +64,7 @@ public class StartHandler extends ListenerAdapter {
                 description.append("<@");
                 description.append(user.getId());
                 description.append(">");
-                description.append(" ➔ You already have started an adventure. Help : .help");
+                description.append(" ➔ You already have started an adventure. Help : <#"+MineMate.getConfigManager().getString("channels.help")+">");
 
                 embedBuilder.setTitle("<:pickaxe:1107341471725649990> Start Action");
                 embedBuilder.setColor(Color.green);
@@ -67,7 +72,7 @@ public class StartHandler extends ListenerAdapter {
                 embedBuilder.setDescription(description.toString());
 
                 embedBuilder.setTimestamp(Instant.now());
-                embedBuilder.setFooter("DisCraft");
+                embedBuilder.setFooter(MineMate.getConfigManager().getString("general.name"));
 
                 channel.sendMessageEmbeds(embedBuilder.build()).queue();
             }

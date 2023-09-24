@@ -6,7 +6,7 @@ import me.Rl242Dev.Classes.Items.Ressource.ResourceUtils;
 import me.Rl242Dev.Classes.Player;
 import me.Rl242Dev.Classes.Utils.Coin;
 import me.Rl242Dev.Classes.Utils.Emoji;
-import me.Rl242Dev.DisCraft;
+import me.Rl242Dev.MineMate;
 import me.Rl242Dev.Utils;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.User;
@@ -42,9 +42,37 @@ public class MiningContest extends ListenerAdapter {
             return;
         }
 
+        Player player = new Player(uuid);
+
         MessageChannelUnion channel = event.getChannel();
 
         if (event.getMessage().getContentRaw().equals(".miningContest")) {
+            if(MineMate.debug){
+                MineMate.getLogger().appendLogger(player.getUuid()+" Issued .miningContest");
+                MineMate.getLogger().send();
+            }
+
+            if(player.getBalance() < 500){
+                EmbedBuilder embedBuilder = new EmbedBuilder();
+                StringBuilder description = new StringBuilder();
+
+                description.append("<@");
+                description.append(user.getId());
+                description.append(">");
+                description.append(" ➔ You can don't have enough money to play." + player.getBalance()+"/500");
+
+                embedBuilder.setTitle(Emoji.getXpEmoji() + " Game Action");
+                embedBuilder.setColor(Color.green);
+
+                embedBuilder.setDescription(description.toString());
+
+                embedBuilder.setTimestamp(Instant.now());
+                embedBuilder.setFooter(MineMate.getConfigManager().getString("general.name"));
+
+                channel.sendMessageEmbeds(embedBuilder.build()).queue();
+                return;
+            }
+
             if (isOnCooldown(uuid)) {
                 EmbedBuilder embedBuilder = new EmbedBuilder();
                 StringBuilder description = new StringBuilder();
@@ -60,7 +88,7 @@ public class MiningContest extends ListenerAdapter {
                 embedBuilder.setDescription(description.toString());
 
                 embedBuilder.setTimestamp(Instant.now());
-                embedBuilder.setFooter("DisCraft");
+                embedBuilder.setFooter(MineMate.getConfigManager().getString("general.name"));
 
                 channel.sendMessageEmbeds(embedBuilder.build()).queue();
                 return;
@@ -68,7 +96,7 @@ public class MiningContest extends ListenerAdapter {
 
             startCooldown(uuid);
 
-            DisCraft.getInstance().getDatabaseManager().removeBalanceFromUUID(uuid, 500);
+            MineMate.getInstance().getDatabaseManager().removeBalanceFromUUID(uuid, 500);
             Map<Ores, Integer> playerMapGlobal = new HashMap<>();
             Map<Ores, Integer> serverMapGlobal = new HashMap<>();
 
@@ -108,16 +136,16 @@ public class MiningContest extends ListenerAdapter {
             embedBuilder.setColor(Color.green);
 
             embedBuilder.setTimestamp(Instant.now());
-            embedBuilder.setFooter("DisCraft");
+            embedBuilder.setFooter(MineMate.getConfigManager().getString("general.name"));
 
-            embedBuilder.addField(Coin.getEmojiID() + "| " + DisCraft.getBot().getSelfUser().getName(), Utils.IntToString(serverScore), false);
+            embedBuilder.addField(Coin.getEmojiID() + "| " + MineMate.getBot().getSelfUser().getName(), Utils.IntToString(serverScore), false);
             embedBuilder.addField(Coin.getEmojiID() + "| " + user.getName(), Utils.IntToString(playerScore), false);
 
             if (playerScore < serverScore) {
-                embedBuilder.addField(":crown: Winner", DisCraft.getBot().getSelfUser().getName(), false);
+                embedBuilder.addField(":crown: Winner", MineMate.getBot().getSelfUser().getName(), false);
             } else {
                 embedBuilder.addField(":crown: Winner", user.getName(), false);
-                DisCraft.getInstance().getDatabaseManager().addToBalanceFromUUID(uuid, 1000);
+                MineMate.getInstance().getDatabaseManager().addToBalanceFromUUID(uuid, 1000);
             }
 
             embedBuilder.setDescription(description.toString());

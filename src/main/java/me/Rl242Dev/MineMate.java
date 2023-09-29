@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Map;
 
 import me.Rl242Dev.Classes.Cases.Case;
-import me.Rl242Dev.Classes.Cases.NormalLoots;
+import me.Rl242Dev.Classes.Cases.CasesLoots;
 import me.Rl242Dev.Classes.Utils.Logger;
 import me.Rl242Dev.CommandHandler.Discord.LevelHandler;
 import me.Rl242Dev.CommandHandler.Discord.Shop.BuyHandler;
@@ -194,15 +194,14 @@ public class MineMate {
     }
 
     private static void initCases(){
-        /* Normal Case */
-        Map<NormalLoots, Integer> normalLootsIntegerMap = new HashMap<>();
-        normalLootsIntegerMap.put(NormalLoots.PET_GOAT, 20);
-        normalLootsIntegerMap.put(NormalLoots.PET_CAT, 5);
-        normalLootsIntegerMap.put(NormalLoots.PET_BEE, 20);
-        normalLootsIntegerMap.put(NormalLoots.ITEM_IRON_PICKAXE, 5);
-        normalLootsIntegerMap.put(NormalLoots.LEVEL_TWO, 15);
-        normalLootsIntegerMap.put(NormalLoots.LEVEL_FIVE, 10);
-        normalLootsIntegerMap.put(NormalLoots.GRADE_NORMAL_LOOT, 25);
+        Map<CasesLoots, Integer> normalLootsIntegerMap = new HashMap<>();
+        normalLootsIntegerMap.put(CasesLoots.PET_GOAT, 20);
+        normalLootsIntegerMap.put(CasesLoots.PET_CAT, 5);
+        normalLootsIntegerMap.put(CasesLoots.PET_BEE, 20);
+        normalLootsIntegerMap.put(CasesLoots.ITEM_IRON_PICKAXE, 5);
+        normalLootsIntegerMap.put(CasesLoots.LEVEL_TWO, 15);
+        normalLootsIntegerMap.put(CasesLoots.LEVEL_FIVE, 10);
+        normalLootsIntegerMap.put(CasesLoots.BADGE_LEGEND_LOOT, 25);
 
         Case normalCase = new Case("\uD83D\uDD10 | Normal Case", 100000, normalLootsIntegerMap);
         getInstance().cases.add(normalCase);

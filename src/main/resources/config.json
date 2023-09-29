@@ -3,7 +3,7 @@
     "name": "MineMate"
   },
   "dev": {
-    "debug": true,
+    "debug": false,
     "utc": "UTC"
   },
   "channels": {
@@ -28,6 +28,11 @@
       "iron": 1000000,
       "gold": 10000000,
       "diamond": 100000000
+    },
+    "pets": {
+      "bee": 100000,
+      "goat": 100000,
+      "cat": 1000000
     }
   },
   "modules": {

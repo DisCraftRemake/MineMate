@@ -15,6 +15,9 @@ target/
 ### Token ###
 src/main/resources/token.json
 
+### Database ###
+src/main/resources/players.db
+
 ### Eclipse ###
 .apt_generated
 .classpath

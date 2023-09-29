@@ -71,7 +71,7 @@ public class LevelHandler extends ListenerAdapter {
 
             if(price < balance){
                 MineMate.getInstance().getDatabaseManager().saveLevelToUUID(uuid, level + 1);
-                MineMate.getInstance().getDatabaseManager().removeBalanceFromUUID(uuid, price);
+                MineMate.getInstance().getDatabaseManager().removeAmountFromUUID(uuid, price);
 
                 EmbedBuilder embedBuilder = new EmbedBuilder();
                 StringBuilder description = new StringBuilder();

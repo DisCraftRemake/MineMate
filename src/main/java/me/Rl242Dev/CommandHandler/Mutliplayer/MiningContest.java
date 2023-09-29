@@ -96,13 +96,13 @@ public class MiningContest extends ListenerAdapter {
 
             startCooldown(uuid);
 
-            MineMate.getInstance().getDatabaseManager().removeBalanceFromUUID(uuid, 500);
+            MineMate.getInstance().getDatabaseManager().removeAmountFromUUID(uuid, 500);
             Map<Ores, Integer> playerMapGlobal = new HashMap<>();
             Map<Ores, Integer> serverMapGlobal = new HashMap<>();
 
             for (int i = 0; i < 5; i++) {
-                Map<Ores, Integer> playerMap = ResourceUtils.getResourceForPickaxe(Material.DIAMOND);
-                Map<Ores, Integer> serverMap = ResourceUtils.getResourceForPickaxe(Material.DIAMOND);
+                Map<Ores, Integer> playerMap = ResourceUtils.getResourcesForPickaxe(Material.DIAMOND);
+                Map<Ores, Integer> serverMap = ResourceUtils.getResourcesForPickaxe(Material.DIAMOND);
 
                 for (Ores ore : playerMap.keySet()) {
                     playerMapGlobal.put(ore, playerMap.get(ore));

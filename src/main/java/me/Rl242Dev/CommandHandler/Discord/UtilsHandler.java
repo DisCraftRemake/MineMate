@@ -1,5 +1,7 @@
 package me.Rl242Dev.CommandHandler.Discord;
 
+import me.Rl242Dev.Classes.Entity.Pets.PetUtils;
+import me.Rl242Dev.Classes.Entity.Pets.Pets;
 import me.Rl242Dev.Classes.Items.Ressource.ResourceUtils;
 import me.Rl242Dev.Classes.Levels.Ranks;
 import me.Rl242Dev.Classes.Levels.RanksUtils;
@@ -95,7 +97,9 @@ public class UtilsHandler extends ListenerAdapter {
             embedBuilder.addField(Emoji.getPickaxeEmoji() + " **Pickaxe** :", player.getPickaxe().getDisplayName(), false);
             embedBuilder.addField(Emoji.getHoeEmoji() + " **Hoe** :", player.getHoe().getDisplayName(), false);
             // Axe
-            // Pets
+            if(player.getPet() != null){
+                embedBuilder.addField(PetUtils.getEmojiFromPet(player.getPet()) + " **Pet** :", PetUtils.getOnlyNameFromPet(player.getPet()), false);
+            }
 
             embedBuilder.setFooter(MineMate.getConfigManager().getString("general.name"));
             embedBuilder.setTimestamp(Instant.now());
@@ -108,16 +112,16 @@ public class UtilsHandler extends ListenerAdapter {
 
             if(event.getMember().hasPermission(Permission.ADMINISTRATOR)){
                 event.getGuild()
-                        .getTextChannelById(MineMate.getConfigManager().getString("help"))
+                        .getTextChannelById(MineMate.getConfigManager().getString("channels.help"))
                         .getHistory()
                         .retrievePast(1)
                         .queue(history -> {
                             int messageCount = history.size();
 
                             if (messageCount > 0) {
-                                // basic help
+                                //TODO basic help
                             } else {
-                                // admin help
+                                //TODO admin help
                             }
                         });
             }else{

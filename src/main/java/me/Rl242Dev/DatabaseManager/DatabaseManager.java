@@ -1,6 +1,6 @@
 package me.Rl242Dev.DatabaseManager;
 
-import me.Rl242Dev.Classes.Entity.Pets.Pets;
+import me.Rl242Dev.Classes.Entity.Pets.*;
 import me.Rl242Dev.Classes.Items.Item;
 import me.Rl242Dev.Classes.Items.Ressource.Harvest.Crops;
 import me.Rl242Dev.Classes.Items.Ressource.Material;
@@ -19,7 +19,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
 /*
 
@@ -47,13 +46,25 @@ public class DatabaseManager {
         }
     }
 
+    public void removePet(String UUID){
+        try {
+            Statement statement = connection.createStatement();
+            String query = "UPDATE player_pets SET pet = 'null' WHERE player_id = '"+UUID+"';";
+
+            statement.execute(query);
+            statement.close();
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+    }
+
     public Item getPickaxeFromUUID(String UUID){
         try {
-            Statement stmt = connection.createStatement();
+            Statement statement = connection.createStatement();
             String query = "SELECT * FROM player_items WHERE player_id = '" + UUID + "' AND type = 'Pickaxe';";
 
-            ResultSet results = stmt.executeQuery(query);
-            
+            ResultSet results = statement.executeQuery(query);
+
             return new Item(
                     ResourceUtils.getMaterialFromString(results.getString("material")),
                     ResourceUtils.getTypeFromString(results.getString("type")),
@@ -80,12 +91,31 @@ public class DatabaseManager {
         return 0;
     }
 
+    public Class<? extends PetIdentifier> getPetFromUUID(String UUID){
+        try {
+            Statement statement = connection.createStatement();
+            String query = "SELECT pet FROM player_pets WHERE player_id = '"+UUID+"';";
+
+            ResultSet resultSet = statement.executeQuery(query);
+
+            return switch (resultSet.getString("pet")){
+                case "bee" -> Bee.class;
+                case "cat" -> Cat.class;
+                case "goat" -> Goat.class;
+                default -> null;
+            };
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     public Item getHoeFromUUID(String UUID){
         try {
-            Statement stmt = connection.createStatement();
+            Statement statement = connection.createStatement();
             String query = "SELECT * FROM player_items WHERE player_id = '" + UUID + "' AND type = 'Hoe';";
 
-            ResultSet results = stmt.executeQuery(query);
+            ResultSet results = statement.executeQuery(query);
 
             return new Item(
                     ResourceUtils.getMaterialFromString(results.getString("material")),
@@ -128,6 +158,8 @@ public class DatabaseManager {
                 int total = resourceResult.getInt("quantity") + ressourcesMap.get(ore);
                 String query = "UPDATE player_resources SET quantity = '"+total+"' WHERE player_id = '"+UUID+"' AND resource = '"+ore.name()+"';";
                 statement.execute(query);
+
+                statement.close();
             }catch (SQLException e){
                 e.printStackTrace();
             }
@@ -143,12 +175,13 @@ public class DatabaseManager {
             String query = "UPDATE players SET balance = '"+totalBalance+"' WHERE player_id = '"+UUID+"';";
 
             statement.execute(query);
+            statement.close();
         }catch (SQLException e){
             e.printStackTrace();
         }
     }
 
-    public void removeBalanceFromUUID(String UUID, int amout){
+    public void removeAmountFromUUID(String UUID, int amout){
         try {
             int balance = getBalanceFromUUID(UUID);
             int totalBalance = balance - amout;
@@ -157,6 +190,7 @@ public class DatabaseManager {
             String query = "UPDATE players SET balance = '"+totalBalance+"' WHERE player_id = '"+UUID+"';";
 
             statement.execute(query);
+            statement.close();
         }catch (SQLException e){
             e.printStackTrace();
         }
@@ -196,6 +230,8 @@ public class DatabaseManager {
                 int total = resourceResult.getInt("quantity") + ressourcesMap.get(crop);
                 String query = "UPDATE player_resources SET quantity = '"+total+"' WHERE player_id = '"+UUID+"' AND resource = '"+crop.name()+"';";
                 statement.execute(query);
+
+                statement.close();
             }catch (SQLException e){
                 e.printStackTrace();
             }
@@ -223,6 +259,7 @@ public class DatabaseManager {
             String query = "UPDATE player_items SET material = '"+item.getMaterial().toString()+"' WHERE player_id = '"+UUID+"' AND type = '"+DatabaseUtils.getNameFromType(item.getType())+"';";
 
             statement.execute(query);
+            statement.close();
         }catch (SQLException e){
             e.printStackTrace();
         }
@@ -251,6 +288,8 @@ public class DatabaseManager {
 
             String updatePrestige = "UPDATE players SET prestige = '"+getPrestige(UUID)+1+"' WHERE player_id = '"+UUID+"';";
             statement.execute(updatePrestige);
+
+            statement.close();
         }catch (SQLException e){
             e.printStackTrace();
         }
@@ -270,6 +309,19 @@ public class DatabaseManager {
         return 0;
     }
 
+    public void updatePet(String UUID, Pets pets){
+        try {
+            Statement statement = connection.createStatement();
+            String query = "UPDATE player_pets SET pet = '"+pets.toString().toLowerCase()+"' WHERE player_id = '"+UUID+";";
+
+            statement.execute(query);
+
+            statement.close();
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+    }
+
     public void registerUser(String UUID){
         try {
             Statement statement = connection.createStatement();
@@ -280,6 +332,9 @@ public class DatabaseManager {
             String playersQuery = "INSERT INTO players (player_id, balance, level, start_date, prestige) VALUES ('"+UUID+"', '0', '0', '"+format.format(date)+"', '0');";
             statement.execute(playersQuery);
 
+            String petQuery = "INSERT INTO player_pets (player_id, pet) VALUES ('"+UUID+"', 'null')";
+            statement.execute(petQuery);
+
             for(Resources resources : Resources.values()){
                 String playerResourcesQuery = "INSERT INTO player_resources (player_id, resource, quantity) VALUES ('"+UUID+"', '"+resources.name()+"', '0');";
                 statement.execute(playerResourcesQuery);
@@ -289,6 +344,8 @@ public class DatabaseManager {
                 String playerItemsQuery = "INSERT INTO player_items (item_id, player_id, type, material) VALUES ('"+Item.hashItemId(UUID, type)+"', '"+UUID+"', '"+DatabaseUtils.getNameFromType(type)+"','"+DatabaseUtils.getNameFromMaterial(Material.WOOD)+"');"; // player_items
                 statement.execute(playerItemsQuery);
             }
+
+            statement.close();
         }catch (SQLException e){
             e.printStackTrace();
         }
@@ -300,6 +357,8 @@ public class DatabaseManager {
             String query = "UPDATE players SET level = '"+level+"' WHERE player_id = '"+UUID+"';";
 
             statement.execute(query);
+
+            statement.close();
         }catch (SQLException e){
             e.printStackTrace();
         }
@@ -324,6 +383,8 @@ public class DatabaseManager {
             String query = "UPDATE player_resources SET quantity = 0 WHERE player_id = '"+UUID+"' AND resource = '"+resource+"';";
 
             statement.execute(query);
+
+            statement.close();
         }catch (SQLException e){
             e.printStackTrace();
         }
@@ -338,6 +399,8 @@ public class DatabaseManager {
                 String query = "UPDATE player_resources SET quantity = 0 WHERE player_id = '"+UUID+"' AND resource = '"+resource.name()+"';";
                 statement.execute(query);
             }
+
+            statement.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }

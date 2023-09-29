@@ -1,5 +1,6 @@
 package me.Rl242Dev.CommandHandler.Minecraft.Actions;
 
+import me.Rl242Dev.Classes.Entity.Pets.*;
 import me.Rl242Dev.Classes.Items.Item;
 import me.Rl242Dev.Classes.Items.Ressource.Ores.*;
 import me.Rl242Dev.Classes.Items.Ressource.ResourceUtils;
@@ -23,9 +24,6 @@ import java.util.Map;
 @A = Rl242Dev
 @U = Mine command
 @E = Mine command executed when user type .mine
-
-TODO:
- Pet luck (More luck to have obisidian and diamond), Pet quantity (More Item when mining (Iron, Gold), Pet Selling (Price = More) | Global actions
 
  */
 
@@ -63,14 +61,33 @@ public class MineHandler extends ListenerAdapter {
             }
 
             /* Generate Ores*/
-            Map<Ores, Integer> resources = ResourceUtils.getResourceForPickaxe(pickaxe.getMaterial());
+            Map<Ores, Integer> resources = null;
+
+            if(player.getPet() != null){
+                if (player.getPet().equals(Bee.class)) {
+                    resources = ResourceUtils.getResourcesForPickaxe(pickaxe.getMaterial(), Pets.BEE);
+                } else if (player.getPet().equals(Cat.class)) {
+                    resources = ResourceUtils.getResourcesForPickaxe(pickaxe.getMaterial(), Pets.CAT);
+                } else if (player.getPet().equals(Goat.class)) {
+                    resources = ResourceUtils.getResourcesForPickaxe(pickaxe.getMaterial(), Pets.GOAT);
+                }
+            }else{
+                resources = ResourceUtils.getResourcesForPickaxe(pickaxe.getMaterial());
+            }
+
+            assert resources != null;
 
             /* Description */
             description.append("<@");
             description.append(user.getId());
             description.append(">");
             description.append(" ➔ You have mined using : ");
-            description.append(pickaxe.getEmojiID()).append(" ").append(pickaxe.getDisplayName());
+            if(player.getPet() == null){
+                description.append(pickaxe.getEmojiID()).append(" ").append(pickaxe.getDisplayName());
+            }else{
+                description.append(pickaxe.getEmojiID()).append(" ").append(pickaxe.getDisplayName()).append(" | Pet:  "+PetUtils.getNameFromPet(player.getPet()));
+            }
+
 
             /* Embed */
 

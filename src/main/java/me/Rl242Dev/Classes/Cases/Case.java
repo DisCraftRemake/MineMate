@@ -55,9 +55,11 @@ public class Case {
     public <T> T open(String UUID){
         Player player = new Player(UUID);
 
-        if(player.getLevel() < this.level){
-            StringBuilder stringBuilder = new StringBuilder("You cannot open this case because you don't have enought money : "+player.getLevel()+"/"+this.level);
-            player.sendMessage("Case Action", stringBuilder);
+        if(!(this.level == null)){
+            if(player.getLevel() < this.level){
+                StringBuilder stringBuilder = new StringBuilder("You cannot open this case because you don't have enought money : "+player.getLevel()+"/"+this.level);
+                player.sendMessage("Case Action", stringBuilder);
+            }
         }
         if(player.getBalance() < this.price){
             StringBuilder stringBuilder = new StringBuilder("You cannot open this case because you don't have enought money : "+player.getBalance()+"/"+this.price);

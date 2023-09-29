@@ -8,7 +8,7 @@ package me.Rl242Dev.Classes;
 
  */
 
-import me.Rl242Dev.Classes.Entity.Pets.Pets;
+import me.Rl242Dev.Classes.Entity.Pets.PetIdentifier;
 import me.Rl242Dev.Classes.Items.Item;
 import me.Rl242Dev.Classes.Levels.RanksUtils;
 import me.Rl242Dev.MineMate;
@@ -32,7 +32,7 @@ public class Player { //TODO: [SET Methods, Serialize, Deserialize]
     private int level;
     private int prestige;
 
-    private Pets pet;
+    private Class<? extends PetIdentifier> pet;
 
     private final String uuid;
     private String rank;
@@ -43,48 +43,24 @@ public class Player { //TODO: [SET Methods, Serialize, Deserialize]
         return pickaxe;
     }
 
-    public void setPickaxe(Item pickaxe) {
-        this.pickaxe = pickaxe;
-    }
-
     public Item getAxe() {
         return axe;
-    }
-
-    public void setAxe(Item axe) {
-        this.axe = axe;
     }
 
     public Item getHoe() {
         return hoe;
     }
 
-    public void setHoe(Item hoe) {
-        this.hoe = hoe;
-    }
-
     public int getBalance() {
         return balance;
-    }
-
-    public void setBalance(int balance) {
-        this.balance = balance;
     }
 
     public int getLevel() {
         return level;
     }
 
-    public void setLevel(int level) {
-        this.level = level;
-    }
-
-    public Pets getPet() {
+    public Class<? extends PetIdentifier> getPet() {
         return pet;
-    }
-
-    public void setPet(Pets pet) {
-        this.pet = pet;
     }
 
     public String getUuid() {
@@ -95,16 +71,8 @@ public class Player { //TODO: [SET Methods, Serialize, Deserialize]
         return rank;
     }
 
-    public void setRank(String rank) {
-        this.rank = rank;
-    }
-
     public int getPrestige() {
         return prestige;
-    }
-
-    public void setPrestige(int prestige) {
-        this.prestige = prestige;
     }
 
     /* Constructor */
@@ -116,6 +84,12 @@ public class Player { //TODO: [SET Methods, Serialize, Deserialize]
 
         this.level = MineMate.getInstance().getDatabaseManager().getLevelFromUUID(UUID);
         this.rank = RanksUtils.GetRankFromLevel(this.level).toString();
+
+        if(MineMate.getInstance().getDatabaseManager().getPetFromUUID(UUID) == null){
+            this.pet = null;
+        }else{
+            this.pet = MineMate.getInstance().getDatabaseManager().getPetFromUUID(UUID);
+        }
 
         this.prestige = MineMate.getInstance().getDatabaseManager().getPrestige(UUID);
 

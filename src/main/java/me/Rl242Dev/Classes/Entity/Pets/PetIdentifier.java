@@ -1,17 +1,17 @@
 package me.Rl242Dev.Classes.Entity.Pets;
 
 public interface PetIdentifier {
-    public int getPrice();
+    int getPrice();
 
-    public String getName();
+    String getName();
 
-    public int getQuantity_bonus();
+    int getQuantity_bonus();
 
-    public int getLuck_bonus();
+    int getLuck_bonus();
 
-    public int getIncrement_bonus();
+    int getIncrement_bonus();
 
-    public int getSellPrice();
+    int getSellPrice();
 
-    public Pets getType();
+    Pets getType();
 }

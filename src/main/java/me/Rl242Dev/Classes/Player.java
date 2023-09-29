@@ -43,48 +43,24 @@ public class Player { //TODO: [SET Methods, Serialize, Deserialize]
         return pickaxe;
     }
 
-    public void setPickaxe(Item pickaxe) {
-        this.pickaxe = pickaxe;
-    }
-
     public Item getAxe() {
         return axe;
-    }
-
-    public void setAxe(Item axe) {
-        this.axe = axe;
     }
 
     public Item getHoe() {
         return hoe;
     }
 
-    public void setHoe(Item hoe) {
-        this.hoe = hoe;
-    }
-
     public int getBalance() {
         return balance;
-    }
-
-    public void setBalance(int balance) {
-        this.balance = balance;
     }
 
     public int getLevel() {
         return level;
     }
 
-    public void setLevel(int level) {
-        this.level = level;
-    }
-
     public Class<? extends PetIdentifier> getPet() {
         return pet;
-    }
-
-    public void setPet(Class<? extends PetIdentifier> pet) {
-        this.pet = pet;
     }
 
     public String getUuid() {
@@ -95,16 +71,8 @@ public class Player { //TODO: [SET Methods, Serialize, Deserialize]
         return rank;
     }
 
-    public void setRank(String rank) {
-        this.rank = rank;
-    }
-
     public int getPrestige() {
         return prestige;
-    }
-
-    public void setPrestige(int prestige) {
-        this.prestige = prestige;
     }
 
     /* Constructor */

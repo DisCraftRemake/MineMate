@@ -96,7 +96,7 @@ public class MiningContest extends ListenerAdapter {
 
             startCooldown(uuid);
 
-            MineMate.getInstance().getDatabaseManager().removeBalanceFromUUID(uuid, 500);
+            MineMate.getInstance().getDatabaseManager().removeAmountFromUUID(uuid, 500);
             Map<Ores, Integer> playerMapGlobal = new HashMap<>();
             Map<Ores, Integer> serverMapGlobal = new HashMap<>();
 

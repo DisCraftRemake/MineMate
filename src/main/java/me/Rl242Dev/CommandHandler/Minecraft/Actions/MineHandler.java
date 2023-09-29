@@ -25,9 +25,6 @@ import java.util.Map;
 @U = Mine command
 @E = Mine command executed when user type .mine
 
-TODO:
- Pet luck (More luck to have obisidian and diamond), Pet quantity (More Item when mining (Iron, Gold), Pet Selling (Price = More) | Global actions
-
  */
 
 public class MineHandler extends ListenerAdapter {
@@ -85,7 +82,12 @@ public class MineHandler extends ListenerAdapter {
             description.append(user.getId());
             description.append(">");
             description.append(" ➔ You have mined using : ");
-            description.append(pickaxe.getEmojiID()).append(" ").append(pickaxe.getDisplayName()).append(" | Pet:  "+PetUtils.getNameFromPet(player.getPet()));
+            if(player.getPet() == null){
+                description.append(pickaxe.getEmojiID()).append(" ").append(pickaxe.getDisplayName());
+            }else{
+                description.append(pickaxe.getEmojiID()).append(" ").append(pickaxe.getDisplayName()).append(" | Pet:  "+PetUtils.getNameFromPet(player.getPet()));
+            }
+
 
             /* Embed */
 

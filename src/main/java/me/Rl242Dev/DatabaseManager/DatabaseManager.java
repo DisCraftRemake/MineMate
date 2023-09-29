@@ -1,6 +1,6 @@
 package me.Rl242Dev.DatabaseManager;
 
-import me.Rl242Dev.Classes.Entity.Pets.Pets;
+import me.Rl242Dev.Classes.Entity.Pets.*;
 import me.Rl242Dev.Classes.Items.Item;
 import me.Rl242Dev.Classes.Items.Ressource.Harvest.Crops;
 import me.Rl242Dev.Classes.Items.Ressource.Material;
@@ -49,11 +49,11 @@ public class DatabaseManager {
 
     public Item getPickaxeFromUUID(String UUID){
         try {
-            Statement stmt = connection.createStatement();
+            Statement statement = connection.createStatement();
             String query = "SELECT * FROM player_items WHERE player_id = '" + UUID + "' AND type = 'Pickaxe';";
 
-            ResultSet results = stmt.executeQuery(query);
-            
+            ResultSet results = statement.executeQuery(query);
+
             return new Item(
                     ResourceUtils.getMaterialFromString(results.getString("material")),
                     ResourceUtils.getTypeFromString(results.getString("type")),
@@ -80,12 +80,31 @@ public class DatabaseManager {
         return 0;
     }
 
+    public Class<? extends PetIdentifier> getPetFromUUID(String UUID){
+        try {
+            Statement statement = connection.createStatement();
+            String query = "SELECT pet FROM player_pets WHERE player_id = '"+UUID+"';";
+
+            ResultSet resultSet = statement.executeQuery(query);
+
+            return switch (resultSet.getString("pet")){
+                case "Bee" -> Bee.class;
+                case "Cat" -> Cat.class;
+                case "Goat" -> Goat.class;
+                default -> null;
+            };
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     public Item getHoeFromUUID(String UUID){
         try {
-            Statement stmt = connection.createStatement();
+            Statement statement = connection.createStatement();
             String query = "SELECT * FROM player_items WHERE player_id = '" + UUID + "' AND type = 'Hoe';";
 
-            ResultSet results = stmt.executeQuery(query);
+            ResultSet results = statement.executeQuery(query);
 
             return new Item(
                     ResourceUtils.getMaterialFromString(results.getString("material")),
@@ -279,6 +298,9 @@ public class DatabaseManager {
 
             String playersQuery = "INSERT INTO players (player_id, balance, level, start_date, prestige) VALUES ('"+UUID+"', '0', '0', '"+format.format(date)+"', '0');";
             statement.execute(playersQuery);
+
+            String petQuery = "INSERT INTO player_pets (player_id, pet) VALUES ('"+UUID+"', 'null')";
+            statement.execute(petQuery);
 
             for(Resources resources : Resources.values()){
                 String playerResourcesQuery = "INSERT INTO player_resources (player_id, resource, quantity) VALUES ('"+UUID+"', '"+resources.name()+"', '0');";

@@ -8,7 +8,7 @@ package me.Rl242Dev.Classes;
 
  */
 
-import me.Rl242Dev.Classes.Entity.Pets.Pets;
+import me.Rl242Dev.Classes.Entity.Pets.PetIdentifier;
 import me.Rl242Dev.Classes.Items.Item;
 import me.Rl242Dev.Classes.Levels.RanksUtils;
 import me.Rl242Dev.MineMate;
@@ -32,7 +32,7 @@ public class Player { //TODO: [SET Methods, Serialize, Deserialize]
     private int level;
     private int prestige;
 
-    private Pets pet;
+    private Class<? extends PetIdentifier> pet;
 
     private final String uuid;
     private String rank;
@@ -79,11 +79,11 @@ public class Player { //TODO: [SET Methods, Serialize, Deserialize]
         this.level = level;
     }
 
-    public Pets getPet() {
+    public Class<? extends PetIdentifier> getPet() {
         return pet;
     }
 
-    public void setPet(Pets pet) {
+    public void setPet(Class<? extends PetIdentifier> pet) {
         this.pet = pet;
     }
 
@@ -116,6 +116,12 @@ public class Player { //TODO: [SET Methods, Serialize, Deserialize]
 
         this.level = MineMate.getInstance().getDatabaseManager().getLevelFromUUID(UUID);
         this.rank = RanksUtils.GetRankFromLevel(this.level).toString();
+
+        if(MineMate.getInstance().getDatabaseManager().getPetFromUUID(UUID) == null){
+            this.pet = null;
+        }else{
+            this.pet = MineMate.getInstance().getDatabaseManager().getPetFromUUID(UUID);
+        }
 
         this.prestige = MineMate.getInstance().getDatabaseManager().getPrestige(UUID);
 

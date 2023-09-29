@@ -1,5 +1,8 @@
 package me.Rl242Dev.Classes.Items.Ressource;
 
+import me.Rl242Dev.Classes.Entity.Pets.Bee;
+import me.Rl242Dev.Classes.Entity.Pets.Goat;
+import me.Rl242Dev.Classes.Entity.Pets.Pets;
 import me.Rl242Dev.Classes.Items.Ressource.Harvest.Crops;
 import me.Rl242Dev.Classes.Items.Ressource.Ores.Ores;
 import me.Rl242Dev.Classes.Utils.Emoji;
@@ -10,6 +13,7 @@ import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 
 /*
 
@@ -112,90 +116,155 @@ public class ResourceUtils {
 
     /* Ressource generation*/
 
-    public static Map<Ores, Integer> getResourceForPickaxe(Material material){
+    public static Map<Ores, Integer> getResourcesForPickaxe(Material material){
         Map<Ores, Integer> ressources = new HashMap<Ores, Integer>();
 
-        switch (material){
-            case WOOD :
+        switch (material) {
+            case WOOD -> {
                 ressources.put(Ores.STONE, Utils.getRandomNumberInRange(1, 7));
-                ressources.put(Ores.COAL, Utils.getRandomNumberInRange(1,4));
+                ressources.put(Ores.COAL, Utils.getRandomNumberInRange(1, 4));
                 ressources.put(Ores.IRON, 0);
                 ressources.put(Ores.GOLD, 0);
                 ressources.put(Ores.DIAMOND, 0);
                 ressources.put(Ores.OBSIDIAN, 0);
-                break;
-            case STONE:
+            }
+            case STONE -> {
                 ressources.put(Ores.STONE, Utils.getRandomNumberInRange(4, 9));
-                ressources.put(Ores.COAL, Utils.getRandomNumberInRange(2,6));
-                ressources.put(Ores.IRON, Utils.getRandomNumberInRange(1,3));
+                ressources.put(Ores.COAL, Utils.getRandomNumberInRange(2, 6));
+                ressources.put(Ores.IRON, Utils.getRandomNumberInRange(1, 3));
                 ressources.put(Ores.GOLD, 0);
                 ressources.put(Ores.DIAMOND, 0);
                 ressources.put(Ores.OBSIDIAN, 0);
-                break;
-            case IRON:
+            }
+            case IRON -> {
                 ressources.put(Ores.STONE, 0);
-                ressources.put(Ores.COAL, Utils.getRandomNumberInRange(7,12));
+                ressources.put(Ores.COAL, Utils.getRandomNumberInRange(7, 12));
                 ressources.put(Ores.IRON, Utils.getRandomNumberInRange(4, 8));
                 ressources.put(Ores.GOLD, Utils.getRandomNumberInRange(2, 5));
                 ressources.put(Ores.DIAMOND, 0);
                 ressources.put(Ores.OBSIDIAN, 0);
-                break;
-            case GOLD:
+            }
+            case GOLD -> {
                 ressources.put(Ores.STONE, 0);
                 ressources.put(Ores.COAL, 0);
                 ressources.put(Ores.IRON, Utils.getRandomNumberInRange(8, 13));
                 ressources.put(Ores.GOLD, Utils.getRandomNumberInRange(6, 11));
                 ressources.put(Ores.DIAMOND, Utils.getRandomNumberInRange(0, 3));
                 ressources.put(Ores.OBSIDIAN, 0);
-                break;
-
-            case DIAMOND:
+            }
+            case DIAMOND -> {
                 ressources.put(Ores.STONE, 0);
                 ressources.put(Ores.COAL, 0);
                 ressources.put(Ores.IRON, 0);
                 ressources.put(Ores.GOLD, Utils.getRandomNumberInRange(11, 24));
                 ressources.put(Ores.DIAMOND, Utils.getRandomNumberInRange(3, 7));
-                ressources.put(Ores.OBSIDIAN, Utils.getRandomNumberInRange(0,2));
-                break;
+                ressources.put(Ores.OBSIDIAN, Utils.getRandomNumberInRange(0, 2));
+            }
         }
         return ressources;
+    }
+
+    public static Map<Ores, Integer> getResourcesForPickaxe(Material material, Pets pet){
+        Map<Ores, Integer> globalResources = getResourcesForPickaxe(material);
+
+        switch (pet){
+            case BEE -> {
+                Bee bee = new Bee();
+                Random random = new Random();
+                for(Ores ore : globalResources.keySet()){
+                    if(random.nextInt(0,1) < bee.getLuck_bonus()){
+                        int loot = globalResources.get(ore) * 2;
+                        globalResources.remove(ore);
+                        globalResources.put(ore, loot);
+                    }
+                }
+            }
+            case GOAT -> {
+                for(Ores ore : globalResources.keySet()){
+                    int loot = globalResources.get(ore) + new Goat().getQuantity_bonus();
+                    globalResources.remove(ore);
+                    globalResources.put(ore, loot);
+                }
+            }
+            case CAT -> globalResources = getResourcesForPickaxe(getNextMaterial(material));
+        }
+        return globalResources;
     }
 
     public static Map<Crops, Integer> getResourcesForHoe(Material material){
         Map<Crops, Integer> resources = new HashMap<Crops, Integer>();
 
-        switch (material){
-            case WOOD:
-                resources.put(Crops.WHEAT, Utils.getRandomNumberInRange(1,6));
+        switch (material) {
+            case WOOD -> {
+                resources.put(Crops.WHEAT, Utils.getRandomNumberInRange(1, 7));
                 resources.put(Crops.POTATO, 0);
                 resources.put(Crops.CARROT, 0);
                 resources.put(Crops.SUGARCANE, 0);
-                break;
-            case STONE:
+            }
+            case STONE -> {
                 resources.put(Crops.WHEAT, Utils.getRandomNumberInRange(3, 9));
                 resources.put(Crops.POTATO, Utils.getRandomNumberInRange(1, 5));
                 resources.put(Crops.CARROT, 0);
                 resources.put(Crops.SUGARCANE, 0);
-                break;
-            case IRON:
+            }
+            case IRON -> {
                 resources.put(Crops.WHEAT, 0);
                 resources.put(Crops.POTATO, Utils.getRandomNumberInRange(4, 10));
                 resources.put(Crops.CARROT, Utils.getRandomNumberInRange(1, 7));
                 resources.put(Crops.SUGARCANE, 0);
-                break;
-            case GOLD:
+            }
+            case GOLD -> {
                 resources.put(Crops.WHEAT, 0);
                 resources.put(Crops.POTATO, Utils.getRandomNumberInRange(12, 23));
                 resources.put(Crops.CARROT, Utils.getRandomNumberInRange(5, 12));
                 resources.put(Crops.SUGARCANE, 0);
-                break;
-            case DIAMOND:
+            }
+            case DIAMOND -> {
                 resources.put(Crops.WHEAT, 0);
                 resources.put(Crops.POTATO, 0);
                 resources.put(Crops.CARROT, Utils.getRandomNumberInRange(10, 17));
-                resources.put(Crops.SUGARCANE, Utils.getRandomNumberInRange(0,3));
-                break;
+                resources.put(Crops.SUGARCANE, Utils.getRandomNumberInRange(0, 3));
+            }
         }
         return resources;
+    }
+
+    public static Map<Crops, Integer> getResourcesForHoe(Material material, Pets pets){
+        Map<Crops, Integer> globalResources = getResourcesForHoe(material);
+
+        switch (pets){
+            case BEE -> {
+                Bee bee = new Bee();
+                Random random = new Random();
+                for(Crops crop : globalResources.keySet()){
+                    if(random.nextInt(0,1) < bee.getLuck_bonus()){
+                        int loot = globalResources.get(crop) * 2;
+                        globalResources.remove(crop);
+                        globalResources.put(crop, loot);
+                    }
+                }
+            }
+            case GOAT -> {
+                for(Crops crop : globalResources.keySet()){
+                    int loot = globalResources.get(crop) + 1;
+                    globalResources.remove(crop);
+                    globalResources.put(crop, loot);
+                }
+            }
+            case CAT -> globalResources = getResourcesForHoe(getNextMaterial(material));
+        }
+        return globalResources;
+    }
+
+    public static Material getNextMaterial(Material material){
+        Material next = null;
+        Material[] allValues = Material.values();
+        for (int i = 0; i < allValues.length - 1; i++) {
+            if (allValues[i] == material) {
+                next = allValues[i + 1];
+                break;
+            }
+        }
+        return next;
     }
 }

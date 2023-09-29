@@ -108,7 +108,7 @@ public class UtilsHandler extends ListenerAdapter {
 
             if(event.getMember().hasPermission(Permission.ADMINISTRATOR)){
                 event.getGuild()
-                        .getTextChannelById(MineMate.getConfigManager().getString("help"))
+                        .getTextChannelById(MineMate.getConfigManager().getString("channels.help"))
                         .getHistory()
                         .retrievePast(1)
                         .queue(history -> {

@@ -1,7 +1,9 @@
 package me.Rl242Dev.CommandHandler.Minecraft.Actions;
 
+import me.Rl242Dev.Classes.Entity.Pets.*;
 import me.Rl242Dev.Classes.Items.Item;
 import me.Rl242Dev.Classes.Items.Ressource.Harvest.*;
+import me.Rl242Dev.Classes.Items.Ressource.Material;
 import me.Rl242Dev.Classes.Items.Ressource.ResourceUtils;
 import me.Rl242Dev.Classes.Player;
 import me.Rl242Dev.Classes.Utils.Emoji;
@@ -57,13 +59,28 @@ public class HarvestHandler extends ListenerAdapter {
                 return;
             }
 
-            Map<Crops, Integer> resources = ResourceUtils.getResourcesForHoe(hoe.getMaterial());
+            Map<Crops, Integer> resources = null;
+
+            if(player.getPet() != null){
+                if (player.getPet().equals(Bee.class)) {
+                    resources = ResourceUtils.getResourcesForHoe(hoe.getMaterial(), Pets.BEE);
+                } else if (player.getPet().equals(Cat.class)) {
+                    resources = ResourceUtils.getResourcesForHoe(hoe.getMaterial(), Pets.CAT);
+                } else if (player.getPet().equals(Goat.class)) {
+                    resources = ResourceUtils.getResourcesForHoe(hoe.getMaterial(), Pets.GOAT);
+                }
+            }else{
+                resources = ResourceUtils.getResourcesForHoe(hoe.getMaterial());
+            }
+
+            assert resources != null;
 
             stringBuilder.append("<@");
             stringBuilder.append(user.getId());
             stringBuilder.append(">");
-            stringBuilder.append(" ➔ You have mined using : ");
-            stringBuilder.append(hoe.getEmojiID()).append(" ").append(hoe.getDisplayName());
+            stringBuilder.append(" ➔ You have harvested using : ");
+            stringBuilder.append(hoe.getEmojiID()).append(" ").append(hoe.getDisplayName()).append(" | Pet:  "+PetUtils.getNameFromPet(player.getPet()));
+
 
             embedBuilder.setTitle(Emoji.getHoeEmoji() + " Harvesting Action");
             embedBuilder.setColor(Color.green);

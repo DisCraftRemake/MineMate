@@ -101,8 +101,8 @@ public class MiningContest extends ListenerAdapter {
             Map<Ores, Integer> serverMapGlobal = new HashMap<>();
 
             for (int i = 0; i < 5; i++) {
-                Map<Ores, Integer> playerMap = ResourceUtils.getResourceForPickaxe(Material.DIAMOND);
-                Map<Ores, Integer> serverMap = ResourceUtils.getResourceForPickaxe(Material.DIAMOND);
+                Map<Ores, Integer> playerMap = ResourceUtils.getResourcesForPickaxe(Material.DIAMOND);
+                Map<Ores, Integer> serverMap = ResourceUtils.getResourcesForPickaxe(Material.DIAMOND);
 
                 for (Ores ore : playerMap.keySet()) {
                     playerMapGlobal.put(ore, playerMap.get(ore));

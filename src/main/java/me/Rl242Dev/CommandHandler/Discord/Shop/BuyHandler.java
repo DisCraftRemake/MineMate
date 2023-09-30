@@ -100,7 +100,7 @@ public class BuyHandler extends ListenerAdapter{
 
                 channel.sendMessageEmbeds(embedBuilder.build()).queue();
             }else {
-                //TODO: Else [PETS, UTILS]
+                //TODO: UTILS buy
                 if(tokens.contains(args.get(1))){
                     Pets pet = PetUtils.getPetFromString(args.get(2));
 

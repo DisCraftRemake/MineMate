@@ -1,5 +1,13 @@
 package me.Rl242Dev.Classes.Entity.Pets;
 
+/*
+
+@U = Pets
+@E = Interface to identifie pets class and inherate methods
+@A = Rl242Dev
+
+ */
+
 public interface PetIdentifier {
     int getPrice();
 

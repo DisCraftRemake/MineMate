@@ -16,7 +16,9 @@ import java.util.Map;
 
 import me.Rl242Dev.Classes.Cases.Case;
 import me.Rl242Dev.Classes.Cases.CasesLoots;
+import me.Rl242Dev.Classes.Clans.Clan;
 import me.Rl242Dev.Classes.Utils.Logger;
+import me.Rl242Dev.CommandHandler.Discord.ClanHandler;
 import me.Rl242Dev.CommandHandler.Discord.LevelHandler;
 import me.Rl242Dev.CommandHandler.Discord.Shop.BuyHandler;
 import me.Rl242Dev.CommandHandler.Discord.Shop.SellHandler;
@@ -60,6 +62,7 @@ public class MineMate {
     private static MineMate instance;
     private static DatabaseManager databaseManager;
     private List<Case> cases = new ArrayList<>();
+    private static List<Clan> clans;
     public static Logger logger;
     private static JsonManager configManager;
 
@@ -87,6 +90,7 @@ public class MineMate {
         bot.addEventListener(new ShopDisplayHandler());
         bot.addEventListener(new LevelHandler());
         bot.addEventListener(new BuyHandler());
+        bot.addEventListener(new ClanHandler());
 
         instance = new MineMate();
 
@@ -106,6 +110,7 @@ public class MineMate {
         debug = getConfigManager().getBoolean("dev.debug");
 
         loadCustomModules();
+        clans = initClans();
     }
 
     private static void loadCustomModules(){
@@ -193,6 +198,10 @@ public class MineMate {
         }
     }
 
+    private static List<Clan> initClans(){
+        return MineMate.getInstance().getDatabaseManager().getClans();
+    }
+
     private static void initCases(){
         Map<CasesLoots, Integer> normalLootsIntegerMap = new HashMap<>();
         normalLootsIntegerMap.put(CasesLoots.PET_GOAT, 20);
@@ -237,5 +246,9 @@ public class MineMate {
 
     public DatabaseManager getDatabaseManager() {
         return databaseManager;
+    }
+
+    public static List<Clan> getClans() {
+        return clans;
     }
 }

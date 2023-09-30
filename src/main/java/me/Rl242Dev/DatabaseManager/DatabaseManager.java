@@ -1,5 +1,6 @@
 package me.Rl242Dev.DatabaseManager;
 
+import me.Rl242Dev.Classes.Clans.Clan;
 import me.Rl242Dev.Classes.Entity.Pets.*;
 import me.Rl242Dev.Classes.Items.Item;
 import me.Rl242Dev.Classes.Items.Ressource.Harvest.Crops;
@@ -8,6 +9,7 @@ import me.Rl242Dev.Classes.Items.Ressource.Ores.Ores;
 import me.Rl242Dev.Classes.Items.Ressource.ResourceUtils;
 import me.Rl242Dev.Classes.Items.Ressource.Resources;
 import me.Rl242Dev.Classes.Items.Ressource.Type;
+import me.Rl242Dev.Classes.Player;
 import me.Rl242Dev.MineMate;
 
 import java.sql.Connection;
@@ -16,9 +18,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /*
 
@@ -28,7 +28,7 @@ import java.util.Map;
 
  */
 
-public class DatabaseManager {
+public class DatabaseManager { /* TODO: Organize by categories methods*/
 
     private static Connection connection;
 
@@ -58,6 +58,78 @@ public class DatabaseManager {
         }
     }
 
+    public Map<Player, Integer> getMembersOfClan(String ID){
+        try {
+            Statement statement = connection.createStatement();
+            String query = "SELECT player_id, owner FROM player_clans WHERE clan_id = '"+ID+"';";
+
+            ResultSet resultSet = statement.executeQuery(query);
+
+            Map<Player, Integer> members = new HashMap<>();
+            while (resultSet.next()){
+                Player player = new Player(resultSet.getString("player_id"));
+                Integer owner = resultSet.getInt("owner");
+
+                members.put(player, owner);
+            }
+            return members;
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    public void kickPlayerOfClan(String ID, String UUID){
+        try {
+            Statement statement = connection.createStatement();
+            String query = "DELETE player_id, clan_id, owner FROM player_clans WHERE clan_id = '"+ID+"' AND player_id = '"+UUID+"';";
+
+            statement.execute(query);
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+    }
+
+    public Clan getClanFromMember(String UUID){
+        try {
+            Statement statement = connection.createStatement();
+            String query = "SELECT clan_id FROM player_clans WHERE player_id = '"+UUID+"';";
+
+            ResultSet resultSet = statement.executeQuery(query);
+            if(!resultSet.next()){
+                return null;
+            }
+            return new Clan(resultSet.getString("clan_id"));
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    public void addClanOwner(String ID, String UUID){
+        try {
+            Statement statement = connection.createStatement();
+            String query = "INSERT INTO player_clans (player_id, clan_id, owner) VALUES ('"+UUID+"', '"+ID+"', '1');";
+
+            statement.execute(query);
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+    }
+
+    public void addClanMember(String ID, String UUID){
+        try {
+            Statement statement = connection.createStatement();
+            String query = "INSERT INTO player_clans (player_id, clan_id, owner) VALUES ('"+UUID+"', '"+ID+"', '0')";
+
+            statement.execute(query);
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+    }
+
     public Item getPickaxeFromUUID(String UUID){
         try {
             Statement statement = connection.createStatement();
@@ -71,6 +143,26 @@ public class DatabaseManager {
                     results.getString("item_id"));
             
         } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    public List<Clan> getClans(){
+        try {
+            Statement statement = connection.createStatement();
+            String query = "SELECT clan_id FROM player_clans;";
+
+            List<Clan> clans = new ArrayList<>();
+
+            ResultSet resultSet = statement.executeQuery(query);
+            while (resultSet.next()){
+                clans.add(new Clan(resultSet.getString("clan_id")));
+            }
+
+            return clans;
+        }catch (SQLException e){
             e.printStackTrace();
         }
 

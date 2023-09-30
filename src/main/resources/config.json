@@ -33,7 +33,8 @@
       "bee": 100000,
       "goat": 100000,
       "cat": 1000000
-    }
+    },
+    "clan_creation": 500000
   },
   "modules": {
     "miningContest": true,

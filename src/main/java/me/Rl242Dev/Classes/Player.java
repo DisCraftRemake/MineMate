@@ -8,18 +8,26 @@ package me.Rl242Dev.Classes;
 
  */
 
+import me.Rl242Dev.Classes.Clans.Clan;
 import me.Rl242Dev.Classes.Entity.Pets.PetIdentifier;
+import me.Rl242Dev.Classes.Entity.Pets.PetUtils;
 import me.Rl242Dev.Classes.Items.Item;
+import me.Rl242Dev.Classes.Items.Ressource.ResourceUtils;
+import me.Rl242Dev.Classes.Levels.Ranks;
 import me.Rl242Dev.Classes.Levels.RanksUtils;
+import me.Rl242Dev.Classes.Utils.Coin;
+import me.Rl242Dev.Classes.Utils.Emoji;
 import me.Rl242Dev.MineMate;
+import me.Rl242Dev.Utils;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.entities.channel.concrete.PrivateChannel;
 
 import java.awt.*;
 import java.time.Instant;
+import java.util.Objects;
 
-public class Player { //TODO: [SET Methods, Serialize, Deserialize]
+public class Player {
 
     /* Attributes */
 
@@ -33,6 +41,8 @@ public class Player { //TODO: [SET Methods, Serialize, Deserialize]
     private int prestige;
 
     private Class<? extends PetIdentifier> pet;
+
+    private Clan clan;
 
     private final String uuid;
     private String rank;
@@ -67,6 +77,11 @@ public class Player { //TODO: [SET Methods, Serialize, Deserialize]
         return uuid;
     }
 
+    public Clan getClan(){
+        return clan;
+    }
+
+
     public String getRank() {
         return rank;
     }
@@ -93,7 +108,45 @@ public class Player { //TODO: [SET Methods, Serialize, Deserialize]
 
         this.prestige = MineMate.getInstance().getDatabaseManager().getPrestige(UUID);
 
+        if(MineMate.getInstance().getDatabaseManager().getClanFromMember(UUID) == null){
+            this.clan = null;
+        }else{
+            this.clan = MineMate.getInstance().getDatabaseManager().getClanFromMember(UUID);
+        }
+
         this.uuid = UUID;
+    }
+
+    public EmbedBuilder getProfil(){
+        EmbedBuilder embedBuilder = new EmbedBuilder();
+        StringBuilder stringBuilder = new StringBuilder();
+
+        stringBuilder.append("<@");
+        stringBuilder.append(this.getUuid());
+        stringBuilder.append(">");
+        stringBuilder.append(" ➔ Profil :");
+
+        embedBuilder.setTitle(":bust_in_silhouette: Profil Action");
+        embedBuilder.setColor(Color.green);
+
+        embedBuilder.setDescription(stringBuilder.toString());
+
+        embedBuilder.addField(Coin.getEmojiID() + " **Balance** :", ResourceUtils.PriceToString(this.getBalance()),false);
+        embedBuilder.addField(Emoji.getXpEmoji() + " **Level** :", Utils.IntToString(this.getLevel()), false);
+        embedBuilder.addField(Emoji.getNametagEmoji() + " **Rank** :", Objects.requireNonNull(RanksUtils.presentRank(Ranks.valueOf(this.getRank()))), false);
+        embedBuilder.addField(Emoji.getTotemEmoji()+ " **Prestige** :", Utils.IntToString(this.getPrestige()), false);
+
+        embedBuilder.addField(Emoji.getPickaxeEmoji() + " **Pickaxe** :", this.getPickaxe().getDisplayName(), false);
+        embedBuilder.addField(Emoji.getHoeEmoji() + " **Hoe** :", this.getHoe().getDisplayName(), false);
+        // Axe
+        if(this.getPet() != null){
+            embedBuilder.addField(PetUtils.getEmojiFromPet(this.getPet()) + " **Pet** :", PetUtils.getOnlyNameFromPet(this.getPet()), false);
+        }
+
+        embedBuilder.setFooter(MineMate.getConfigManager().getString("general.name"));
+        embedBuilder.setTimestamp(Instant.now());
+
+        return embedBuilder;
     }
 
     public void sendMessage(String action, StringBuilder message){
@@ -111,6 +164,15 @@ public class Player { //TODO: [SET Methods, Serialize, Deserialize]
 
         embedBuilder.setFooter(MineMate.getConfigManager().getString("general.name"));
         embedBuilder.setTimestamp(Instant.now());
+
+        channel.sendMessageEmbeds(embedBuilder.build()).queue();
+    }
+
+    public void sendMessage(EmbedBuilder embedBuilder){
+        User user = MineMate.getBot().retrieveUserById(this.uuid).complete();
+
+        assert user != null;
+        PrivateChannel channel = user.openPrivateChannel().complete();
 
         channel.sendMessageEmbeds(embedBuilder.build()).queue();
     }

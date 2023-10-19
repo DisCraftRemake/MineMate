@@ -1,13 +1,7 @@
 package me.Rl242Dev.CommandHandler.Discord;
 
-import me.Rl242Dev.Classes.Entity.Pets.PetUtils;
-import me.Rl242Dev.Classes.Entity.Pets.Pets;
-import me.Rl242Dev.Classes.Items.Ressource.ResourceUtils;
-import me.Rl242Dev.Classes.Levels.Ranks;
-import me.Rl242Dev.Classes.Levels.RanksUtils;
 import me.Rl242Dev.Classes.Utils.Coin;
 import me.Rl242Dev.Classes.Player;
-import me.Rl242Dev.Classes.Utils.Emoji;
 import me.Rl242Dev.MineMate;
 import me.Rl242Dev.Utils;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -21,7 +15,6 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import java.time.Instant;
 import java.awt.Color;
 import java.util.Map;
-import java.util.Objects;
 
 /*
 
@@ -72,39 +65,11 @@ public class UtilsHandler extends ListenerAdapter {
 
             channel.sendMessageEmbeds(embedBuilder.build()).queue();
         }
-        if(message.getContentRaw().equals(".profil")){
+        if(message.getContentRaw().equals(".profil")){ //TODO: Redo with Private API and link to website
             MineMate.getLogger().appendLogger(player.getUuid()+" Issued .profil");
             MineMate.getLogger().send();
 
-            EmbedBuilder embedBuilder = new EmbedBuilder();
-            StringBuilder stringBuilder = new StringBuilder();
-
-            stringBuilder.append("<@");
-            stringBuilder.append(player.getUuid());
-            stringBuilder.append(">");
-            stringBuilder.append(" ➔ Profil :");
-
-            embedBuilder.setTitle(":bust_in_silhouette: Profil Action");
-            embedBuilder.setColor(Color.green);
-
-            embedBuilder.setDescription(stringBuilder.toString());
-
-            embedBuilder.addField(Coin.getEmojiID() + " **Balance** :", ResourceUtils.PriceToString(player.getBalance()),false);
-            embedBuilder.addField(Emoji.getXpEmoji() + " **Level** :", Utils.IntToString(player.getLevel()), false);
-            embedBuilder.addField(Emoji.getNametagEmoji() + " **Rank** :", Objects.requireNonNull(RanksUtils.presentRank(Ranks.valueOf(player.getRank()))), false);
-            embedBuilder.addField(Emoji.getTotemEmoji()+ " **Prestige** :", Utils.IntToString(player.getPrestige()), false);
-
-            embedBuilder.addField(Emoji.getPickaxeEmoji() + " **Pickaxe** :", player.getPickaxe().getDisplayName(), false);
-            embedBuilder.addField(Emoji.getHoeEmoji() + " **Hoe** :", player.getHoe().getDisplayName(), false);
-            // Axe
-            if(player.getPet() != null){
-                embedBuilder.addField(PetUtils.getEmojiFromPet(player.getPet()) + " **Pet** :", PetUtils.getOnlyNameFromPet(player.getPet()), false);
-            }
-
-            embedBuilder.setFooter(MineMate.getConfigManager().getString("general.name"));
-            embedBuilder.setTimestamp(Instant.now());
-
-            channel.sendMessageEmbeds(embedBuilder.build()).queue();
+            channel.sendMessageEmbeds(player.getProfil().build()).queue();
         }
         if(message.getContentRaw().equals(".help")){
             MineMate.getLogger().appendLogger(player.getUuid()+" Issued .help");

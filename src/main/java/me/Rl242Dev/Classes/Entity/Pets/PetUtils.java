@@ -2,6 +2,14 @@ package me.Rl242Dev.Classes.Entity.Pets;
 
 import me.Rl242Dev.Classes.Utils.Emoji;
 
+/*
+
+@U = Pets
+@E = Utils for pets
+@A = Rl242Dev
+
+ */
+
 public class PetUtils {
     public static String getNameFromPet(Pets pets){
         String displayName = switch (pets){

@@ -5,7 +5,6 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.UUID;
 
 import me.Rl242Dev.Classes.Entity.Pets.*;
 import me.Rl242Dev.Classes.Items.Item;
@@ -100,7 +99,7 @@ public class BuyHandler extends ListenerAdapter{
 
                 channel.sendMessageEmbeds(embedBuilder.build()).queue();
             }else {
-                //TODO: Else [PETS, UTILS]
+                //TODO: UTILS buy
                 if(tokens.contains(args.get(1))){
                     Pets pet = PetUtils.getPetFromString(args.get(2));
 

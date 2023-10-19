@@ -10,7 +10,7 @@ Java Discord Bot, to play minecraft (Fish, Mine, Hunt, and more...)
 
 ### ➕ IG Features :
 
-PVP | Dimensions | Clans [500K to create, Levels of clans, By level you get an hourly income, The level of clan is the average level & balance (prestige = +10, badges = +5) of all clan members]| Badges | Quests | Crates | Bosses (Big events) |
+PVP | Dimensions | Quests | Crates | Bosses (Big events)
 
 ### ➕ Dev Features :
 Unit Tests | Commands Tests | API | Rotating statuses | Config Values (FR/EN)

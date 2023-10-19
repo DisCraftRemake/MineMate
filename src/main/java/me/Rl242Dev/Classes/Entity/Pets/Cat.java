@@ -2,6 +2,14 @@ package me.Rl242Dev.Classes.Entity.Pets;
 
 import me.Rl242Dev.MineMate;
 
+/*
+
+@U = Pets
+@E = Class for the cat pet
+@A = Rl242Dev
+
+ */
+
 public class Cat implements PetIdentifier{
     private final int price = MineMate.getConfigManager().getInt("prices.pets.cat");
     private final String name = "Cat";

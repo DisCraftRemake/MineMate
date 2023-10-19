@@ -44,7 +44,7 @@ public class Clan {
 
         int level = 0;
         for(Player player : this.members){
-            level = level + player.getLevel() + (player.getPrestige() * 10); // badges
+            level = level + player.getLevel() + (player.getPrestige() * 10);
         }
 
         this.level = level / this.members.size();

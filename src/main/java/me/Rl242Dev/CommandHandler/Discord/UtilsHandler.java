@@ -1,13 +1,7 @@
 package me.Rl242Dev.CommandHandler.Discord;
 
-import me.Rl242Dev.Classes.Entity.Pets.PetUtils;
-import me.Rl242Dev.Classes.Entity.Pets.Pets;
-import me.Rl242Dev.Classes.Items.Ressource.ResourceUtils;
-import me.Rl242Dev.Classes.Levels.Ranks;
-import me.Rl242Dev.Classes.Levels.RanksUtils;
 import me.Rl242Dev.Classes.Utils.Coin;
 import me.Rl242Dev.Classes.Player;
-import me.Rl242Dev.Classes.Utils.Emoji;
 import me.Rl242Dev.MineMate;
 import me.Rl242Dev.Utils;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -21,7 +15,6 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import java.time.Instant;
 import java.awt.Color;
 import java.util.Map;
-import java.util.Objects;
 
 /*
 

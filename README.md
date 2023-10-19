@@ -10,7 +10,7 @@ Java Discord Bot, to play minecraft (Fish, Mine, Hunt, and more...)
 
 ### ➕ IG Features :
 
-PVP | Dimensions | Quests | Crates | Bosses (Big events) |
+PVP | Dimensions | Quests | Crates | Bosses (Big events)
 
 ### ➕ Dev Features :
 Unit Tests | Commands Tests | API | Rotating statuses | Config Values (FR/EN)

@@ -9,7 +9,6 @@ import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.entities.channel.unions.MessageChannelUnion;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
-import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 import java.awt.*;
 import java.time.Instant;
@@ -22,14 +21,13 @@ import java.time.Instant;
 
  */
 
-public class LevelHandler extends ListenerAdapter {
+public class LevelHandler {
 
-    @Override
-    public void onMessageReceived(MessageReceivedEvent event){
+    public static boolean handle(MessageReceivedEvent event){
         User user = event.getAuthor();
         String uuid = user.getId();
         if (user.equals(event.getJDA().getSelfUser())){
-            return;
+            return false;
         }
 
         Message message = event.getMessage();
@@ -63,14 +61,14 @@ public class LevelHandler extends ListenerAdapter {
                 embedBuilder.setFooter(MineMate.getConfigManager().getString("general.name"));
 
                 channel.sendMessageEmbeds(embedBuilder.build()).queue();
-                return;
+                return true;
             }
             int balance = player.getBalance();
 
             int price = RanksUtils.getPriceForLevelUp(level);
 
             if(price < balance){
-                MineMate.getInstance().getDatabaseManager().saveLevelToUUID(uuid, level + 1);
+                MineMate.getInstance().getDatabaseManager().updateLevelToUUID(uuid, level + 1);
                 MineMate.getInstance().getDatabaseManager().removeAmountFromUUID(uuid, price);
 
                 EmbedBuilder embedBuilder = new EmbedBuilder();
@@ -93,6 +91,7 @@ public class LevelHandler extends ListenerAdapter {
                 embedBuilder.setFooter(MineMate.getConfigManager().getString("general.name"));
 
                 channel.sendMessageEmbeds(embedBuilder.build()).queue();
+                return true;
             }else {
                 EmbedBuilder embedBuilder = new EmbedBuilder();
                 StringBuilder description = new StringBuilder();
@@ -111,6 +110,7 @@ public class LevelHandler extends ListenerAdapter {
                 embedBuilder.setFooter(MineMate.getConfigManager().getString("general.name"));
 
                 channel.sendMessageEmbeds(embedBuilder.build()).queue();
+                return true;
             }
         }
         if(message.getContentRaw().equals(".prestigeUP")){
@@ -139,6 +139,7 @@ public class LevelHandler extends ListenerAdapter {
                 embedBuilder.setFooter(MineMate.getConfigManager().getString("general.name"));
 
                 channel.sendMessageEmbeds(embedBuilder.build()).queue();
+                return true;
             }else{
                 EmbedBuilder embedBuilder = new EmbedBuilder();
                 StringBuilder description = new StringBuilder();
@@ -157,8 +158,9 @@ public class LevelHandler extends ListenerAdapter {
                 embedBuilder.setFooter(MineMate.getConfigManager().getString("general.name"));
 
                 channel.sendMessageEmbeds(embedBuilder.build()).queue();
-
+                return true;
             }
         }
+		return false;
     }
 }

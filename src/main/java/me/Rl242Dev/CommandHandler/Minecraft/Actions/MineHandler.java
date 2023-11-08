@@ -13,7 +13,6 @@ import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.entities.channel.unions.MessageChannelUnion;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
-import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 import java.awt.*;
 import java.time.Instant;
@@ -27,14 +26,13 @@ import java.util.Map;
 
  */
 
-public class MineHandler extends ListenerAdapter {
+public class MineHandler {
 
-    @Override
-    public void onMessageReceived(MessageReceivedEvent event){
+    public static boolean handle(MessageReceivedEvent event){
         User user = event.getAuthor();
         String uuid = user.getId();
         if (user.equals(event.getJDA().getSelfUser())){
-            return;
+            return false;
         }
 
         Player player = new Player(uuid);
@@ -57,7 +55,7 @@ public class MineHandler extends ListenerAdapter {
 
             if(pickaxe == null){
                 channel.sendMessageEmbeds(Utils.StartErrorEmbed(user.getId()).build()).queue();
-                return;
+                return true;
             }
 
             /* Generate Ores*/
@@ -109,6 +107,8 @@ public class MineHandler extends ListenerAdapter {
             channel.sendMessageEmbeds(embedBuilder.build()).queue();
 
             MineMate.getInstance().getDatabaseManager().saveOresToUUID(uuid, resources);
+            return true;
         }
+        return false;
     }
 }

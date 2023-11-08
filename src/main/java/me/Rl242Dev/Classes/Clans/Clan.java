@@ -47,7 +47,12 @@ public class Clan {
             level = level + player.getLevel() + (player.getPrestige() * 10);
         }
 
-        this.level = level / this.members.size();
+        if(this.members.size() == 0){
+            this.level = level;
+        }else{
+            this.level = level / this.members.size();
+        }
+        
         this.income = Clan.calculateIncome(this.level);
 
         User clanOwner = MineMate.getBot().retrieveUserById(owner.getUuid()).complete();

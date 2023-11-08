@@ -20,7 +20,6 @@ import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.entities.channel.unions.MessageChannelUnion;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
-import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 /*
 
@@ -30,16 +29,17 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
  */
 
-public class BuyHandler extends ListenerAdapter{
+public class BuyHandler {
 
-    public EmbedBuilder MoneyError(String UUID, int price, int balance){
+    private static EmbedBuilder MoneyError(String UUID, int price, int balance) {
         EmbedBuilder embedBuilder = new EmbedBuilder();
         StringBuilder description = new StringBuilder();
 
         description.append("<@");
         description.append(UUID);
         description.append(">");
-        description.append(" ➔ You don't have enough to afford this "+balance+"/"+price+"| <#"+MineMate.getConfigManager().getString("channels.help")+">");
+        description.append(" ➔ You don't have enough to afford this " + balance + "/" + price + "| <#"
+                + MineMate.getConfigManager().getString("channels.help") + ">");
 
         embedBuilder.setTitle(Coin.getEmojiID() + " Buy Action");
         embedBuilder.setColor(Color.green);
@@ -52,13 +52,12 @@ public class BuyHandler extends ListenerAdapter{
         return embedBuilder;
     }
 
-    @Override
-    public void onMessageReceived(MessageReceivedEvent event){
+    public static boolean handle(MessageReceivedEvent event) {
         User user = event.getAuthor();
         String uuid = user.getId();
 
-        if (user.equals(event.getJDA().getSelfUser())){
-            return;
+        if (user.equals(event.getJDA().getSelfUser())) {
+            return false;
         }
 
         Message message = event.getMessage();
@@ -74,243 +73,252 @@ public class BuyHandler extends ListenerAdapter{
         tokens.add("PETS");
         tokens.add("PET");
 
-        if(args.contains(".buy")){
-            if(MineMate.debug){
-                MineMate.getLogger().appendLogger(player.getUuid()+" Issued .buy");
-                MineMate.getLogger().send();
+        if (MineMate.debug) {
+            MineMate.getLogger().appendLogger(player.getUuid() + " Issued .buy");
+            MineMate.getLogger().send();
+        }
+
+        if (args.size() != 3) {
+            EmbedBuilder embedBuilder = new EmbedBuilder();
+            StringBuilder stringBuilder = new StringBuilder();
+
+            stringBuilder.append("<@");
+            stringBuilder.append(user.getId());
+            stringBuilder.append(">");
+            stringBuilder.append(
+                    " ➔ .buy [Type] [Material] | <#" + MineMate.getConfigManager().getString("channels.help") + ">");
+
+            embedBuilder.setTitle(Coin.getEmojiID() + " Buy Action");
+            embedBuilder.setColor(Color.green);
+
+            embedBuilder.setDescription(stringBuilder.toString());
+
+            embedBuilder.setTimestamp(Instant.now());
+            embedBuilder.setFooter(MineMate.getConfigManager().getString("general.name"));
+
+            channel.sendMessageEmbeds(embedBuilder.build()).queue();
+        } else {
+            // TODO: UTILS buy
+            if (tokens.contains(args.get(1))) {
+                Pets pet = PetUtils.getPetFromString(args.get(2));
+
+                if (pet == null) {
+                    EmbedBuilder embedBuilder = new EmbedBuilder();
+                    StringBuilder description = new StringBuilder();
+
+                    description.append("<@");
+                    description.append(user.getId());
+                    description.append(">");
+                    description.append(
+                            " ➔ Pet Invalid | <#" + MineMate.getConfigManager().getString("channels.help") + ">");
+
+                    embedBuilder.setTitle(Coin.getEmojiID() + " Buy Action");
+                    embedBuilder.setColor(Color.green);
+
+                    embedBuilder.setDescription(description.toString());
+
+                    embedBuilder.setTimestamp(Instant.now());
+                    embedBuilder.setFooter(MineMate.getConfigManager().getString("general.name"));
+
+                    channel.sendMessageEmbeds(embedBuilder.build()).queue();
+                    return true;
+                }
+                if (player.getPet() != null) {
+                    EmbedBuilder embedBuilder = new EmbedBuilder();
+                    StringBuilder description = new StringBuilder();
+
+                    description.append("<@");
+                    description.append(user.getId());
+                    description.append(">");
+                    description.append(" ➔ Your already have a pet | <#"
+                            + MineMate.getConfigManager().getString("channels.help") + ">");
+
+                    embedBuilder.setTitle(Coin.getEmojiID() + " Buy Action");
+                    embedBuilder.setColor(Color.green);
+
+                    embedBuilder.setDescription(description.toString());
+
+                    embedBuilder.setTimestamp(Instant.now());
+                    embedBuilder.setFooter(MineMate.getConfigManager().getString("general.name"));
+
+                    channel.sendMessageEmbeds(embedBuilder.build()).queue();
+                    return true;
+                }
+                Object object = null;
+                switch (pet) {
+                    case CAT -> object = new Cat(pet);
+                    case BEE -> object = new Bee(pet);
+                    case GOAT -> object = new Goat(pet);
+                    default -> object = null;
+                }
+
+                if (object instanceof Cat) {
+                    Cat cat = (Cat) object;
+                    if (cat.getPrice() > player.getBalance()) {
+                        EmbedBuilder embedBuilder = MoneyError(player.getUuid(), cat.getPrice(), player.getBalance());
+                        channel.sendMessageEmbeds(embedBuilder.build()).queue();
+                        return true;
+                    }
+
+                    MineMate.getInstance().getDatabaseManager().removeAmountFromUUID(player.getUuid(), cat.getPrice());
+                    MineMate.getInstance().getDatabaseManager().updatePet(player.getUuid(), cat.getType());
+
+                    EmbedBuilder embedBuilder = new EmbedBuilder();
+                    StringBuilder description = new StringBuilder();
+
+                    description.append("<@");
+                    description.append(user.getId());
+                    description.append(">");
+                    description.append(
+                            " ➔ Pet acquired | <#" + MineMate.getConfigManager().getString("channels.help") + ">");
+
+                    embedBuilder.setTitle(Coin.getEmojiID() + " Buy Action");
+                    embedBuilder.setColor(Color.green);
+
+                    embedBuilder.setDescription(description.toString());
+
+                    embedBuilder.setTimestamp(Instant.now());
+                    embedBuilder.setFooter(MineMate.getConfigManager().getString("general.name"));
+
+                    channel.sendMessageEmbeds(embedBuilder.build()).queue();
+                    return true;
+                } else if (object instanceof Bee) {
+                    Bee bee = (Bee) object;
+                    if (bee.getPrice() > player.getBalance()) {
+                        EmbedBuilder embedBuilder = MoneyError(player.getUuid(), bee.getPrice(), player.getBalance());
+                        channel.sendMessageEmbeds(embedBuilder.build()).queue();
+                        return true;
+                    }
+
+                    MineMate.getInstance().getDatabaseManager().removeAmountFromUUID(player.getUuid(), bee.getPrice());
+                    MineMate.getInstance().getDatabaseManager().updatePet(player.getUuid(), bee.getType());
+
+                    EmbedBuilder embedBuilder = new EmbedBuilder();
+                    StringBuilder description = new StringBuilder();
+
+                    description.append("<@");
+                    description.append(user.getId());
+                    description.append(">");
+                    description.append(
+                            " ➔ Pet acquired | <#" + MineMate.getConfigManager().getString("channels.help") + ">");
+
+                    embedBuilder.setTitle(Coin.getEmojiID() + " Buy Action");
+                    embedBuilder.setColor(Color.green);
+
+                    embedBuilder.setDescription(description.toString());
+
+                    embedBuilder.setTimestamp(Instant.now());
+                    embedBuilder.setFooter(MineMate.getConfigManager().getString("general.name"));
+
+                    channel.sendMessageEmbeds(embedBuilder.build()).queue();
+                    return true;
+                } else if (object instanceof Goat) {
+                    Goat goat = (Goat) object;
+                    if (goat.getPrice() > player.getBalance()) {
+                        EmbedBuilder embedBuilder = MoneyError(player.getUuid(), goat.getPrice(), player.getBalance());
+                        channel.sendMessageEmbeds(embedBuilder.build()).queue();
+                        return true;
+                    }
+
+                    MineMate.getInstance().getDatabaseManager().removeAmountFromUUID(player.getUuid(), goat.getPrice());
+                    MineMate.getInstance().getDatabaseManager().updatePet(player.getUuid(), goat.getType());
+
+                    EmbedBuilder embedBuilder = new EmbedBuilder();
+                    StringBuilder description = new StringBuilder();
+
+                    description.append("<@");
+                    description.append(user.getId());
+                    description.append(">");
+                    description.append(
+                            " ➔ Pet acquired | <#" + MineMate.getConfigManager().getString("channels.help") + ">");
+
+                    embedBuilder.setTitle(Coin.getEmojiID() + " Buy Action");
+                    embedBuilder.setColor(Color.green);
+
+                    embedBuilder.setDescription(description.toString());
+
+                    embedBuilder.setTimestamp(Instant.now());
+                    embedBuilder.setFooter(MineMate.getConfigManager().getString("general.name"));
+
+                    channel.sendMessageEmbeds(embedBuilder.build()).queue();
+                    return true;
+                }
+            }
+            Type type = null;
+            Material material = null;
+            if (Utils.TypeEnumContainsString(args.get(1))) {
+                type = ResourceUtils.getTypeFromString(args.get(1));
+            }
+            if (Utils.MaterialEnumContainsString(args.get(2))) {
+                material = ResourceUtils.getMaterialFromString(args.get(2));
             }
 
-            if(args.size() != 3) {
+            if (material == null || type == null) {
                 EmbedBuilder embedBuilder = new EmbedBuilder();
-                StringBuilder stringBuilder = new StringBuilder();
+                StringBuilder description = new StringBuilder();
 
-                stringBuilder.append("<@");
-                stringBuilder.append(user.getId());
-                stringBuilder.append(">");
-                stringBuilder.append(" ➔ .buy [Type] [Material] | <#"+MineMate.getConfigManager().getString("channels.help")+">");
+                description.append("<@");
+                description.append(user.getId());
+                description.append(">");
+                description.append(" ➔ Type or Material incorrect | <#"
+                        + MineMate.getConfigManager().getString("channels.help") + ">");
 
                 embedBuilder.setTitle(Coin.getEmojiID() + " Buy Action");
                 embedBuilder.setColor(Color.green);
 
-                embedBuilder.setDescription(stringBuilder.toString());
+                embedBuilder.setDescription(description.toString());
 
                 embedBuilder.setTimestamp(Instant.now());
                 embedBuilder.setFooter(MineMate.getConfigManager().getString("general.name"));
 
                 channel.sendMessageEmbeds(embedBuilder.build()).queue();
-            }else {
-                //TODO: UTILS buy
-                if(tokens.contains(args.get(1))){
-                    Pets pet = PetUtils.getPetFromString(args.get(2));
+                return true;
+            }
 
-                    if(pet == null){
-                        EmbedBuilder embedBuilder = new EmbedBuilder();
-                        StringBuilder description = new StringBuilder();
+            Item item = new Item(material, type, "0");
+            if (player.getBalance() < item.getSellPrice()) {
+                EmbedBuilder embedBuilder = new EmbedBuilder();
+                StringBuilder description = new StringBuilder();
 
-                        description.append("<@");
-                        description.append(user.getId());
-                        description.append(">");
-                        description.append(" ➔ Pet Invalid | <#"+MineMate.getConfigManager().getString("channels.help")+">");
+                description.append("<@");
+                description.append(user.getId());
+                description.append(">");
+                description.append(" ➔ You don't have enought money to buy this Item | " + player.getBalance() + "/"
+                        + item.getSellPrice());
 
-                        embedBuilder.setTitle(Coin.getEmojiID() + " Buy Action");
-                        embedBuilder.setColor(Color.green);
+                embedBuilder.setTitle(Coin.getEmojiID() + " Buy Action");
+                embedBuilder.setColor(Color.green);
 
-                        embedBuilder.setDescription(description.toString());
+                embedBuilder.setDescription(description.toString());
 
-                        embedBuilder.setTimestamp(Instant.now());
-                        embedBuilder.setFooter(MineMate.getConfigManager().getString("general.name"));
+                embedBuilder.setTimestamp(Instant.now());
+                embedBuilder.setFooter(MineMate.getConfigManager().getString("general.name"));
 
-                        channel.sendMessageEmbeds(embedBuilder.build()).queue();
-                        return;
-                    }
-                    if(player.getPet() != null){
-                        EmbedBuilder embedBuilder = new EmbedBuilder();
-                        StringBuilder description = new StringBuilder();
+                channel.sendMessageEmbeds(embedBuilder.build()).queue();
+            } else {
+                EmbedBuilder embedBuilder = new EmbedBuilder();
+                StringBuilder description = new StringBuilder();
 
-                        description.append("<@");
-                        description.append(user.getId());
-                        description.append(">");
-                        description.append(" ➔ Your already have a pet | <#"+MineMate.getConfigManager().getString("channels.help")+">");
+                description.append("<@");
+                description.append(user.getId());
+                description.append(">");
+                description.append(" ➔ You successfully bought this Item | " + item.getDisplayName());
 
-                        embedBuilder.setTitle(Coin.getEmojiID() + " Buy Action");
-                        embedBuilder.setColor(Color.green);
+                embedBuilder.setTitle(Coin.getEmojiID() + " Buy Action");
+                embedBuilder.setColor(Color.green);
 
-                        embedBuilder.setDescription(description.toString());
+                embedBuilder.setDescription(description.toString());
 
-                        embedBuilder.setTimestamp(Instant.now());
-                        embedBuilder.setFooter(MineMate.getConfigManager().getString("general.name"));
+                embedBuilder.setTimestamp(Instant.now());
+                embedBuilder.setFooter(MineMate.getConfigManager().getString("general.name"));
 
-                        channel.sendMessageEmbeds(embedBuilder.build()).queue();
-                        return;
-                    }
-                    Object object = null;
-                    switch (pet){
-                        case CAT -> object = new Cat(pet);
-                        case BEE -> object = new Bee(pet);
-                        case GOAT -> object = new Goat(pet);
-                    }
+                channel.sendMessageEmbeds(embedBuilder.build()).queue();
 
-                    if (object instanceof Cat) {
-                        Cat cat = (Cat) object;
-                        if(cat.getPrice() > player.getBalance()){
-                            EmbedBuilder embedBuilder = MoneyError(player.getUuid(), cat.getPrice(), player.getBalance());
-                            channel.sendMessageEmbeds(embedBuilder.build()).queue();
-                            return;
-                        }
-
-                        MineMate.getInstance().getDatabaseManager().removeAmountFromUUID(player.getUuid(), cat.getPrice());
-                        MineMate.getInstance().getDatabaseManager().updatePet(player.getUuid(), cat.getType());
-
-                        EmbedBuilder embedBuilder = new EmbedBuilder();
-                        StringBuilder description = new StringBuilder();
-
-                        description.append("<@");
-                        description.append(user.getId());
-                        description.append(">");
-                        description.append(" ➔ Pet acquired | <#"+MineMate.getConfigManager().getString("channels.help")+">");
-
-                        embedBuilder.setTitle(Coin.getEmojiID() + " Buy Action");
-                        embedBuilder.setColor(Color.green);
-
-                        embedBuilder.setDescription(description.toString());
-
-                        embedBuilder.setTimestamp(Instant.now());
-                        embedBuilder.setFooter(MineMate.getConfigManager().getString("general.name"));
-
-                        channel.sendMessageEmbeds(embedBuilder.build()).queue();
-                        return;
-                    } else if (object instanceof Bee) {
-                        Bee bee = (Bee) object;
-                        if(bee.getPrice() > player.getBalance()){
-                            EmbedBuilder embedBuilder = MoneyError(player.getUuid(), bee.getPrice(), player.getBalance());
-                            channel.sendMessageEmbeds(embedBuilder.build()).queue();
-                            return;
-                        }
-
-                        MineMate.getInstance().getDatabaseManager().removeAmountFromUUID(player.getUuid(), bee.getPrice());
-                        MineMate.getInstance().getDatabaseManager().updatePet(player.getUuid(), bee.getType());
-
-                        EmbedBuilder embedBuilder = new EmbedBuilder();
-                        StringBuilder description = new StringBuilder();
-
-                        description.append("<@");
-                        description.append(user.getId());
-                        description.append(">");
-                        description.append(" ➔ Pet acquired | <#"+MineMate.getConfigManager().getString("channels.help")+">");
-
-                        embedBuilder.setTitle(Coin.getEmojiID() + " Buy Action");
-                        embedBuilder.setColor(Color.green);
-
-                        embedBuilder.setDescription(description.toString());
-
-                        embedBuilder.setTimestamp(Instant.now());
-                        embedBuilder.setFooter(MineMate.getConfigManager().getString("general.name"));
-
-                        channel.sendMessageEmbeds(embedBuilder.build()).queue();
-                        return;
-                    } else if (object instanceof Goat) {
-                        Goat goat = (Goat) object;
-                        if(goat.getPrice() > player.getBalance()){
-                            EmbedBuilder embedBuilder = MoneyError(player.getUuid(), goat.getPrice(), player.getBalance());
-                            channel.sendMessageEmbeds(embedBuilder.build()).queue();
-                            return;
-                        }
-
-                        MineMate.getInstance().getDatabaseManager().removeAmountFromUUID(player.getUuid(), goat.getPrice());
-                        MineMate.getInstance().getDatabaseManager().updatePet(player.getUuid(), goat.getType());
-
-                        EmbedBuilder embedBuilder = new EmbedBuilder();
-                        StringBuilder description = new StringBuilder();
-
-                        description.append("<@");
-                        description.append(user.getId());
-                        description.append(">");
-                        description.append(" ➔ Pet acquired | <#"+MineMate.getConfigManager().getString("channels.help")+">");
-
-                        embedBuilder.setTitle(Coin.getEmojiID() + " Buy Action");
-                        embedBuilder.setColor(Color.green);
-
-                        embedBuilder.setDescription(description.toString());
-
-                        embedBuilder.setTimestamp(Instant.now());
-                        embedBuilder.setFooter(MineMate.getConfigManager().getString("general.name"));
-
-                        channel.sendMessageEmbeds(embedBuilder.build()).queue();
-                        return;
-                    }
-                }
-                Type type = null;
-                Material material = null;
-                if(Utils.TypeEnumContainsString(args.get(1))){
-                    type = ResourceUtils.getTypeFromString(args.get(1));
-                }
-                if(Utils.MaterialEnumContainsString(args.get(2))){
-                    material = ResourceUtils.getMaterialFromString(args.get(2));
-                }
-
-                if(material == null || type == null){
-                    EmbedBuilder embedBuilder = new EmbedBuilder();
-                    StringBuilder description = new StringBuilder();
-
-                    description.append("<@");
-                    description.append(user.getId());
-                    description.append(">");
-                    description.append(" ➔ Type or Material incorrect | <#"+MineMate.getConfigManager().getString("channels.help")+">");
-
-                    embedBuilder.setTitle(Coin.getEmojiID() + " Buy Action");
-                    embedBuilder.setColor(Color.green);
-
-                    embedBuilder.setDescription(description.toString());
-
-                    embedBuilder.setTimestamp(Instant.now());
-                    embedBuilder.setFooter(MineMate.getConfigManager().getString("general.name"));
-
-                    channel.sendMessageEmbeds(embedBuilder.build()).queue();
-                    return;
-                }
-
-                Item item = new Item(material, type, "0");
-                if(player.getBalance() < item.getSellPrice()){
-                    EmbedBuilder embedBuilder = new EmbedBuilder();
-                    StringBuilder description = new StringBuilder();
-
-                    description.append("<@");
-                    description.append(user.getId());
-                    description.append(">");
-                    description.append(" ➔ You don't have enought money to buy this Item | " + player.getBalance()+"/"+item.getSellPrice());
-
-                    embedBuilder.setTitle(Coin.getEmojiID() + " Buy Action");
-                    embedBuilder.setColor(Color.green);
-
-                    embedBuilder.setDescription(description.toString());
-
-                    embedBuilder.setTimestamp(Instant.now());
-                    embedBuilder.setFooter(MineMate.getConfigManager().getString("general.name"));
-
-                    channel.sendMessageEmbeds(embedBuilder.build()).queue();
-                }else {
-                    EmbedBuilder embedBuilder = new EmbedBuilder();
-                    StringBuilder description = new StringBuilder();
-
-                    description.append("<@");
-                    description.append(user.getId());
-                    description.append(">");
-                    description.append(" ➔ You successfully bought this Item | " + item.getDisplayName());
-
-                    embedBuilder.setTitle(Coin.getEmojiID() + " Buy Action");
-                    embedBuilder.setColor(Color.green);
-
-                    embedBuilder.setDescription(description.toString());
-
-                    embedBuilder.setTimestamp(Instant.now());
-                    embedBuilder.setFooter(MineMate.getConfigManager().getString("general.name"));
-
-                    channel.sendMessageEmbeds(embedBuilder.build()).queue();
-
-                    MineMate.getInstance().getDatabaseManager().removeAmountFromUUID(player.getUuid(), item.getSellPrice());
-                    MineMate.getInstance().getDatabaseManager().updateItem(player.getUuid(), item);
-                }
+                MineMate.getInstance().getDatabaseManager().removeAmountFromUUID(player.getUuid(), item.getSellPrice());
+                MineMate.getInstance().getDatabaseManager().updateItem(player.getUuid(), item);
+                return true;
             }
         }
+        return false;
     }
 }

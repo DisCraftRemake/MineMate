@@ -108,11 +108,12 @@ public class Player {
 
         this.prestige = MineMate.getInstance().getDatabaseManager().getPrestige(UUID);
 
-        if(MineMate.getInstance().getDatabaseManager().getClanFromMember(UUID) == null){
+        /* if(MineMate.getInstance().getDatabaseManager().getClanFromMember(UUID) == null){
             this.clan = null;
         }else{
             this.clan = MineMate.getInstance().getDatabaseManager().getClanFromMember(UUID);
         }
+        */
 
         this.uuid = UUID;
     }

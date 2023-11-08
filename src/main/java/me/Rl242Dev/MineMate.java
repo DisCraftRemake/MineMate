@@ -18,16 +18,7 @@ import me.Rl242Dev.Classes.Cases.Case;
 import me.Rl242Dev.Classes.Cases.CasesLoots;
 import me.Rl242Dev.Classes.Clans.Clan;
 import me.Rl242Dev.Classes.Utils.Logger;
-import me.Rl242Dev.CommandHandler.Discord.ClanHandler;
-import me.Rl242Dev.CommandHandler.Discord.LevelHandler;
-import me.Rl242Dev.CommandHandler.Discord.Shop.BuyHandler;
-import me.Rl242Dev.CommandHandler.Discord.Shop.SellHandler;
-import me.Rl242Dev.CommandHandler.Discord.Shop.ShopDisplayHandler;
-import me.Rl242Dev.CommandHandler.Discord.StartHandler;
-import me.Rl242Dev.CommandHandler.Discord.UtilsHandler;
-import me.Rl242Dev.CommandHandler.Minecraft.Actions.HarvestHandler;
-import me.Rl242Dev.CommandHandler.Minecraft.Actions.MineHandler;
-import me.Rl242Dev.CommandHandler.Mutliplayer.MiningContest;
+import me.Rl242Dev.CommandHandler.CommandDispatcher;
 import me.Rl242Dev.DatabaseManager.DatabaseManager;
 import me.Rl242Dev.DatabaseManager.JsonManager;
 import net.dv8tion.jda.api.JDA;
@@ -70,7 +61,7 @@ public class MineMate {
 
     public static void main(String[] args) {
         try {
-            File configFile = new File("src/main/resources/config.json"); // Replace with your JSON file path
+            File configFile = new File("src/main/resources/config.json");
             JsonManager jsonManager = new JsonManager(configFile);
             configManager = jsonManager;
         } catch (Exception e) {
@@ -79,18 +70,10 @@ public class MineMate {
 
         logger = new Logger(true);
         JDA bot = JDABuilder.createLight(getToken(), GatewayIntent.GUILD_MESSAGES, GatewayIntent.MESSAGE_CONTENT, GatewayIntent.GUILD_MEMBERS)
-                .setActivity(Activity.playing("Getting build"))
+                .setActivity(Activity.playing(configManager.getString("general.status")))
                 .build();
 
-        bot.addEventListener(new MineHandler());
-        bot.addEventListener(new StartHandler());
-        bot.addEventListener(new HarvestHandler());
-        bot.addEventListener(new UtilsHandler());
-        bot.addEventListener(new SellHandler());
-        bot.addEventListener(new ShopDisplayHandler());
-        bot.addEventListener(new LevelHandler());
-        bot.addEventListener(new BuyHandler());
-        bot.addEventListener(new ClanHandler());
+        bot.addEventListener(new CommandDispatcher());
 
         instance = new MineMate();
 
@@ -109,22 +92,7 @@ public class MineMate {
 
         debug = getConfigManager().getBoolean("dev.debug");
 
-        loadCustomModules();
         clans = initClans();
-    }
-
-    private static void loadCustomModules(){
-        StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
-        StackTraceElement caller = stackTrace[2];
-        String callingClassName = caller.getClassName();
-
-        if(!callingClassName.equals("me.Rl242Dev.MineMate")){
-            return;
-        }
-
-        if(configManager.getBoolean("modules.miningContest")){
-            bot.addEventListener(new MiningContest());
-        }
     }
 
     private static String getToken(){
@@ -177,10 +145,23 @@ public class MineMate {
                     "quantity INT" +
                     ")";
 
+            String createPlayerClanTableSQL = "CREATE TABLE IF NOT EXISTS player_clans (" +
+                    "clan_id TEXT PRIMARY KEY," +
+                    "player_id TEXT UNIQUE," + 
+                    "owner INT" +
+                    ")"; 
+
+            String createPlayerPetsTableSQL = "CREATE TABLE IF NOT EXISTS player_pets (" +
+                    "player_id TEXT PRIMARY KEY," +
+                    "pet TEXT" +
+                    ")";
+
             Statement stmt = conn.createStatement();
             stmt.execute(createPlayersTableSQL);
             stmt.execute(createPlayerItemsTableSQL);
             stmt.execute(createPlayerResourcesTableSQL);
+            stmt.execute(createPlayerClanTableSQL);
+            stmt.execute(createPlayerPetsTableSQL);
 
             conn.close();
         } catch (ClassNotFoundException e) {
@@ -210,7 +191,7 @@ public class MineMate {
         normalLootsIntegerMap.put(CasesLoots.ITEM_IRON_PICKAXE, 5);
         normalLootsIntegerMap.put(CasesLoots.LEVEL_TWO, 15);
         normalLootsIntegerMap.put(CasesLoots.LEVEL_FIVE, 10);
-        normalLootsIntegerMap.put(CasesLoots.BADGE_LEGEND_LOOT, 25);
+        normalLootsIntegerMap.put(CasesLoots.ROLE_LEGEND, 25);
 
         Case normalCase = new Case("\uD83D\uDD10 | Normal Case", 100000, normalLootsIntegerMap);
         getInstance().cases.add(normalCase);

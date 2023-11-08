@@ -164,25 +164,27 @@ public class ResourceUtils {
         return ressources;
     }
 
-    public static Map<Ores, Integer> getResourcesForPickaxe(Material material, Pets pet){
+    public static Map<Ores, Integer> getResourcesForPickaxe(Material material, Pets pet) {
         Map<Ores, Integer> globalResources = getResourcesForPickaxe(material);
-
-        switch (pet){
+        Map<Ores, Integer> modifiedResources = new HashMap<>(globalResources);
+    
+        switch (pet) {
             case BEE -> {
                 Bee bee = new Bee();
                 Random random = new Random();
-                for(Ores ore : globalResources.keySet()){
-                    if(random.nextInt(0,1) < bee.getLuck_bonus()){
-                        int loot = globalResources.get(ore) * 2;
-                        globalResources.remove(ore);
+    
+                for (Map.Entry<Ores, Integer> entry : modifiedResources.entrySet()) {
+                    Ores ore = entry.getKey();
+    
+                    if (random.nextInt(0, 1) < bee.getLuck_bonus()) {
+                        int loot = entry.getValue() * 2;
                         globalResources.put(ore, loot);
                     }
                 }
             }
             case GOAT -> {
-                for(Ores ore : globalResources.keySet()){
+                for (Ores ore : globalResources.keySet()) {
                     int loot = globalResources.get(ore) + new Goat().getQuantity_bonus();
-                    globalResources.remove(ore);
                     globalResources.put(ore, loot);
                 }
             }
@@ -229,25 +231,27 @@ public class ResourceUtils {
         return resources;
     }
 
-    public static Map<Crops, Integer> getResourcesForHoe(Material material, Pets pets){
+    public static Map<Crops, Integer> getResourcesForHoe(Material material, Pets pets) {
         Map<Crops, Integer> globalResources = getResourcesForHoe(material);
-
-        switch (pets){
+        Map<Crops, Integer> modifiedResources = new HashMap<>(globalResources);
+    
+        switch (pets) {
             case BEE -> {
                 Bee bee = new Bee();
                 Random random = new Random();
-                for(Crops crop : globalResources.keySet()){
-                    if(random.nextInt(0,1) < bee.getLuck_bonus()){
-                        int loot = globalResources.get(crop) * 2;
-                        globalResources.remove(crop);
+    
+                for (Map.Entry<Crops, Integer> entry : modifiedResources.entrySet()) {
+                    Crops crop = entry.getKey();
+    
+                    if (random.nextInt(0, 1) < bee.getLuck_bonus()) {
+                        int loot = entry.getValue() * 2;
                         globalResources.put(crop, loot);
                     }
                 }
             }
             case GOAT -> {
-                for(Crops crop : globalResources.keySet()){
+                for (Crops crop : globalResources.keySet()) {
                     int loot = globalResources.get(crop) + 1;
-                    globalResources.remove(crop);
                     globalResources.put(crop, loot);
                 }
             }
@@ -255,6 +259,7 @@ public class ResourceUtils {
         }
         return globalResources;
     }
+    
 
     public static Material getNextMaterial(Material material){
         Material next = null;

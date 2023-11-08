@@ -15,5 +15,5 @@ public enum CasesLoots {
     ITEM_IRON_PICKAXE, // If player has a stronger pick, give the sell value of the item | 5%
     LEVEL_TWO, // 15%
     LEVEL_FIVE, // 10%
-    BADGE_LEGEND_LOOT, // If player already has, give 100k | 25%
+    ROLE_LEGEND // If player already has, give 100k | 25%
 }

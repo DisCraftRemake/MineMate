@@ -19,7 +19,6 @@ import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.entities.channel.unions.MessageChannelUnion;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
-import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 import java.awt.*;
 import java.time.Instant;
@@ -35,16 +34,17 @@ import java.util.List;
  */
 
 @SuppressWarnings("ReassignedVariable")
-public class SellHandler extends ListenerAdapter {
+public class SellHandler {
 
-    public EmbedBuilder succesfullBuy(String UUID){
+    private static EmbedBuilder succesfullBuy(String UUID) {
         EmbedBuilder embedBuilder = new EmbedBuilder();
         StringBuilder stringBuilder = new StringBuilder();
 
         stringBuilder.append("<@");
         stringBuilder.append(UUID);
         stringBuilder.append(">");
-        stringBuilder.append(" ➔ You have sold your pet | <#"+MineMate.getConfigManager().getString("channels.help")+">");
+        stringBuilder.append(
+                " ➔ You have sold your pet | <#" + MineMate.getConfigManager().getString("channels.help") + ">");
 
         embedBuilder.setColor(Color.green);
         embedBuilder.setTitle(Coin.getEmojiID() + " Sell Action");
@@ -56,14 +56,15 @@ public class SellHandler extends ListenerAdapter {
         return embedBuilder;
     }
 
-    public EmbedBuilder noPetError(String UUID){
+    private static EmbedBuilder noPetError(String UUID) {
         EmbedBuilder embedBuilder = new EmbedBuilder();
         StringBuilder stringBuilder = new StringBuilder();
 
         stringBuilder.append("<@");
         stringBuilder.append(UUID);
         stringBuilder.append(">");
-        stringBuilder.append(" ➔ You don't have a pet of this type | <#"+MineMate.getConfigManager().getString("channels.help")+">");
+        stringBuilder.append(" ➔ You don't have a pet of this type | <#"
+                + MineMate.getConfigManager().getString("channels.help") + ">");
 
         embedBuilder.setColor(Color.green);
         embedBuilder.setTitle(Coin.getEmojiID() + " Sell Action");
@@ -75,12 +76,11 @@ public class SellHandler extends ListenerAdapter {
         return embedBuilder;
     }
 
-    @Override
-    public void onMessageReceived(MessageReceivedEvent event){
+    public static boolean handle(MessageReceivedEvent event) {
         User user = event.getAuthor();
         String uuid = user.getId();
-        if (user.equals(event.getJDA().getSelfUser())){
-            return;
+        if (user.equals(event.getJDA().getSelfUser())) {
+            return false;
         }
 
         Message message = event.getMessage();
@@ -90,152 +90,132 @@ public class SellHandler extends ListenerAdapter {
 
         Player player = new Player(uuid);
 
-        if(args.contains(".sell")){
-            if(MineMate.debug){
-                MineMate.getLogger().appendLogger(player.getUuid()+" Issued .sell");
-                MineMate.getLogger().send();
-            }
+        if (MineMate.debug) {
+            MineMate.getLogger().appendLogger(player.getUuid() + " Issued .sell");
+            MineMate.getLogger().send();
+        }
 
-            if(args.size() != 2){
-                EmbedBuilder embedBuilder = new EmbedBuilder();
-                StringBuilder stringBuilder = new StringBuilder();
+        if (args.size() != 2) {
+            EmbedBuilder embedBuilder = new EmbedBuilder();
+            StringBuilder stringBuilder = new StringBuilder();
 
-                stringBuilder.append("<@");
-                stringBuilder.append(user.getId());
-                stringBuilder.append(">");
-                stringBuilder.append(" ➔ You must specify an ore or sell all : .sell [Resource/Pet] | .sell all | <#"+MineMate.getConfigManager().getString("channels.help")+">");
+            stringBuilder.append("<@");
+            stringBuilder.append(user.getId());
+            stringBuilder.append(">");
+            stringBuilder.append(" ➔ You must specify an ore or sell all : .sell [Resource/Pet] | .sell all | <#"
+                    + MineMate.getConfigManager().getString("channels.help") + ">");
 
-                embedBuilder.setColor(Color.green);
-                embedBuilder.setTitle(Coin.getEmojiID() + " Sell Action");
-                embedBuilder.setDescription(stringBuilder.toString());
+            embedBuilder.setColor(Color.green);
+            embedBuilder.setTitle(Coin.getEmojiID() + " Sell Action");
+            embedBuilder.setDescription(stringBuilder.toString());
 
-                embedBuilder.setTimestamp(Instant.now());
-                embedBuilder.setFooter(MineMate.getConfigManager().getString("general.name"));
+            embedBuilder.setTimestamp(Instant.now());
+            embedBuilder.setFooter(MineMate.getConfigManager().getString("general.name"));
 
-                channel.sendMessageEmbeds(embedBuilder.build()).queue();
-            }else{
-                List<String> tokens = new ArrayList<>();
-                tokens.add("cat");
-                tokens.add("goat");
-                tokens.add("bee");
+            channel.sendMessageEmbeds(embedBuilder.build()).queue();
+            return true;
+        } else {
+            List<String> tokens = new ArrayList<>();
+            tokens.add("cat");
+            tokens.add("goat");
+            tokens.add("bee");
 
-                if(tokens.contains(args.get(1).toLowerCase())){
-                    if(player.getPet() == null){
-                        channel.sendMessageEmbeds(noPetError(player.getUuid()).build()).queue();
-                        return;
+            if(tokens.contains(args.get(1).toLowerCase())) {
+                if (player.getPet() == null) {
+                    channel.sendMessageEmbeds(noPetError(player.getUuid()).build()).queue();
+                    return true;
+                }
+
+                Object object = null;
+                switch (args.get(1).toLowerCase()) {
+                    case "bee" -> {
+                        object = new Bee();
                     }
-
-                    Object object = null;
-                    switch (args.get(1).toLowerCase()){
-                        case "bee" -> {
-                            object = new Bee();
-                        }
-                        case "goat" -> {
-                            object = new Goat();
-                        }
-                        case "cat" -> {
-                            object = new Cat();
-                        }
+                    case "goat" -> {
+                        object = new Goat();
                     }
-
-                    if(object instanceof Cat){
-                        Cat pet = (Cat) object;
-
-                        Object playerPet = player.getPet();
-                        if(playerPet instanceof Cat){
-                            MineMate.getInstance().getDatabaseManager().addToBalanceFromUUID(player.getUuid(), pet.getSellPrice());
-                            MineMate.getInstance().getDatabaseManager().removePet(player.getUuid());
-
-                            channel.sendMessageEmbeds(succesfullBuy(player.getUuid()).build()).queue();
-                            return;
-                        }else{
-                            channel.sendMessageEmbeds(noPetError(player.getUuid()).build()).queue();
-                            return;
-                        }
-                    }
-                    if(object instanceof Bee){
-                        Bee pet = (Bee) object;
-
-                        Object playerPet = player.getPet();
-                        if(playerPet instanceof Bee){
-                            MineMate.getInstance().getDatabaseManager().addToBalanceFromUUID(player.getUuid(), pet.getSellPrice());
-                            MineMate.getInstance().getDatabaseManager().removePet(player.getUuid());
-
-                            channel.sendMessageEmbeds(succesfullBuy(player.getUuid()).build()).queue();
-                            return;
-                        }else{
-                            channel.sendMessageEmbeds(noPetError(player.getUuid()).build()).queue();
-                            return;
-                        }
-                    }
-                    if(object instanceof Goat){
-                        Goat pet = (Goat) object;
-
-                        Object playerPet = player.getPet();
-                        if(playerPet instanceof Goat){
-                            MineMate.getInstance().getDatabaseManager().addToBalanceFromUUID(player.getUuid(), pet.getSellPrice());
-                            MineMate.getInstance().getDatabaseManager().removePet(player.getUuid());
-
-                            channel.sendMessageEmbeds(succesfullBuy(player.getUuid()).build()).queue();
-                            return;
-                        }else{
-                            channel.sendMessageEmbeds(noPetError(player.getUuid()).build()).queue();
-                            return;
-                        }
+                    case "cat" -> {
+                        object = new Cat();
                     }
                 }
 
-                if(args.get(1).equals("all")){
-                    try {
-                        Map<Resources, Integer> resources = MineMate.getInstance().getDatabaseManager().getResourcesFromUUID(uuid);
+                if (object instanceof Cat) {
+                    Cat pet = (Cat) object;
 
-                        int GeneratedMoney = 0;
+                    Object playerPet = player.getPet();
+                    if (playerPet instanceof Cat) {
+                        MineMate.getInstance().getDatabaseManager().addToBalanceFromUUID(player.getUuid(),
+                                pet.getSellPrice());
+                        MineMate.getInstance().getDatabaseManager().removePet(player.getUuid());
 
-                        GeneratedMoney = GeneratedMoney + resources.get(Resources.WHEAT) * Wheat.getPrice();
-                        GeneratedMoney = GeneratedMoney + resources.get(Resources.POTATO) * Potato.getPrice();
-                        GeneratedMoney = GeneratedMoney + resources.get(Resources.CARROT) * Carrot.getPrice();
-                        GeneratedMoney = GeneratedMoney + resources.get(Resources.SUGARCANE) * SugarCane.getPrice();
+                        channel.sendMessageEmbeds(succesfullBuy(player.getUuid()).build()).queue();
+                        return true;
+                    } else {
+                        channel.sendMessageEmbeds(noPetError(player.getUuid()).build()).queue();
+                        return true;
+                    }
+                }
+                if (object instanceof Bee) {
+                    Bee pet = (Bee) object;
 
-                        GeneratedMoney = GeneratedMoney + resources.get(Resources.STONE) * Stone.getPrice();
-                        GeneratedMoney = GeneratedMoney + resources.get(Resources.COAL) * Coal.getPrice();
-                        GeneratedMoney = GeneratedMoney + resources.get(Resources.IRON) * Iron.getPrice();
-                        GeneratedMoney = GeneratedMoney + resources.get(Resources.GOLD) * Gold.getPrice();
-                        GeneratedMoney = GeneratedMoney + resources.get(Resources.DIAMOND) * Diamond.getPrice();
-                        GeneratedMoney = GeneratedMoney + resources.get(Resources.OBSIDIAN) * Obsidian.getPrice();
+                    Object playerPet = player.getPet();
+                    if (playerPet instanceof Bee) {
+                        MineMate.getInstance().getDatabaseManager().addToBalanceFromUUID(player.getUuid(),
+                                pet.getSellPrice());
+                        MineMate.getInstance().getDatabaseManager().removePet(player.getUuid());
 
-                        if(GeneratedMoney == 0){
-                            EmbedBuilder embedBuilder = new EmbedBuilder();
-                            StringBuilder description = new StringBuilder();
+                        channel.sendMessageEmbeds(succesfullBuy(player.getUuid()).build()).queue();
+                        return true;
+                    } else {
+                        channel.sendMessageEmbeds(noPetError(player.getUuid()).build()).queue();
+                        return true; 
+                    }
+                }
+                if (object instanceof Goat) {
+                    Goat pet = (Goat) object;
 
-                            description.append("<@");
-                            description.append(user.getId());
-                            description.append(">");
-                            description.append(" ➔ You had nothing in your inventory that could be sold");
+                    Object playerPet = player.getPet();
+                    if (playerPet instanceof Goat) {
+                        MineMate.getInstance().getDatabaseManager().addToBalanceFromUUID(player.getUuid(),
+                                pet.getSellPrice());
+                        MineMate.getInstance().getDatabaseManager().removePet(player.getUuid());
 
-                            embedBuilder.setColor(Color.green);
-                            embedBuilder.setTitle(Coin.getEmojiID() + " Sell Action");
-                            embedBuilder.setDescription(description.toString());
+                        channel.sendMessageEmbeds(succesfullBuy(player.getUuid()).build()).queue();
+                        return true;
+                    } else {
+                        channel.sendMessageEmbeds(noPetError(player.getUuid()).build()).queue();
+                        return true;
+                    }
+                }
+            }
 
-                            embedBuilder.setTimestamp(Instant.now());
-                            embedBuilder.setFooter(MineMate.getConfigManager().getString("general.name"));
+            if (args.get(1).equals("all")) {
+                try {
+                    Map<Resources, Integer> resources = MineMate.getInstance().getDatabaseManager()
+                            .getResourcesFromUUID(uuid);
 
-                            channel.sendMessageEmbeds(embedBuilder.build()).queue();
+                    int GeneratedMoney = 0;
 
-                            return;
-                        }
+                    GeneratedMoney = GeneratedMoney + resources.get(Resources.WHEAT) * Wheat.getPrice();
+                    GeneratedMoney = GeneratedMoney + resources.get(Resources.POTATO) * Potato.getPrice();
+                    GeneratedMoney = GeneratedMoney + resources.get(Resources.CARROT) * Carrot.getPrice();
+                    GeneratedMoney = GeneratedMoney + resources.get(Resources.SUGARCANE) * SugarCane.getPrice();
 
-                        MineMate.getInstance().getDatabaseManager().addToBalanceFromUUID(uuid, GeneratedMoney);
-                        MineMate.getInstance().getDatabaseManager().resetResourcesFromUUID(uuid);
+                    GeneratedMoney = GeneratedMoney + resources.get(Resources.STONE) * Stone.getPrice();
+                    GeneratedMoney = GeneratedMoney + resources.get(Resources.COAL) * Coal.getPrice();
+                    GeneratedMoney = GeneratedMoney + resources.get(Resources.IRON) * Iron.getPrice();
+                    GeneratedMoney = GeneratedMoney + resources.get(Resources.GOLD) * Gold.getPrice();
+                    GeneratedMoney = GeneratedMoney + resources.get(Resources.DIAMOND) * Diamond.getPrice();
+                    GeneratedMoney = GeneratedMoney + resources.get(Resources.OBSIDIAN) * Obsidian.getPrice();
 
+                    if (GeneratedMoney == 0) {
                         EmbedBuilder embedBuilder = new EmbedBuilder();
                         StringBuilder description = new StringBuilder();
 
                         description.append("<@");
                         description.append(user.getId());
                         description.append(">");
-                        description.append(" ➔ You have sold all your inventory for : ");
-                        description.append(Utils.IntToString(GeneratedMoney)).append(" ");
-                        description.append(Coin.getEmojiID());
+                        description.append(" ➔ You had nothing in your inventory that could be sold");
 
                         embedBuilder.setColor(Color.green);
                         embedBuilder.setTitle(Coin.getEmojiID() + " Sell Action");
@@ -245,18 +225,12 @@ public class SellHandler extends ListenerAdapter {
                         embedBuilder.setFooter(MineMate.getConfigManager().getString("general.name"));
 
                         channel.sendMessageEmbeds(embedBuilder.build()).queue();
-                    }catch (IndexOutOfBoundsException e){
-                        e.printStackTrace();
+
+                        return true;
                     }
-                }
 
-                String ore = args.get(1).toUpperCase();
-                if(Utils.ResourcesEnumContainsString(ore)){
-                    int price = ResourceUtils.getPriceFromString(args.get(1));
-                    int quantity = MineMate.getInstance().getDatabaseManager().getResourceQuantityFromString(uuid, args.get(1));
-
-                    MineMate.getInstance().getDatabaseManager().resetResourceFromString(uuid, ore.toLowerCase());
-                    MineMate.getInstance().getDatabaseManager().addToBalanceFromUUID(uuid, price*quantity);
+                    MineMate.getInstance().getDatabaseManager().addToBalanceFromUUID(uuid, GeneratedMoney);
+                    MineMate.getInstance().getDatabaseManager().resetResourcesFromUUID(uuid);
 
                     EmbedBuilder embedBuilder = new EmbedBuilder();
                     StringBuilder description = new StringBuilder();
@@ -264,41 +238,73 @@ public class SellHandler extends ListenerAdapter {
                     description.append("<@");
                     description.append(user.getId());
                     description.append(">");
-                    description.append(" ➔ You have sold ").append(Utils.IntToString(quantity)).append(" ").append(args.get(1).toLowerCase()).append(" for : ");
-                    description.append(Utils.IntToString(price*quantity)).append(" ");
+                    description.append(" ➔ You have sold all your inventory for : ");
+                    description.append(Utils.IntToString(GeneratedMoney)).append(" ");
                     description.append(Coin.getEmojiID());
 
-                    embedBuilder.setTitle(Coin.getEmojiID() + " Sell Action");
                     embedBuilder.setColor(Color.green);
-
+                    embedBuilder.setTitle(Coin.getEmojiID() + " Sell Action");
                     embedBuilder.setDescription(description.toString());
 
                     embedBuilder.setTimestamp(Instant.now());
                     embedBuilder.setFooter(MineMate.getConfigManager().getString("general.name"));
 
                     channel.sendMessageEmbeds(embedBuilder.build()).queue();
-                }else {
-                    if (args.get(1).toLowerCase().equals("all")){
-                        return;
-                    }
-                    EmbedBuilder embedBuilder = new EmbedBuilder();
-                    StringBuilder stringBuilder = new StringBuilder();
-
-                    stringBuilder.append("<@");
-                    stringBuilder.append(user.getId());
-                    stringBuilder.append(">");
-                    stringBuilder.append(" ➔ The resource you specified doesn't exist");
-
-                    embedBuilder.setTitle(Coin.getEmojiID() + " Sell Action");
-                    embedBuilder.setColor(Color.green);
-
-                    embedBuilder.setDescription(stringBuilder.toString());
-
-                    embedBuilder.setTimestamp(Instant.now());
-                    embedBuilder.setFooter(MineMate.getConfigManager().getString("general.name"));
-
-                    channel.sendMessageEmbeds(embedBuilder.build()).queue();
+                    return true;
+                } catch (IndexOutOfBoundsException e) {
+                    e.printStackTrace();
                 }
+            }
+
+            String ore = args.get(1).toUpperCase();
+            if (Utils.ResourcesEnumContainsString(ore)) {
+                int price = ResourceUtils.getPriceFromString(args.get(1));
+                int quantity = MineMate.getInstance().getDatabaseManager().getResourceQuantityFromString(uuid,
+                        args.get(1));
+
+                MineMate.getInstance().getDatabaseManager().resetResourceFromString(uuid, ore.toLowerCase());
+                MineMate.getInstance().getDatabaseManager().addToBalanceFromUUID(uuid, price * quantity);
+
+                EmbedBuilder embedBuilder = new EmbedBuilder();
+                StringBuilder description = new StringBuilder();
+
+                description.append("<@");
+                description.append(user.getId());
+                description.append(">");
+                description.append(" ➔ You have sold ").append(Utils.IntToString(quantity)).append(" ")
+                        .append(args.get(1).toLowerCase()).append(" for : ");
+                description.append(Utils.IntToString(price * quantity)).append(" ");
+                description.append(Coin.getEmojiID());
+
+                embedBuilder.setTitle(Coin.getEmojiID() + " Sell Action");
+                embedBuilder.setColor(Color.green);
+
+                embedBuilder.setDescription(description.toString());
+
+                embedBuilder.setTimestamp(Instant.now());
+                embedBuilder.setFooter(MineMate.getConfigManager().getString("general.name"));
+
+                channel.sendMessageEmbeds(embedBuilder.build()).queue();
+                return true;
+            } else {
+                EmbedBuilder embedBuilder = new EmbedBuilder();
+                StringBuilder stringBuilder = new StringBuilder();
+
+                stringBuilder.append("<@");
+                stringBuilder.append(user.getId());
+                stringBuilder.append(">");
+                stringBuilder.append(" ➔ The resource you specified doesn't exist");
+
+                embedBuilder.setTitle(Coin.getEmojiID() + " Sell Action");
+                embedBuilder.setColor(Color.green);
+
+                embedBuilder.setDescription(stringBuilder.toString());
+
+                embedBuilder.setTimestamp(Instant.now());
+                embedBuilder.setFooter(MineMate.getConfigManager().getString("general.name"));
+
+                channel.sendMessageEmbeds(embedBuilder.build()).queue();
+                return true;
             }
         }
     }

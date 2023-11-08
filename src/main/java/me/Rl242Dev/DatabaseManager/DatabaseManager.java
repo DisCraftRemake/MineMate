@@ -11,6 +11,7 @@ import me.Rl242Dev.Classes.Items.Ressource.Resources;
 import me.Rl242Dev.Classes.Items.Ressource.Type;
 import me.Rl242Dev.Classes.Player;
 import me.Rl242Dev.MineMate;
+import me.Rl242Dev.Utils;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -28,10 +29,13 @@ import java.util.*;
 
  */
 
-public class DatabaseManager { /* TODO: Organize by categories methods*/
+public class DatabaseManager {
 
     private static Connection connection;
 
+    /**
+     * Connect to the database
+     */
     public void connect(){
         try {
             Class.forName("org.sqlite.JDBC");
@@ -46,6 +50,14 @@ public class DatabaseManager { /* TODO: Organize by categories methods*/
         }
     }
 
+    /**
+     * Remove pet from user
+     * 
+     * @param UUID
+     * 
+     * @return void
+     * 
+     */
     public void removePet(String UUID){
         try {
             Statement statement = connection.createStatement();
@@ -58,6 +70,13 @@ public class DatabaseManager { /* TODO: Organize by categories methods*/
         }
     }
 
+    /**
+     * Retrieves the Members of a clan by clan ID
+     * 
+     * @param ID
+     * @return Map<Player, Integer> | null
+     * 
+     */
     public Map<Player, Integer> getMembersOfClan(String ID){
         try {
             Statement statement = connection.createStatement();
@@ -80,6 +99,14 @@ public class DatabaseManager { /* TODO: Organize by categories methods*/
         return null;
     }
 
+    /**
+     * Kicks player out of Clan, can only be used by owner of the clan
+     * 
+     * @param ID
+     * @param UUID
+     * 
+     * @return void
+     */
     public void kickPlayerOfClan(String ID, String UUID){
         try {
             Statement statement = connection.createStatement();
@@ -91,6 +118,12 @@ public class DatabaseManager { /* TODO: Organize by categories methods*/
         }
     }
 
+    /**
+     * get Clan from member UUID
+     * 
+     * @param UUID
+     * @return Clan | null
+     */
     public Clan getClanFromMember(String UUID){
         try {
             Statement statement = connection.createStatement();
@@ -108,6 +141,14 @@ public class DatabaseManager { /* TODO: Organize by categories methods*/
         return null;
     }
 
+    /**
+     * Add clan owner to a Clan, PRIMARY KEY
+     * 
+     * @param ID
+     * @param UUID
+     * 
+     * @return void
+     */
     public void addClanOwner(String ID, String UUID){
         try {
             Statement statement = connection.createStatement();
@@ -119,6 +160,12 @@ public class DatabaseManager { /* TODO: Organize by categories methods*/
         }
     }
 
+    /**
+     * Add clan member to clan
+     * 
+     * @param ID
+     * @param UUID
+     */
     public void addClanMember(String ID, String UUID){
         try {
             Statement statement = connection.createStatement();
@@ -130,6 +177,12 @@ public class DatabaseManager { /* TODO: Organize by categories methods*/
         }
     }
 
+    /**
+     * Query the Item Pickaxe from a user
+     * 
+     * @param UUID
+     * @return Item | null
+     */
     public Item getPickaxeFromUUID(String UUID){
         try {
             Statement statement = connection.createStatement();
@@ -149,6 +202,11 @@ public class DatabaseManager { /* TODO: Organize by categories methods*/
         return null;
     }
 
+    /**
+     * Get all clans in the database
+     * 
+     * @return List<Clan> | null
+     */
     public List<Clan> getClans(){
         try {
             Statement statement = connection.createStatement();
@@ -169,6 +227,13 @@ public class DatabaseManager { /* TODO: Organize by categories methods*/
         return null;
     }
 
+    /**
+     * Query the amount of a resource of a user from the database
+     * 
+     * @param UUID
+     * @param resource
+     * @return int | 0
+     */
     public int getResourceQuantityFromString(String UUID, String resource){
         try {
             Statement stmt = connection.createStatement();
@@ -183,6 +248,12 @@ public class DatabaseManager { /* TODO: Organize by categories methods*/
         return 0;
     }
 
+    /**
+     * Query pet of a player from database
+     * 
+     * @param UUID
+     * @return Class<? extends PetIdentufier> | null
+     */
     public Class<? extends PetIdentifier> getPetFromUUID(String UUID){
         try {
             Statement statement = connection.createStatement();
@@ -202,6 +273,12 @@ public class DatabaseManager { /* TODO: Organize by categories methods*/
         return null;
     }
 
+    /**
+     * Query Item Hoe of a player from database
+     * 
+     * @param UUID
+     * @return Item | null
+     */
     public Item getHoeFromUUID(String UUID){
         try {
             Statement statement = connection.createStatement();
@@ -221,6 +298,12 @@ public class DatabaseManager { /* TODO: Organize by categories methods*/
         return null;
     }
 
+    /**
+     * Query all resources of a player from database
+     * 
+     * @param UUID
+     * @return Map<Resources, Integer> | null
+     */
     public Map<Resources, Integer> getResourcesFromUUID(String UUID){
         Map<Resources, Integer> resources = new HashMap<>();
 
@@ -236,9 +319,21 @@ public class DatabaseManager { /* TODO: Organize by categories methods*/
             }
         }
 
-        return resources;
+        if (resources.isEmpty()) {
+            return null;
+        } else {
+            return resources;
+        }
     }
 
+    /**
+     * Save ores to database for a player
+     * 
+     * @param UUID
+     * @param ressourcesMap
+     * 
+     * @return void
+     */
     public void saveOresToUUID(String UUID, Map<Ores, Integer> ressourcesMap){
         for(Ores ore : ressourcesMap.keySet()){
             try {
@@ -258,6 +353,14 @@ public class DatabaseManager { /* TODO: Organize by categories methods*/
         }
     }
 
+    /**
+     * Adds amount to balance for user in database
+     * 
+     * @param UUID
+     * @param amout
+     * 
+     * @return void
+     */
     public void addToBalanceFromUUID(String UUID, int amout){
         try {
             int balance = getBalanceFromUUID(UUID);
@@ -273,6 +376,14 @@ public class DatabaseManager { /* TODO: Organize by categories methods*/
         }
     }
 
+    /**
+     * Removes amount from balance of user in database
+     * 
+     * @param UUID
+     * @param amout
+     * 
+     * @return void
+     */
     public void removeAmountFromUUID(String UUID, int amout){
         try {
             int balance = getBalanceFromUUID(UUID);
@@ -288,6 +399,11 @@ public class DatabaseManager { /* TODO: Organize by categories methods*/
         }
     }
 
+    /**
+     * Query top 10 balance/user by asc order 
+     * 
+     * @return Map<String, Integer> | null
+     */
     public Map<String, Integer> getLeaderboard(){
         try {
             Map<String, Integer> leaderboard = new HashMap<>();
@@ -311,6 +427,14 @@ public class DatabaseManager { /* TODO: Organize by categories methods*/
         return null;
     }
 
+    /**
+     * Saves crops to database for a player
+     * 
+     * @param UUID
+     * @param ressourcesMap
+     * 
+     * @return void
+     */
     public void saveCropsToUUID(String UUID, Map<Crops, Integer> ressourcesMap){
         for(Crops crop : ressourcesMap.keySet()){
             try {
@@ -330,6 +454,12 @@ public class DatabaseManager { /* TODO: Organize by categories methods*/
         }
     }
 
+    /**
+     * Check if an user exists 
+     * 
+     * @param UUID
+     * @return bool
+     */
     public boolean userExist(String UUID){
         try  {
             Statement statement = connection.createStatement();
@@ -345,6 +475,14 @@ public class DatabaseManager { /* TODO: Organize by categories methods*/
         return false;
     }
 
+    /**
+     * Update item (Hoe, Pickaxe, ...) for a player 
+     * 
+     * @param UUID
+     * @param item
+     * 
+     * @return void
+     */
     public void updateItem(String UUID, Item item){
         try {
             Statement statement = connection.createStatement();
@@ -357,6 +495,13 @@ public class DatabaseManager { /* TODO: Organize by categories methods*/
         }
     }
 
+    /**
+     * Add +1 prestige to user and reset every items, resources
+     * 
+     * @param UUID
+     * 
+     * @return void
+     */
     public void prestigeUser(String UUID){
         try {
             Statement statement = connection.createStatement();
@@ -378,7 +523,7 @@ public class DatabaseManager { /* TODO: Organize by categories methods*/
 
             resetResourcesFromUUID(UUID);
 
-            String updatePrestige = "UPDATE players SET prestige = '"+getPrestige(UUID)+1+"' WHERE player_id = '"+UUID+"';";
+            String updatePrestige = "UPDATE players SET prestige = '"+Utils.IntToString(getPrestige(UUID)+1)+"' WHERE player_id = '"+UUID+"';";
             statement.execute(updatePrestige);
 
             statement.close();
@@ -387,6 +532,12 @@ public class DatabaseManager { /* TODO: Organize by categories methods*/
         }
     }
 
+    /**
+     * Query the prestige level of an user from database
+     * 
+     * @param UUID
+     * @return int | 0
+     */
     public int getPrestige(String UUID){
         try {
             Statement statement = connection.createStatement();
@@ -401,10 +552,18 @@ public class DatabaseManager { /* TODO: Organize by categories methods*/
         return 0;
     }
 
+    /**
+     * Update pet from player to database
+     * 
+     * @param UUID
+     * @param pets
+     * 
+     * @return void
+     */
     public void updatePet(String UUID, Pets pets){
         try {
             Statement statement = connection.createStatement();
-            String query = "UPDATE player_pets SET pet = '"+pets.toString().toLowerCase()+"' WHERE player_id = '"+UUID+";";
+            String query = "UPDATE player_pets SET pet = '"+pets.toString().toLowerCase()+"' WHERE player_id = '"+UUID+"';";
 
             statement.execute(query);
 
@@ -414,6 +573,13 @@ public class DatabaseManager { /* TODO: Organize by categories methods*/
         }
     }
 
+    /**
+     * Add an user to the database (UUID, start_date, ...)
+     * 
+     * @param UUID
+     * 
+     * @return void 
+     */
     public void registerUser(String UUID){
         try {
             Statement statement = connection.createStatement();
@@ -443,7 +609,15 @@ public class DatabaseManager { /* TODO: Organize by categories methods*/
         }
     }
 
-    public void saveLevelToUUID(String UUID, int level){
+    /**
+     * Update the level of a player
+     * 
+     * @param UUID
+     * @param level
+     * 
+     * @return void
+     */
+    public void updateLevelToUUID(String UUID, int level){
         try {
             Statement statement = connection.createStatement();
             String query = "UPDATE players SET level = '"+level+"' WHERE player_id = '"+UUID+"';";
@@ -456,6 +630,12 @@ public class DatabaseManager { /* TODO: Organize by categories methods*/
         }
     }
 
+    /**
+     * Query the level of a player
+     * 
+     * @param UUID
+     * @return int | 0
+     */
     public int getLevelFromUUID(String UUID){
         try {
             Statement statement = connection.createStatement();
@@ -469,6 +649,14 @@ public class DatabaseManager { /* TODO: Organize by categories methods*/
         return 0;
     }
 
+    /**
+     * Reset only one resource from a player
+     * 
+     * @param UUID
+     * @param resource
+     * 
+     * @return void
+     */
     public void resetResourceFromString(String UUID, String resource){
         try {
             Statement statement = connection.createStatement();
@@ -482,6 +670,13 @@ public class DatabaseManager { /* TODO: Organize by categories methods*/
         }
     }
 
+    /**
+     * Reset every resources of an user
+     * 
+     * @param UUID
+     * 
+     * @return void
+     */
     public void resetResourcesFromUUID(String UUID) {
         try {
             Statement statement = connection.createStatement();
@@ -498,6 +693,13 @@ public class DatabaseManager { /* TODO: Organize by categories methods*/
         }
     }
 
+    /**
+     * Query balance of an user from database
+     * 
+     * @param UUID
+     * 
+     * @return int | 0
+     */
     public int getBalanceFromUUID(String UUID) {
         try {
             Statement statement = connection.createStatement();

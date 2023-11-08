@@ -1,6 +1,9 @@
 {
   "general": {
-    "name": "MineMate"
+    "name": "MineMate",
+    "guild_id": "1096704067935420458",
+    "legend_role_id": "1165625844337737758",
+    "status": "test"
   },
   "dev": {
     "debug": false,

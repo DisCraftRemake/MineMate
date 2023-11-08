@@ -13,7 +13,6 @@ import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.entities.channel.unions.MessageChannelUnion;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
-import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 import java.awt.*;
 import java.time.Instant;
@@ -27,14 +26,13 @@ import java.util.Map;
 
  */
 
-public class HarvestHandler extends ListenerAdapter {
+public class HarvestHandler {
 
-    @Override
-    public void onMessageReceived(MessageReceivedEvent event){
+    public static boolean handle(MessageReceivedEvent event){
         User user = event.getAuthor();
         String uuid = user.getId();
         if (user.equals(event.getJDA().getSelfUser())){
-            return;
+            return false;
         }
 
         Player player = new Player(uuid);
@@ -55,7 +53,7 @@ public class HarvestHandler extends ListenerAdapter {
 
             if(hoe == null){
                 channel.sendMessageEmbeds(Utils.StartErrorEmbed(user.getId()).build()).queue();
-                return;
+                return true;
             }
 
             Map<Crops, Integer> resources = null;
@@ -78,7 +76,11 @@ public class HarvestHandler extends ListenerAdapter {
             stringBuilder.append(user.getId());
             stringBuilder.append(">");
             stringBuilder.append(" ➔ You have harvested using : ");
-            stringBuilder.append(hoe.getEmojiID()).append(" ").append(hoe.getDisplayName()).append(" | Pet:  "+PetUtils.getNameFromPet(player.getPet()));
+            if(player.getPet() == null){
+                stringBuilder.append(hoe.getEmojiID()).append(" ").append(hoe.getDisplayName());
+            }else{
+                stringBuilder.append(hoe.getEmojiID()).append(" ").append(hoe.getDisplayName()).append(" | Pet:  "+PetUtils.getNameFromPet(player.getPet()));
+            }
 
 
             embedBuilder.setTitle(Emoji.getHoeEmoji() + " Harvesting Action");
@@ -96,6 +98,8 @@ public class HarvestHandler extends ListenerAdapter {
             channel.sendMessageEmbeds(embedBuilder.build()).queue();
 
             MineMate.getInstance().getDatabaseManager().saveCropsToUUID(uuid, resources);
+            return true;
         }
+        return false;
     }
 }

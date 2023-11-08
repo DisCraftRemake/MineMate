@@ -5,12 +5,10 @@ import me.Rl242Dev.Classes.Player;
 import me.Rl242Dev.MineMate;
 import me.Rl242Dev.Utils;
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.entities.channel.unions.MessageChannelUnion;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
-import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 import java.time.Instant;
 import java.awt.Color;
@@ -24,14 +22,13 @@ import java.util.Map;
 
  */
 
-public class UtilsHandler extends ListenerAdapter {
+public class UtilsHandler  {
 
-    @Override
-    public void onMessageReceived(MessageReceivedEvent event){
+    public static boolean handle(MessageReceivedEvent event){
         User user = event.getAuthor();
         String uuid = user.getId();
         if (user.equals(event.getJDA().getSelfUser())){
-            return;
+            return false;
         }
 
         Player player = new Player(uuid);
@@ -64,54 +61,47 @@ public class UtilsHandler extends ListenerAdapter {
             embedBuilder.setTimestamp(Instant.now());
 
             channel.sendMessageEmbeds(embedBuilder.build()).queue();
+            return true;
         }
-        if(message.getContentRaw().equals(".profil")){ //TODO: Redo with Private API and link to website
-            MineMate.getLogger().appendLogger(player.getUuid()+" Issued .profil");
-            MineMate.getLogger().send();
+        if(message.getContentRaw().equals(".profil")){
+            if(MineMate.debug){
+                MineMate.getLogger().appendLogger(player.getUuid()+" Issued .profil");
+                MineMate.getLogger().send();
+            }
 
             channel.sendMessageEmbeds(player.getProfil().build()).queue();
+            return true;
         }
         if(message.getContentRaw().equals(".help")){
-            MineMate.getLogger().appendLogger(player.getUuid()+" Issued .help");
-            MineMate.getLogger().send();
-
-            if(event.getMember().hasPermission(Permission.ADMINISTRATOR)){
-                event.getGuild()
-                        .getTextChannelById(MineMate.getConfigManager().getString("channels.help"))
-                        .getHistory()
-                        .retrievePast(1)
-                        .queue(history -> {
-                            int messageCount = history.size();
-
-                            if (messageCount > 0) {
-                                //TODO basic help
-                            } else {
-                                //TODO admin help
-                            }
-                        });
-            }else{
-                EmbedBuilder embedBuilder = new EmbedBuilder();
-                StringBuilder stringBuilder = new StringBuilder();
-
-                stringBuilder.append("<@");
-                stringBuilder.append(player.getUuid());
-                stringBuilder.append(">");
-                stringBuilder.append(" ➔ Help : <#"+MineMate.getConfigManager().getString("help")+">");
-
-                embedBuilder.setTitle(" Help Action");
-                embedBuilder.setColor(Color.green);
-
-                embedBuilder.setDescription(stringBuilder.toString());
-
-                embedBuilder.setFooter(MineMate.getConfigManager().getString("general.name"));
-                embedBuilder.setTimestamp(Instant.now());
-
-                channel.sendMessageEmbeds(embedBuilder.build()).queue();
+            if(MineMate.debug){
+                MineMate.getLogger().appendLogger(player.getUuid()+" Issued .help");
+                MineMate.getLogger().send();
             }
+
+            EmbedBuilder embedBuilder = new EmbedBuilder();
+            StringBuilder stringBuilder = new StringBuilder();
+
+            stringBuilder.append("<@");
+            stringBuilder.append(player.getUuid());
+            stringBuilder.append(">");
+            stringBuilder.append(" ➔ Help : <#"+MineMate.getConfigManager().getString("channels.help")+">");
+
+            embedBuilder.setTitle(" Help Action");
+            embedBuilder.setColor(Color.green);
+
+            embedBuilder.setDescription(stringBuilder.toString());
+
+            embedBuilder.setFooter(MineMate.getConfigManager().getString("general.name"));
+            embedBuilder.setTimestamp(Instant.now());
+
+            channel.sendMessageEmbeds(embedBuilder.build()).queue();
+            return true;
         }
         if(message.getContentRaw().equals(".leaderboard")){
-            MineMate.getLogger().appendLogger(player.getUuid()+" Issued .leaderboard");
-            MineMate.getLogger().send();
+            if(MineMate.debug){
+                MineMate.getLogger().appendLogger(player.getUuid()+" Issued .leaderboard");
+                MineMate.getLogger().send();
+            }
 
             Map<String, Integer> leaderbord = MineMate.getInstance().getDatabaseManager().getLeaderboard();
 
@@ -144,6 +134,8 @@ public class UtilsHandler extends ListenerAdapter {
             embedBuilder.setTimestamp(Instant.now());
 
             channel.sendMessageEmbeds(embedBuilder.build()).queue();
+            return true;
         }
+		return false;
     }
 }

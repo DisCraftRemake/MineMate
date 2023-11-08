@@ -10,10 +10,10 @@ Java Discord Bot, to play minecraft (Fish, Mine, Hunt, and more...)
 
 ### ➕ IG Features :
 
-PVP | Dimensions | Quests | Crates | Bosses (Big events)
+Quests | Bosses (Big events) | Clan fixes | Inventory Display
 
 ### ➕ Dev Features :
-Unit Tests | Commands Tests | API | Rotating statuses | Config Values (FR/EN)
+Rotating statuses | Config Values (FR/EN) | More SQL data of each players [Issued commands, ...]
     
 ### ➕ Outside Features:
-Dashboard (Bot Owner | [Members, Total Balance of server, Enable/Disable Features, Total issued commands, Giveaways (Create, End), Config Bot (Prices, Name...)]) | Stat Viewer (Logging with Discord available) 
+Dashboard (Bot Owner | [Members, Total Balance of server, Enable/Disable Features, Total issued commands, Config Bot (Prices, Name...)]) | Documentation Bot

@@ -12,7 +12,6 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.entities.channel.unions.MessageChannelUnion;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
-import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 import java.awt.*;
 import java.time.Instant;
@@ -30,16 +29,15 @@ import java.util.concurrent.TimeUnit;
 
  */
 
-public class MiningContest extends ListenerAdapter {
-    private final Map<String, Long> cooldowns = new HashMap<>();
-    private final ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
+public class MiningContest {
+    private final static Map<String, Long> cooldowns = new HashMap<>();
+    private final static ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
 
-    @Override
-    public void onMessageReceived(MessageReceivedEvent event) {
+    public static boolean handle(MessageReceivedEvent event) {
         User user = event.getAuthor();
         String uuid = user.getId();
         if (user.equals(event.getJDA().getSelfUser())) {
-            return;
+            return false;
         }
 
         Player player = new Player(uuid);
@@ -70,7 +68,7 @@ public class MiningContest extends ListenerAdapter {
                 embedBuilder.setFooter(MineMate.getConfigManager().getString("general.name"));
 
                 channel.sendMessageEmbeds(embedBuilder.build()).queue();
-                return;
+                return true;
             }
 
             if (isOnCooldown(uuid)) {
@@ -91,7 +89,7 @@ public class MiningContest extends ListenerAdapter {
                 embedBuilder.setFooter(MineMate.getConfigManager().getString("general.name"));
 
                 channel.sendMessageEmbeds(embedBuilder.build()).queue();
-                return;
+                return true;
             }
 
             startCooldown(uuid);
@@ -150,15 +148,17 @@ public class MiningContest extends ListenerAdapter {
 
             embedBuilder.setDescription(description.toString());
             channel.sendMessageEmbeds(embedBuilder.build()).queue();
+            return true;
         }
+        return false;
     }
 
-    private void startCooldown(String uuid) {
+    private static void startCooldown(String uuid) {
         cooldowns.put(uuid, System.currentTimeMillis());
         scheduler.schedule(() -> cooldowns.remove(uuid), 1, TimeUnit.MINUTES);
     }
 
-    private boolean isOnCooldown(String uuid) {
+    private static boolean isOnCooldown(String uuid) {
         Long lastPlayTime = cooldowns.get(uuid);
         if (lastPlayTime == null) {
             return false;

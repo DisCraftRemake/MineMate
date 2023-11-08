@@ -63,6 +63,15 @@ public class PetUtils {
         return displayName;
     }
 
+    public static String getOnlyNameFromString(String name){
+        switch (name.toLowerCase()) {
+            case "cat": return "Cat";
+            case "goat": return "Goat";
+            case "bee": return "Bee";
+            default: return "None";
+        }
+    }
+
     public static Pets getPetFromString(String arg){
         Pets pet = switch (arg.toLowerCase()){
             case "goat" -> Pets.GOAT;
